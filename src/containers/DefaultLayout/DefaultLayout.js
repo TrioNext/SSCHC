@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
 
+/* lib load*/
 import {
   AppAside,
   AppBreadcrumb,
@@ -29,14 +30,10 @@ class DefaultLayout extends Component {
         <AppHeader fixed>
           <DefaultHeader />
         </AppHeader>
+
         <div className="app-body">
-          <AppSidebar fixed display="lg">
-            <AppSidebarHeader />
-            <AppSidebarForm />
-            <AppSidebarNav navConfig={navigation} {...this.props} />
-            <AppSidebarFooter />
-            <AppSidebarMinimizer />
-          </AppSidebar>
+          
+
           <main className="main">
             <AppBreadcrumb appRoutes={routes}/>
             <Container fluid>
