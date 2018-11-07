@@ -13,12 +13,14 @@ npm install --save react-router-dom
       - render :
       - component :
 
+  Link
 
+  Redirect
 
 */
 
 import React, { Component } from 'react';
-import { HashRouter, BrowserRouter, Route, Switch, Link } from 'react-router-dom';
+import { HashRouter, BrowserRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
 
 <BrowserRouter>
   <switch>
