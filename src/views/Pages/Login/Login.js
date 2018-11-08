@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 
-import axios from 'axios';
+import client from '../../../feathers';
 
 class Login extends Component {
 
@@ -25,24 +25,19 @@ class Login extends Component {
   }
 
   login(e){
+
     e.preventDefault();
 
     const {email, password} = this.state;
-
-    axios.post('http://localhost:3333/authentication',{
-      strategy: 'local',
-      email, password
+    return client.authenticate({
+      "strategy":"local",
+    	"email":email,
+    	"password":password
     }).then((res)=>{
-
-      alert(JSON.stringify(res.data))
-      console.log(res);
+       
     }).catch((error)=>{
-        this.setState({ error });
-
-        alert(JSON.stringify(error.response.data))
-        //alert(JSON.stringify(this.state.response))
+      console.log(error);
     })
-
 
 
   }
@@ -55,9 +50,12 @@ class Login extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
+
+                    <div style={{ textAlign:'center',marginBottom:20  }}>
+                      <img style={{marginLeft:-20}} src="/assets/img/ssc.png"/>
+                    </div>
                     <Form name="form-login" onSubmit={ this.login } >
-                      <h1>Đăng nhập</h1>
-                      <p className="text-muted">Sử dụng tên truy cập hoăc e-mail đăng nhập</p>
+
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -76,10 +74,10 @@ class Login extends Component {
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button color="primary" className="px-4">Đăng nhập</Button>
+                          <Button  type="submit" className="px-4 btn-trio">Đăng nhập</Button>
                         </Col>
                         <Col xs="6" className="text-right">
-                          <Button type="submit" color="link" className="px-0">Quên mật khẩu?</Button>
+                          <a  color="link"  className="px-0">Quên mật khẩu?</a>
                         </Col>
                       </Row>
                       <Row style={{marginTop:20}}>
