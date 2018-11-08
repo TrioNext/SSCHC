@@ -1,30 +1,63 @@
 import React, { Component } from 'react';
-import { HashRouter, BrowserRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import './App.scss';
-
 // Containers
 import { DefaultLayout } from './containers';
 // Pages
 import { Login, Page404, Page500, Register } from './views/Pages';
-
 // import { renderRoutes } from 'react-router-config';
 
+import client from './feathers';
+
 class App extends Component {
+
+  constructor(props){
+      super(props);
+      this.state = {}
+  }
+
+  componentDidMount(){
+    // Try to authenticate with the JWT stored in localStorage
+    //const users = client.service('users');
+
+
+
+
+
+    client.authenticate().catch((err)=>{
+      this.setState({login:null})
+      console.log(err);
+    });
+
+    client.on('authenticated',login=>{
+      this.setState({login})
+    });
+
+
+
+    client.on('logout', ()=>{
+      this.setState({login:null})
+    })
+
+  }
   render() {
-    return (
-      <HashRouter>
-        <Switch>
-          <Route exact path="/login" name="Login Page" component={Login} />
-          <Route exact path="/register" name="Register Page" component={Register} />
-          <Route exact path="/404" name="Page 404" component={Page404} />
-          <Route exact path="/500" name="Page 500" component={Page500} />
-          <Route path="/" name="Home" component={DefaultLayout} />
-        </Switch>
-      </HashRouter>
 
 
+      return (
+        <HashRouter>
 
-    );
+
+            {
+               this.state.login ? (<Route path="/" name="Home" component={DefaultLayout} />) : <Route exact path="/" name="Login Page" component={Login} />
+            }
+
+
+        </HashRouter>
+      );
+
+
+    //return <Login/>
+
   }
 }
 
