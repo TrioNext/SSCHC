@@ -29,12 +29,14 @@ class Login extends Component {
     e.preventDefault();
 
     const {email, password} = this.state;
+
+    alert(JSON.stringify(this.state))
     return client.authenticate({
       "strategy":"local",
     	"email":email,
     	"password":password
     }).then((res)=>{
-       
+
     }).catch((error)=>{
       console.log(error);
     })
