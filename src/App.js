@@ -20,10 +20,6 @@ class App extends Component {
     // Try to authenticate with the JWT stored in localStorage
     //const users = client.service('users');
 
-
-
-
-
     client.authenticate().catch((err)=>{
       this.setState({login:null})
       console.log(err);
