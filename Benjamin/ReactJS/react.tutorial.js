@@ -50,16 +50,24 @@ Lý thuyết : có thể sử dụng : phối hợp nhiều components chứa tr
                                     when state change : parent state change (have new props input come : do this actions update component)
                                     : most usecase : Use setState()
 
+                                    - Trước khi nhận params : nó có thể làm 1 số thứ:
+
+
       shouldComponentUpdate (newProps, newState) : phản ứng của component : react behavious :
                                                   - Khi có new props input : nó so sánh với curent state của nó
                                                   để update hoặc cần update
                                                   - nó luôn tra về : false || true => componentWillReceiveProps hoạt động
                                                   - Skips render() if returns false
 
+                                    - điều kiện để nó update components
+
       componentWillUpdate (newProps, newState) :  Can’t use setState() here
                                                   - use it instead : componentWillReceiveProps()
 
+
       componentDidUpdate (prevProps, prevState) : most using : Updating the DOM in response to prop or state changes.
+
+                                    - sau khi nhận params, nó se làm 1 cái gì đó
 
       componentWillUnmount() : Before DOM removal
                              - Most Common Use Case : clean up or delete component out : this place actions method do some things
