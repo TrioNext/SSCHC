@@ -9,6 +9,35 @@ import {
 } from 'reactstrap';
 
 
+import CompanyToolBar from './toolbar';
+import CompanyBody from './body';
+
+
+function BlockItem(props){
+
+  const data = props.data;
+  return(
+    <Col md="3" className="file-box">
+        <div className="file" >
+
+              <div className="block">
+                <i className="fa fa-map-pin " style={{marginRight:5}}></i> {data.name} <br/>
+                Nhân viên : 12
+              </div>
+              <div className="file-name">
+                <i className="fa fa-map-marker"></i> { data.address}
+                <br/>
+                <span>Added: Jan 11, 2016</span>
+              </div>
+
+        </div>
+    </Col>
+  )
+}
+
+
+
+
 
 class Company extends Component {
 
@@ -21,19 +50,21 @@ class Company extends Component {
     return(
       <div className="animated fadeIn">
           <div className="email-app mb-4">
-              <nav>
-                  <a href="#/apps/email/compose" className="btn btn-primary" style={{ width:'100%','border-radius':0, color:'#fff' }}>Tạo bộ phận</a>
+              <nav style={{background:'#DEDEDE'}}>
+
+                  <a href="#/apps/email/compose" className="btn btn-primary" style={{ width:'100%', color:'#fff',background:"#617B88", border:0 }}>Tạo bộ phận</a>
+
                   <div style={{marginTop:20}}>
                     <ul className="nav">
 
                         <li className="nav-item active">
-                          <a href="#/apps/email/inbox" className="nav-link">
+                          <a href="#/company/all" className="nav-link">
                             <i className="fa fa-inbox"></i> Tất cả
                           </a>
                         </li>
 
                         <li className="nav-item">
-                          <a href="#/apps/email/inbox" className="nav-link">
+                          <a href="#/company" className="nav-link">
                             <i className="fa fa-inbox"></i> Bộ phận giám đốc <span className="badge badge-danger">4</span>
                           </a>
                         </li>
@@ -60,84 +91,51 @@ class Company extends Component {
                   </div>
               </nav>
               <main className="message">
-                  <div className="toolbar">
-                      <Row>
-                        <Col md="8">
-                            <ButtonGroup>
-                                <Button color="success" className="btn-light" active> <i className="fa fa-star"></i> Tất cả </Button>
-                                <Button color="success"><i className="fa fa-tags"></i> Văn phòng </Button>
-                                <Button color="success" > <i className="fa fa-tags"></i> Cửa hàng</Button>
-                            </ButtonGroup>
-                        </Col>
 
-                        <Col md="4">
-                            <InputGroup>
+                  <CompanyToolBar />
 
-                              <Input type="text" id="input1-group2" name="input1-group2" placeholder="Tìm kiếm" />
-                              <InputGroupAddon addonType="append">
-                                <Button type="button" color="primary"><i className="fa fa-search"></i></Button>
-                              </InputGroupAddon>
-                            </InputGroup>
-                        </Col>
-                      </Row>
-                  </div>
+                  <CompanyBody>
+                      <BlockItem  data={{
+                         name:"Chi nhánh Hà Nội ",
+                         address:"Quận 1, TP.HCM"
+                      }}/>
 
-                  <div className="detail" style={{ padding:15,paddingTop:30,}}>
+                      <BlockItem  data={{
+                         name:"Chi nhánh Hà Nội ",
+                         address:"Quận Hồ Tây, Hà Nội"
+                      }}/>
 
-                    
-                      <Row>
-                        <Col md="3" className="file-box">
-                            <Card>
-                              <CardBody>
+                      <BlockItem  data={{
+                         name:"Chi nhánh Hà Nội ",
+                         address:"Quận Hồ Tây, Hà Nội"
+                      }}/>
 
-                              </CardBody>
-                              <CardFooter>asdasd</CardFooter>
-                            </Card>
-                        </Col>
-                        <Col md="3" className="file-box">
-                            <div className="file">
-                                <a href="#">
-                                  <div className="icon">
-                                    <i className="zmdi zmdi-file-text"></i>
-                                  </div>
-                                  <div className="file-name">
-                                    Document_2016.doc
-                                    <br/>
-                                    <span>Added: Jan 11, 2016</span>
-                                  </div>
-                                </a>
-                            </div>
-                        </Col>
-                        <Col md="3" className="file-box">
-                            <div className="file">
-                                <a href="#">
-                                  <div className="icon">
-                                    <i className="zmdi zmdi-file-text"></i>
-                                  </div>
-                                  <div className="file-name">
-                                    Document_2016.doc
-                                    <br/>
-                                    <span>Added: Jan 11, 2016</span>
-                                  </div>
-                                </a>
-                            </div>
-                        </Col>
-                        <Col md="3" className="file-box">
-                            <div className="file">
-                                <a href="#">
-                                  <div className="icon">
-                                    <i className="zmdi zmdi-file-text"></i>
-                                  </div>
-                                  <div className="file-name">
-                                    Document_2016.doc
-                                    <br/>
-                                    <span>Added: Jan 11, 2016</span>
-                                  </div>
-                                </a>
-                            </div>
-                        </Col>
-                      </Row>
-                  </div>
+                      <BlockItem  data={{
+                         name:"Chi nhánh Hà Nội ",
+                         address:"Quận Hồ Tây, Hà Nội"
+                      }}/>
+
+                      <BlockItem  data={{
+                         name:"Chi nhánh Hà Nội ",
+                         address:"Quận Hồ Tây, Hà Nội"
+                      }}/>
+
+                      <BlockItem  data={{
+                         name:"Chi nhánh Hà Nội ",
+                         address:"Quận Hồ Tây, Hà Nội"
+                      }}/>
+
+                      <BlockItem  data={{
+                         name:"Chi nhánh Hà Nội ",
+                         address:"Quận Hồ Tây, Hà Nội"
+                      }}/>
+
+                      <BlockItem  data={{
+                         name:"Chi nhánh Hà Nội ",
+                         address:"Quận Hồ Tây, Hà Nội"
+                      }}/>
+                  </CompanyBody>
+
               </main>
           </div>
       </div>
