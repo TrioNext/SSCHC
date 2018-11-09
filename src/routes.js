@@ -7,6 +7,12 @@ function Loading() {
   return <div>Loading...</div>;
 }
 
+
+const Company = Loadable({
+  loader:()=> import('./pages/Company/Company'),
+  loading:Loading
+})
+
 const Breadcrumbs = Loadable({
   loader: () => import('./views/Base/Breadcrumbs'),
   loading: Loading,
@@ -186,7 +192,8 @@ const User = Loadable({
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
-  { path: '/', exact: true, name: 'Home', component: DefaultLayout },
+  { path: '/company', exact:true , name:'Công ty', component:Company},
+  { path: '/', name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
