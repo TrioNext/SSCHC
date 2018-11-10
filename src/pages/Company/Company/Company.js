@@ -9,8 +9,14 @@ import {
 } from 'reactstrap';
 
 
-import CompanyToolBar from './toolbar';
-import CompanyBody from './body';
+import CompanyApp from './CompanyApp';
+import CompanyAside from './CompanyAside';
+import CompanyMain from './CompanyMain';
+
+  import CompanyToolBar from './toolbar';
+  import CompanyBody from './body';
+  import CompanyFooter from './footer';
+
 
 
 function BlockItem(props){
@@ -42,102 +48,37 @@ function BlockItem(props){
 class Company extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
+
+    this.state = {
+      tab:'office'
+    }
   }
 
   render(){
 
+    const tab = this.state.tab;
     return(
       <div className="animated fadeIn">
-          <div className="email-app mb-4">
-              <nav style={{background:'#DEDEDE'}}>
 
-                  <a href="#/apps/email/compose" className="btn btn-primary" style={{ width:'100%', color:'#fff',background:"#617B88", border:0 }}>Tạo bộ phận</a>
+          <CompanyApp>
 
-                  <div style={{marginTop:20}}>
-                    <ul className="nav">
+              {/* quan lý : departments */}
+              <CompanyAside/>
 
-                        <li className="nav-item active">
-                          <a href="#/company/all" className="nav-link">
-                            <i className="fa fa-inbox"></i> Tất cả
-                          </a>
-                        </li>
+              {/* workplace for : offices - stores - users  */}
+              <CompanyMain>
 
-                        <li className="nav-item">
-                          <a href="#/company" className="nav-link">
-                            <i className="fa fa-inbox"></i> Bộ phận giám đốc <span className="badge badge-danger">4</span>
-                          </a>
-                        </li>
-
-                        <li className="nav-item">
-                          <a href="#/apps/email/inbox" className="nav-link">
-                            <i className="fa fa-inbox"></i> Bộ phận kỹ thuật
-                          </a>
-                        </li>
-
-                        <li className="nav-item">
-                          <a href="#/apps/email/inbox" className="nav-link">
-                            <i className="fa fa-inbox"></i> Bộ phận Kinh Doanh
-                          </a>
-                        </li>
-
-                        <li className="nav-item">
-                          <a href="#/apps/email/inbox" className="nav-link">
-                            <i className="fa fa-inbox"></i> Bộ phận marketing
-                          </a>
-                        </li>
-
-                    </ul>
-                  </div>
-              </nav>
-              <main className="message">
-
-                  <CompanyToolBar />
+                  <CompanyToolBar tab={ tab } />
 
                   <CompanyBody>
-                      <BlockItem  data={{
-                         name:"Chi nhánh Hà Nội ",
-                         address:"Quận 1, TP.HCM"
-                      }}/>
-
-                      <BlockItem  data={{
-                         name:"Chi nhánh Hà Nội ",
-                         address:"Quận Hồ Tây, Hà Nội"
-                      }}/>
-
-                      <BlockItem  data={{
-                         name:"Chi nhánh Hà Nội ",
-                         address:"Quận Hồ Tây, Hà Nội"
-                      }}/>
-
-                      <BlockItem  data={{
-                         name:"Chi nhánh Hà Nội ",
-                         address:"Quận Hồ Tây, Hà Nội"
-                      }}/>
-
-                      <BlockItem  data={{
-                         name:"Chi nhánh Hà Nội ",
-                         address:"Quận Hồ Tây, Hà Nội"
-                      }}/>
-
-                      <BlockItem  data={{
-                         name:"Chi nhánh Hà Nội ",
-                         address:"Quận Hồ Tây, Hà Nội"
-                      }}/>
-
-                      <BlockItem  data={{
-                         name:"Chi nhánh Hà Nội ",
-                         address:"Quận Hồ Tây, Hà Nội"
-                      }}/>
-
-                      <BlockItem  data={{
-                         name:"Chi nhánh Hà Nội ",
-                         address:"Quận Hồ Tây, Hà Nội"
-                      }}/>
+                      asdasd
                   </CompanyBody>
 
-              </main>
-          </div>
+
+              </CompanyMain>
+          </CompanyApp>
+
       </div>
     )
   }
