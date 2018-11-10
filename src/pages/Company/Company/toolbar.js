@@ -9,18 +9,38 @@ class CompanyToolBar extends Component{
 
   constructor(props){
     super(props);
+    this.state = {}
+
+
+
 
   }
+
+
+
   render(){
+
+    this.state = this.props;
+
+
+
+    const officeTabe = this.state.tab === 'office' ? true : false;
+    const storeTabe = this.state.tab === 'store' ? true : false;
+    const userTabe = this.state.tab === 'user' ? true : false;
+    const settingTabe = this.state.tab === 'setting' ? true : false;
+
+
     return(
       <div className="toolbar">
           <Row>
             <Col md="8">
                 <ButtonGroup>
 
-                    <Button active color="success"><i className="fa fa-tags"></i> Văn phòng </Button>
-                    <Button color="success" > <i className="fa fa-tags"></i> Cửa hàng</Button>
-                    <Button color="success" > <i className="fa fa-user"></i> Nhân viên </Button>
+                    <Button active={officeTabe} color="success"><i className="fa fa-tags"></i> Văn phòng </Button>
+                    <Button active={storeTabe}  color="success" > <i className="fa fa-tags"></i> Cửa hàng</Button>
+                    <Button active={userTabe}  color="success" > <i className="fa fa-user"></i> Nhân viên </Button>
+                    <Button active={settingTabe}  color="success" > <i className="fa fa-gear"></i> Cài đặt </Button>
+
                 </ButtonGroup>
             </Col>
 
