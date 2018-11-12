@@ -13,7 +13,7 @@
     -ms-flex-direction: row;
     flex-direction: row;
     background: #fff;
-    border: 0px solid #c8ced3;
+    border: 1px solid #c8ced3;
     height: 85vh ; overflow-y:hidden;
 }
 
@@ -70,7 +70,7 @@
     -ms-flex: 1;
     flex: 1;
     min-width: 0;
-    padding: 1rem
+
 }
 
 .ubuntu-app .inbox .toolbar {
@@ -148,7 +148,8 @@
 
 .ubuntu-app .message .toolbar {
     padding-bottom: 1rem;
-    border-bottom: 0px solid #c8ced3
+    border-bottom: 0px solid #c8ced3;
+    padding: 1rem
 }
 
 .ubuntu-app .message .details .title {
