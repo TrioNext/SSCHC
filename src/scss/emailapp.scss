@@ -5,7 +5,8 @@
     -ms-flex-direction: row;
     flex-direction: row;
     background: #fff;
-    border: 1px solid #c8ced3
+    border: 0px solid #c8ced3;
+    height: 85vh ; overflow-y:hidden;
 }
 
 .email-app nav {
@@ -13,6 +14,7 @@
     flex: 0 0 360px;
     padding: 1rem;
     border-right: 1px solid #c8ced3;
+    height: 85vh ; overflow-y:auto;
 
 }
 
