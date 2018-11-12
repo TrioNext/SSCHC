@@ -1,0 +1,242 @@
+
+/* BUTTON */
+.btn-ubuntu{ background: #7696a6;  border: 1px solid rgba(0,0,0,0.1) ;  color: #fff}
+.btn-ubuntu:hover{ background: #40525b; color: #fff; border: 1px solid rgba(0,0,0,0.1)}
+.btn-ubuntu-ok{ background: #eeb452;  border: 1px solid rgba(0,0,0,0.1); color: #fff; }
+.btn-ubuntu-ok:hover{ background-color: #b7852f; border: 1px solid rgba(0,0,0,0.1); color: #fff}
+
+
+/* E-MAIL APP  : LEFT SIZE : RIGHT SIZE  */
+.ubuntu-app {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    background: #fff;
+    border: 0px solid #c8ced3;
+    height: 85vh ; overflow-y:hidden;
+}
+
+.ubuntu-app nav {
+    -ms-flex: 0 0 300px;
+    flex: 0 0 360px;
+    padding: 1rem;
+    border-right: 1px solid #c8ced3;
+    height: 85vh ; overflow-y:auto;
+
+}
+
+.ubuntu-app nav .btn-block {
+    margin-bottom: 15px
+}
+
+.ubuntu-app nav .nav {
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.ubuntu-app nav .nav-item {
+    position: relative;
+    padding: 10px 4px 10px 4px;
+    font-size: 15px;
+
+}
+.ubuntu-app nav .nav-item:hover,.ubuntu-app nav .nav-item.active {
+    position: relative;
+    background: #f0f0f0;
+
+}
+
+.ubuntu-app nav .nav-link {
+    color: #23282c;
+    border-bottom: 0px solid #c8ced3
+}
+.ubuntu-app nav .nav-link:hover{ cursor: pointer;}
+
+.ubuntu-app nav .nav-link i {
+    width: 20px;
+    margin: 0;
+    font-size: 16px;
+    text-align: left;
+}
+
+.ubuntu-app nav .nav-link .badge {
+    float: right;
+    margin-top: 4px;
+    margin-left: 10px
+}
+
+.ubuntu-app main {
+    -ms-flex: 1;
+    flex: 1;
+    min-width: 0;
+    padding: 1rem
+}
+
+.ubuntu-app .inbox .toolbar {
+    padding-bottom: 1rem;
+    border-bottom: 0px solid #c8ced3
+}
+
+.ubuntu-app .inbox .messages {
+    padding: 0;
+    list-style: none
+}
+
+.ubuntu-app .inbox .message {
+    position: relative;
+    padding: 1rem 1rem 1rem 2rem;
+    cursor: pointer;
+    border-bottom: 1px solid #c8ced3
+}
+
+.ubuntu-app .inbox .message:hover {
+    background: #f0f3f5
+}
+
+.ubuntu-app .inbox .message .actions {
+    position: absolute;
+    left: 0;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column
+}
+
+.ubuntu-app .inbox .message .actions .action {
+    width: 2rem;
+    margin-bottom: .5rem;
+    color: #c8ced3;
+    text-align: center
+}
+
+.ubuntu-app .inbox .message a {
+    color: #000
+}
+
+.ubuntu-app .inbox .message a:hover {
+    text-decoration: none
+}
+
+.ubuntu-app .inbox .message.unread .header,
+.ubuntu-app .inbox .message.unread .title {
+    font-weight: 700
+}
+
+.ubuntu-app .inbox .message .header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    margin-bottom: .5rem
+}
+
+.ubuntu-app .inbox .message .header .date {
+    margin-left: auto
+}
+
+.ubuntu-app .inbox .message .title {
+    margin-bottom: .5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.ubuntu-app .inbox .message .description {
+    font-size: 12px
+}
+
+.ubuntu-app .message .toolbar {
+    padding-bottom: 1rem;
+    border-bottom: 0px solid #c8ced3
+}
+
+.ubuntu-app .message .details .title {
+    padding: 1rem 0;
+    font-weight: 700
+}
+
+.ubuntu-app .message .details .header {
+    display: -ms-flexbox;
+    display: flex;
+    padding: 1rem 0;
+    margin: 1rem 0;
+    border-top: 1px solid #c8ced3;
+    border-bottom: 1px solid #c8ced3
+}
+
+.ubuntu-app .message .details .header .avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 1rem
+}
+
+.ubuntu-app .message .details .header .from {
+    -ms-flex-item-align: center;
+    align-self: center;
+    font-size: 12px;
+    color: #73818f
+}
+
+.ubuntu-app .message .details .header .from span {
+    display: block;
+    font-weight: 700
+}
+
+.ubuntu-app .message .details .header .date {
+    margin-left: auto
+}
+
+.ubuntu-app .message .details .attachments {
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+    border-top: 3px solid #f0f3f5;
+    border-bottom: 3px solid #f0f3f5
+}
+
+.ubuntu-app .message .details .attachments .attachment {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-item-align: center;
+    align-self: center;
+    margin: .5rem 0;
+    font-size: 12px
+}
+
+.ubuntu-app .message .details .attachments .attachment .badge {
+    margin: 0 .5rem;
+    line-height: inherit
+}
+
+.ubuntu-app .message .details .attachments .attachment .menu {
+    margin-left: auto
+}
+
+.ubuntu-app .message .details .attachments .attachment .menu a {
+    padding: 0 .5rem;
+    font-size: 14px;
+    color: #c8ced3
+}
+
+@media(max-width:767.98px) {
+    .ubuntu-app {
+        -ms-flex-direction: column;
+        flex-direction: column
+    }
+    .ubuntu-app nav {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%
+    }
+}
+
+@media(max-width:575.98px) {
+    .ubuntu-app .message .header {
+        -ms-flex-flow: row wrap;
+        flex-flow: row wrap
+    }
+    .ubuntu-app .message .header .date {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%
+    }
+}
+/* END EMAIL APP*/
