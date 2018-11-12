@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import '../../../scss/filemanager.scss';
-import '../../../scss/emailapp.scss';
+import '../../../scss/ubuntu-style.scss';
 
 
 import {
@@ -51,33 +51,51 @@ class Company extends Component {
     super(props);
 
     this.state = {
-      tab:'office'
+      tab:'office',
+
+      department:{},
+      offices:{},
+      stores:{},
+      users:{}
+
     }
+
+    this.onDepartmentChange = this.onDepartmentChange.bind(this);
   }
 
+  onDepartmentChange(val){
+     alert(val)
+     
+  }
   render(){
 
     const tab = this.state.tab;
     return(
       <div className="animated fadeIn">
+          <Card >
+            <CardBody style={{padding:0, margin:0, marginBottom:-30}}>
+              <CompanyApp>
 
-          <CompanyApp>
+                  {/* quan lý : departments */}
+                  <CompanyAside onStateChange={ (val)=>{ this.onDepartmentChange(val) } } />
 
-              {/* quan lý : departments */}
-              <CompanyAside/>
+                  {/* workplace for : offices - stores - users  */}
+                  <CompanyMain>
 
-              {/* workplace for : offices - stores - users  */}
-              <CompanyMain>
+                      <CompanyToolBar tab={ tab } />
 
-                  <CompanyToolBar tab={ tab } />
+                      <CompanyBody>
+                          asdasd
+                      </CompanyBody>
 
-                  <CompanyBody>
-                      asdasd
-                  </CompanyBody>
+                  </CompanyMain>
+              </CompanyApp>
+            </CardBody>
 
-
-              </CompanyMain>
-          </CompanyApp>
+            <CardFooter>
+                status
+            </CardFooter>
+          </Card>
 
       </div>
     )
