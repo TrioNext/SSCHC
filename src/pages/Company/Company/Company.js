@@ -4,8 +4,8 @@ import '../../../scss/ubuntu-style.scss';
 
 
 import {
-  Badge, Card, CardHeader, CardBody, CardFooter, Row, Col,
-  Button,ButtonGroup, InputGroup, Input, InputGroupAddon
+   Row, Col
+
 } from 'reactstrap';
 
 
@@ -43,8 +43,6 @@ function BlockItem(props){
 
 
 
-
-
 class Company extends Component {
 
   constructor(props) {
@@ -61,41 +59,38 @@ class Company extends Component {
     }
 
     this.onDepartmentChange = this.onDepartmentChange.bind(this);
+    this.onToolBarChange = this.onToolBarChange.bind(this);
   }
 
+  onToolBarChange(val){
+     this.setState({tab:val})
+  }
   onDepartmentChange(val){
      alert(val)
-     
+
   }
   render(){
 
     const tab = this.state.tab;
     return(
       <div className="animated fadeIn">
-          <Card >
-            <CardBody style={{padding:0, margin:0, marginBottom:-30}}>
-              <CompanyApp>
 
-                  {/* quan lý : departments */}
-                  <CompanyAside onStateChange={ (val)=>{ this.onDepartmentChange(val) } } />
+      <CompanyApp>
 
-                  {/* workplace for : offices - stores - users  */}
-                  <CompanyMain>
+          {/* quan lý : departments */}
+          <CompanyAside onStateChange={ (val)=>{ this.onDepartmentChange(val) } } />
 
-                      <CompanyToolBar tab={ tab } />
+          {/* workplace for : offices - stores - users  */}
+          <CompanyMain>
 
-                      <CompanyBody>
-                          asdasd
-                      </CompanyBody>
+              <CompanyToolBar onStateChange={(val)=>{ this.onToolBarChange(val) }} tab={ tab } />
 
-                  </CompanyMain>
-              </CompanyApp>
-            </CardBody>
+              <CompanyBody>
+                  { this.state.tab }
+              </CompanyBody>
 
-            <CardFooter>
-                status
-            </CardFooter>
-          </Card>
+          </CompanyMain>
+      </CompanyApp>
 
       </div>
     )
