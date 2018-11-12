@@ -1,5 +1,6 @@
 // Here you can add other styles
 
+body{ overflow-y: hidden;}
 .btn-trio{
   background:#CF9D48 ;
   border:1px solid #CF9D48;
@@ -12,3 +13,18 @@
 }
 
 .mr-5{ margin-right: 5px;}
+
+
+/*
+MODAL
+*/
+
+
+.modal-dialog{ border: 1px solid rgba(0,0,0,0.1) !important }
+.modal-lg{ width: 80% !important}
+.modal-header{
+  height: 50px !important; border-bottom: 1px solid rgba(0,0,0,0.1); background: #F0F3F5;
+}
+.modal-header h5.modal-title{ height: 50px !important; line-height: 16px; font-size: 15px !important; }
+.modal-header button{ height: 50px !important; line-height: 16px;}
+.modal-body{ font-size: 16px !important}
