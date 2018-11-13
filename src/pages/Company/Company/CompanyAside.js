@@ -3,17 +3,18 @@
 import React, {Component} from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label } from 'reactstrap';
 
+import server from '../../../config/server';
+
+
 
 function ItemList(props){
 
   const isActive =  props.active ? 'active' : '';
   const num = props.num > 0 ? (<span className="badge badge-danger"> {props.num} </span>) : null
   return(
-    <li className={'nav-item '+isActive}>
+    <li onClick={ props.onClick } className={'nav-item '+isActive}>
       <a  className="nav-link" onClick={ props.click }>
         <i className="fa fa-inbox"></i> {props.name} {num}
-
-
       </a>
     </li>
   )
@@ -26,8 +27,11 @@ class CompanyAside extends Component{
     super(props);
 
     this.state = {
+      name:'Bộ phận',
       modal:false,
       status:'',
+
+      currentId:0,
       data:[
 
         {
@@ -49,7 +53,7 @@ class CompanyAside extends Component{
 
         },
         {
-          id:2,
+          id:3,
           name:'Phòng Kinh Marketing',
           num:3
         },
@@ -58,6 +62,7 @@ class CompanyAside extends Component{
     }
     this.create = this.create.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.onItem = this.onItem.bind(this);
   }
 
   create(){
@@ -73,12 +78,13 @@ class CompanyAside extends Component{
 
   }
 
-  update(){
+  update(item){
+
     this.setState({
       modal:true,
-      status:'update'
+      status:'update',
+      currentId:item.id
     });
-
 
   }
 
@@ -96,12 +102,16 @@ class CompanyAside extends Component{
     });
   }
 
-  onItem(e,name){
-    console.log(name);
+  onItem(item){
+      this.update(item)
   }
+
   render(){
 
     const listItem = this.state.data;
+
+    const strModalTitle = this.state.status ==='create' ? 'Tạo ' : 'Cập nhật '
+
     return(
       <div>
           <nav style={{background:'#DEDEDE'}}>
@@ -113,11 +123,11 @@ class CompanyAside extends Component{
 
                     {
                       listItem.map((item,index)=>{
-                        if(index===0){
-                          return (<ItemList key={index}  name={ item.name}  num={item.num} active  />)
-                        }
+
+                        let active = parseInt(item.id) === this.state.currentId ? true  : false;
+
                         return(
-                           <ItemList key={index}  name={ item.name}  num={item.num}  />
+                           <ItemList active={ active} key={index} onClick={()=>{ this.onItem(item) }}  name={ item.name}  num={item.num}  />
                         )
                       })
                     }
@@ -127,21 +137,21 @@ class CompanyAside extends Component{
               </div>
           </nav>
 
-          <Modal isOpen={this.state.modal} style={{width:'1200px'}}  toggle={this.toggle} >
-             <ModalHeader toggle={this.toggle}> <i className="fa fa-plus"></i> Tạo bộ phận </ModalHeader>
+          <Modal isOpen={this.state.modal} fade={false}   toggle={this.toggle} >
+             <ModalHeader toggle={this.toggle}> <i className="fa fa-plus"></i> { strModalTitle + this.state.name }  </ModalHeader>
              <ModalBody>
                 <Row>
                     <Col md="12">
                       <div className="form-group">
                         <label>Tên</label>
-                        <input className="form-control" id="name" type="text" placeholder="Enter your name"/>
+                        <input className="form-control" id="name" onChange={ ()=>{ alert('asdasd') }} value={ listItem[this.state.currentId]['name'] }  type="text" placeholder="Nhập tên"/>
                       </div>
                     </Col>
                 </Row>
              </ModalBody>
              <ModalFooter>
                 <div role="group" className="btn-group">
-                    <Button className="btn-ubuntu"> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
+                    <Button className="btn-ubuntu" onClick={ this.toggle }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
                     <Button className="btn-ubuntu-ok"> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
                 </div>
 
@@ -152,6 +162,13 @@ class CompanyAside extends Component{
 
     )
   }
+
+  componentDidMount(){
+      server.get('/departments?p=0?max=30',function(data){
+        //alert(JSON.stringify(data))
+      },function(data){})
+  }
+
 }
 
 export default CompanyAside;
