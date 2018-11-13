@@ -1,5 +1,11 @@
 // Here you can add other styles
 
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500&subset=vietnamese');
+
+body{
+  font-family: 'Roboto', sans-serif;
+}
+
 .btn-trio{
   background:#CF9D48 ;
   border:1px solid #CF9D48;
@@ -27,3 +33,41 @@ MODAL
 .modal-header h5.modal-title{ height: 50px !important; line-height: 16px; font-size: 15px !important; }
 .modal-header button{ height: 50px !important; line-height: 16px;}
 .modal-body{ font-size: 16px !important}
+
+
+/* DATA GRID*/
+
+@mixin scrollbar($size: 6px, $color: $xl-cool-grey-4-40) {
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+        width: $size * 2;
+    }
+
+    &::-webkit-scrollbar-track,
+    &::-webkit-scrollbar-thumb {
+        border-radius: $size;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-clip: padding-box;
+        background-color: $color;
+        border: $size / 2 solid transparent;
+        min-height: 50px;
+    }
+
+    &::-webkit-scrollbar:horizontal {
+        height: $size * 2;
+    }
+}
+
+
+.ag-row-hover {
+    /* putting in !important so it overrides the theme's styling as it hovers the row also */
+    background-color: #dfdfff !important;
+}
+
+/*.ag-column-hover {
+    background-color: #dfffdf;
+}*/
+/* END DATA GRID*/
