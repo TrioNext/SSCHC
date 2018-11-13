@@ -3,11 +3,6 @@ import '../../../scss/filemanager.scss';
 import '../../../scss/ubuntu-style.scss';
 
 
-import {
-   Row, Col
-
-} from 'reactstrap';
-
 
 import CompanyApp from './CompanyApp';
 import CompanyAside from './CompanyAside';
@@ -17,29 +12,14 @@ import CompanyMain from './CompanyMain';
   import CompanyBody from './body';
   import CompanyFooter from './footer';
 
+import Office from './Office';
+import Store from './Store';
+import User from './User';
 
 
-function BlockItem(props){
 
-  const data = props.data;
-  return(
-    <Col md="3" className="file-box">
-        <div className="file" >
 
-              <div className="block">
-                <i className="fa fa-map-pin " style={{marginRight:5}}></i> {data.name} <br/>
-                Nhân viên : 12
-              </div>
-              <div className="file-name">
-                <i className="fa fa-map-marker"></i> { data.address}
-                <br/>
-                <span>Added: Jan 11, 2016</span>
-              </div>
 
-        </div>
-    </Col>
-  )
-}
 
 
 
@@ -49,7 +29,8 @@ class Company extends Component {
     super(props);
 
     this.state = {
-      tab:'office',
+      tab:'user',
+      tabAction:'',
 
       department:{},
       offices:{},
@@ -62,39 +43,61 @@ class Company extends Component {
     this.onToolBarChange = this.onToolBarChange.bind(this);
   }
 
-  onToolBarChange(val){
-     this.setState({tab:val})
+  onToolBarChange(obj){
+
+    this.setState({
+      tab:obj.tab,
+      tabAction:obj.tabAction
+    })
+
   }
   onDepartmentChange(val){
      alert(val)
 
   }
+
   render(){
 
     const tab = this.state.tab;
+
+
+
+    const tabAction = this.state.tabAction;
+
+
+
     return(
       <div className="animated fadeIn">
 
-      <CompanyApp>
+        <CompanyApp>
 
-          {/* quan lý : departments */}
-          <CompanyAside onStateChange={ (val)=>{ this.onDepartmentChange(val) } } />
+            <CompanyAside onStateChange={ (val)=>{ this.onDepartmentChange(val) } } />
+            
+            <CompanyMain>
 
-          {/* workplace for : offices - stores - users  */}
-          <CompanyMain>
+                <CompanyToolBar onStateChange={(val)=>{ this.onToolBarChange(val) }} tab={ tab } />
 
-              <CompanyToolBar onStateChange={(val)=>{ this.onToolBarChange(val) }} tab={ tab } />
+                <CompanyBody>
 
-              <CompanyBody>
-                  { this.state.tab }
-              </CompanyBody>
 
-          </CompanyMain>
-      </CompanyApp>
+                    <Office tab={tab} tabAction={ tabAction } />
+                    <Store tab={tab} tabAction={tabAction} />
+                    <User tab={tab} tabAction={tabAction} />
+
+
+                </CompanyBody>
+
+                <CompanyFooter/>
+
+            </CompanyMain>
+
+        </CompanyApp>
+
 
       </div>
     )
   }
+
 }
 
 export default Company;
