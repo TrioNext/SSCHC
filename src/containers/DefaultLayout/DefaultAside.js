@@ -84,11 +84,7 @@ class DefaultAside extends Component {
                 <div>New UI Project - <strong>deadline</strong></div>
                 <small className="text-muted mr-3"><i className="icon-calendar"></i>&nbsp; 10 - 11pm</small>
                 <small className="text-muted"><i className="icon-home"></i>&nbsp; creativeLabs HQ</small>
-                <div className="avatars-stack mt-2">
-                  <div className="avatar avatar-xs">
-                    <img src={'assets/img/avatars/2.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-                  </div>
-                </div>
+                
               </ListGroupItem>
 
 
