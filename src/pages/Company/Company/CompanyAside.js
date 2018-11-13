@@ -39,24 +39,8 @@ class CompanyAside extends Component{
           name:'Tất cả',
           num:0
 
-        },
-        {
-          id:1,
-          name:'Phòng Kinh Doanh',
-          num:10
+        }
 
-        },
-        {
-          id:2,
-          name:'Phòng Kỹ thuật',
-          num:2
-
-        },
-        {
-          id:3,
-          name:'Phòng Kinh Marketing',
-          num:3
-        },
 
       ]
     }
@@ -164,8 +148,19 @@ class CompanyAside extends Component{
   }
 
   componentDidMount(){
+      const _this = this ;
       server.get('/departments?p=0?max=30',function(data){
-        //alert(JSON.stringify(data))
+
+        let listData = _this.state.data;
+        data.rows.map((item)=>{
+          listData.push(item)
+        })
+
+        
+        _this.setState({
+          data:listData
+        })
+
       },function(data){})
   }
 
