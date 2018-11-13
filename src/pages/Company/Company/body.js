@@ -11,7 +11,7 @@ class CompanyBody extends Component{
 
   render(){
     return(
-      <div className="detail" style={{ padding:15,paddingTop:30,}}>
+      <div className="detail" >
         { this.props.children}
       </div>
     )
