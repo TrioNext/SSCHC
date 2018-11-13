@@ -154,7 +154,7 @@ class User extends Component{
                    </ModalFooter>
                  </Modal>
 
-                 <div className="ag-theme-balham" id="myGrid" style={{boxSizing: "border-box", height: '70vh',width: '100%' }}>
+                 <div className="ag-theme-balham" id="myGrid" style={{boxSizing: "border-box", height: '74vh',width: '100%' }}>
 
                        <AgGridReact
 
