@@ -12,8 +12,10 @@ class CompanyToolBar extends Component{
 
     this.state = {
       tab:props.tab,
+      tabAction:'',
 
       currentItem:{},
+
       data:{
         office:{
           code:'office',
@@ -35,19 +37,32 @@ class CompanyToolBar extends Component{
     }
 
     this.onChange = this.onChange.bind(this);
+    this.onAction = this.onAction.bind(this);
   }
 
+
+  onAction(val){
+    this.setState({
+      tabAction:val
+    });
+
+    this.props.onStateChange({
+      tab:this.state.tab,
+      tabAction:val
+    })
+  }
   onChange(obj){
 
       this.setState({tab:obj.code})
 
-      //alert(JSON.stringify(obj))
-      this.props.onStateChange(JSON.stringify(obj.code));
+      this.props.onStateChange({
+        tab:obj.code,
+        tabAction:''
+
+      })
 
 
   }
-
-
 
   render(){
 
@@ -56,49 +71,34 @@ class CompanyToolBar extends Component{
     const listBtn = this.state.data ;
 
     return(
-      <div className="toolbar" style={{padding: '1rem'}}>
+      <div className="toolbar">
           <Row>
-            <Col md="8">
+            <Col md="6">
                 <ButtonGroup>
                     {
                       Object.keys(listBtn).map((key)=>{
 
-                        let active = key === this.state.tab ? true:false
+                        let active = key === this.state.tab ? 'active ':''
                         return(
-                            <Button active={active} onClick={ ()=>{ this.onChange(listBtn[key]) } } color="success"><i className={'fa '+listBtn[key].icon}></i> { listBtn[key].name} </Button>
+                            <Button key={key}  onClick={ ()=>{ this.onChange(listBtn[key]) } } className={ 'btn-ubuntu btn-ubuntu-'+active} ><i className={'fa '+listBtn[key].icon}></i> { listBtn[key].name} </Button>
                         )
                       })
-                      /*
-                      this.state.data.map((item)=>{
-
-                        let active = item.code === this.state.tab ? true:false
-                        return(
-                            <Button active={active} onClick={ ()=>{ this.onChange(item) } } color="success"><i className={'fa '+item.code}></i> { item.name} </Button>
-                        )
-                      })
-                    */}
+                    }
 
 
                 </ButtonGroup>
             </Col>
 
-            <Col md="4" className="text-right">
+            <Col md="6" className="text-right">
 
-                {
-
-                  /*<InputGroup>
-                  <Input type="text" id="input1-group2" name="input1-group2" placeholder="Tìm kiếm" />
-                  <InputGroupAddon addonType="append">
-                    <Button type="button" color="primary"><i className="fa fa-search"></i></Button>
-                  </InputGroupAddon>
-                </InputGroup>
-                */}
 
                 <ButtonGroup>
-                    <Input placeholder="Tìm kiếm" style={{borderRadius:0}} className="hidden" />
-                    <Button style={{marginRight:10}} active color="success"> <i className="fa fa-search"></i> </Button>
+                    <Button style={{ marginRight:10, borderRadius:0}} className="btn-ubuntu" onClick={()=>{ this.onAction('create') }} > <i className="fa fa-plus"></i> Tạo { listBtn[this.state.tab].name } </Button>
 
-                    <Button style={{borderRadius:0}} color="success" > <i className="fa fa-plus-circle"></i> Tạo { listBtn[this.state.tab].name } </Button>
+
+                    <Input  placeholder="Tìm kiếm" onChange={()=> this.onAction('search')}  style={{borderRadius:0}} className="hidden" />
+                    <Button style={{marginRight:10}}  className="btn-ubuntu"> <i className="fa fa-search"></i> </Button>
+
 
                 </ButtonGroup>
 
