@@ -21,19 +21,8 @@ export default {
     {
       name: 'Công Ty',
       url: '/company',
-      icon: 'icon-compass',
-      children: [
-        {
-          name: 'Nhân Viên',
-          url: '/company/user',
-          icon: '',
-        },
-        {
-          name: 'Cài đặt công ty',
-          url: '/setting/company',
-          icon: '',
-        },
-      ],
+      icon: 'icon-compass'
+
     },
     {
       name: 'Nhà Kho',
