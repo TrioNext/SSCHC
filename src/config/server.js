@@ -22,11 +22,41 @@ const server = {
     return localStorage.getItem('feathers-jwt');
   },
 
+
+  post(url,data,onSuccess,onError){
+    url = this.base()+ url;
+    const config = this.setHeader();
+
+    axios.post(url,data,config)
+          .then((res)=>{
+            onSuccess(res.data)
+          })
+          .catch(function (error) {
+            onError(error);
+          });      
+  },
+  put(url,data,onSuccess,onError){
+
+      url = this.base()+ url;
+      const config = this.setHeader();
+
+      axios.put(url,data,config)
+            .then((res)=>{
+              onSuccess(res.data)
+            })
+            .catch(function (error) {
+              onError(error);
+            });
+
+
+  },
   get(url,onSuccess,onError){
-      axios.get(
-              this.base()+url,
-              this.setHeader()
-            )
+
+
+      url = this.base()+url;
+      const config = this.setHeader();
+
+      axios.get(url,config)
             .then((response) => {
                 onSuccess(response.data)
             },
