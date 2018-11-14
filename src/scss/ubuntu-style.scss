@@ -41,6 +41,7 @@
     position: relative;
     padding: 0px 0px 0px 0px;
     font-size: 14px;
+    margin-bottom: 1px
 
 }
 .ubuntu-app nav .nav-item:hover,.ubuntu-app nav .nav-item.active {
@@ -51,21 +52,16 @@
 
 .ubuntu-app nav .nav-link {
     color: #23282c;
-    border-bottom: 0px solid #c8ced3
+    border-bottom: 0px solid #c8ced3;
+
 }
 .ubuntu-app nav .nav-link:hover{ cursor: pointer;}
 
-.ubuntu-app nav .nav-link i {
-    width: 20px;
-    margin: 0;
-    font-size: 16px;
-    text-align: left;
-}
 
-.ubuntu-app nav .nav-link .badge {
+.ubuntu-app nav .nav-link .option {
     float: right;
-    margin-top: 4px;
-    margin-left: 10px
+
+    margin-left: 40px
 }
 
 /* END LEFT SIDE A*/
