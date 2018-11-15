@@ -23,6 +23,19 @@ const server = {
   },
 
 
+  delete(url,onSuccess,onError){
+      url - this.base()+url;
+      const config = this.setHeader();
+
+      axios.delete(url,config)
+            .then((res)=>{
+              onSuccess(res.data)
+            })
+            .catch((err)=>{
+              onError(err)
+            });
+
+  },
   post(url,data,onSuccess,onError){
     url = this.base()+ url;
     const config = this.setHeader();
@@ -33,7 +46,7 @@ const server = {
           })
           .catch(function (error) {
             onError(error);
-          });      
+          });
   },
   put(url,data,onSuccess,onError){
 
