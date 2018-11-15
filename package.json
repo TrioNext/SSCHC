@@ -1,10 +1,10 @@
 {
-  "name": "@coreui/coreui-free-react-admin-template",
+  "name": "@scrm/smart-crm",
   "version": "2.0.14",
-  "description": "CoreUI React Open Source Bootstrap 4 Admin Template",
-  "author": "Łukasz Holeczek",
-  "homepage": "https://coreui.io",
-  "copyright": "Copyright 2018 creativeLabs Łukasz Holeczek",
+  "description": "Smart Sales Channel",
+  "author": "Hong Hai Benjamin",
+  "homepage": "https://trionext.vn",
+  "copyright": "Copyright 2018 TrioLabs Benjamin",
   "license": "MIT",
   "private": true,
   "repository": {
