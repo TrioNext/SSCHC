@@ -4,20 +4,11 @@ import '../../../scss/ubuntu-style.scss';
 
 
 
-import CompanyApp from './CompanyApp';
 import CompanyAside from './CompanyAside';
-import CompanyMain from './CompanyMain';
 
   import CompanyToolBar from './toolbar';
   import CompanyBody from './body';
   import CompanyFooter from './footer';
-
-import Office from './Office';
-import Store from './Store';
-import User from './User';
-
-
-
 
 
 
@@ -28,72 +19,93 @@ class Company extends Component {
   constructor(props) {
     super(props);
 
+    this.name = "Công ty"
+    this.info = {}
+
+    this.data = {
+      departments:[],
+      offices:[],
+      stores:[],
+      users:[]
+    }
+
+
     this.state = {
-      tab:'user',
-      tabAction:'',
+
+      onTab:'user',
+      onAction:'',
+      status:'',
 
       department:{},
-      offices:{},
-      stores:{},
-      users:{}
+      office:{},
+      store:{},
+      users:{},
 
     }
 
     this.onDepartmentChange = this.onDepartmentChange.bind(this);
+    this.onDepartmentDataChange = this.onDepartmentDataChange.bind(this);
+
     this.onToolBarChange = this.onToolBarChange.bind(this);
   }
 
   onToolBarChange(obj){
 
     this.setState({
-      tab:obj.tab,
-      tabAction:obj.tabAction
-    })
+      onTab:obj.onTab,
+      onAction:obj.onAction
+    });
+
+
 
   }
-  onDepartmentChange(val){
-     alert(val)
+  onDepartmentChange(obj){
 
+
+      this.state.department = obj
+
+      console.log('departments : action = '+this.state.department.onAction);
+      console.log('departments : status = '+this.state.department.status);
+
+      /* KHI HOAN THÀNH 1 TÁC VỤ : refesh render */
+      if(obj.status==='done'){
+        this.setState({status:'done'})
+      }
+
+
+      //alert(JSON.stringify(obj))
+  }
+
+  /* DO TRIGGER HERE */
+  onDepartmentDataChange(data){
+    this.data.departments = data;
+    console.log(this.data.departments);
   }
 
   render(){
 
-    const tab = this.state.tab;
-
-
-
-    const tabAction = this.state.tabAction;
+    const onTab = this.state.onTab;
+    const onAction = this.state.onAction;
 
 
 
     return(
       <div className="animated fadeIn">
+        <div className="ubuntu-app mb-4">
 
-        <CompanyApp>
+            <CompanyAside onDataChange={ (data)=>{ this.onDepartmentDataChange(data) } } onStateChange={ (val)=>{ this.onDepartmentChange(val) } } />
 
-            <CompanyAside onStateChange={ (val)=>{ this.onDepartmentChange(val) } } />
-            
-            <CompanyMain>
+            <main>
 
-                <CompanyToolBar onStateChange={(val)=>{ this.onToolBarChange(val) }} tab={ tab } />
+                <CompanyToolBar onDataChange="" onStateChange={(val)=>{ this.onToolBarChange(val) }} tab={ onTab } />
 
-                <CompanyBody>
+                <CompanyBody onStateChange="" onDataChange="" onTab={onTab} onAction={ onAction } />
 
+                <CompanyFooter onStateChange="" onDataChange="" />
 
-                    <Office tab={tab} tabAction={ tabAction } />
-                    <Store tab={tab} tabAction={tabAction} />
-                    <User tab={tab} tabAction={tabAction} />
+            </main>
 
-
-                </CompanyBody>
-
-                <CompanyFooter/>
-
-            </CompanyMain>
-
-        </CompanyApp>
-
-
+        </div>
       </div>
     )
   }
