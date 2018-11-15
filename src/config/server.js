@@ -23,17 +23,32 @@ const server = {
   },
 
 
+  axios(method,url,data={},onSuccess,onError){
+
+    switch (method) {
+      case 'post':
+          this.post(url,data,onSuccess,onError);
+      break;
+      case 'put':
+          this.put(url,data,onSuccess,onError);
+      break;
+
+
+    }
+
+  },
+
   delete(url,onSuccess,onError){
-      url - this.base()+url;
+      url = this.base()+url;
       const config = this.setHeader();
 
       axios.delete(url,config)
             .then((res)=>{
               onSuccess(res.data)
+            },(error)=>{
+              onError(error)
             })
-            .catch((err)=>{
-              onError(err)
-            });
+
 
   },
   post(url,data,onSuccess,onError){
@@ -43,10 +58,10 @@ const server = {
     axios.post(url,data,config)
           .then((res)=>{
             onSuccess(res.data)
-          })
-          .catch(function (error) {
+          },(error)=>{
             onError(error);
           });
+
   },
   put(url,data,onSuccess,onError){
 
@@ -56,10 +71,10 @@ const server = {
       axios.put(url,data,config)
             .then((res)=>{
               onSuccess(res.data)
-            })
-            .catch(function (error) {
+            },(error)=>{
               onError(error);
-            });
+            })
+
 
 
   },
