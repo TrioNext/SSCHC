@@ -96,7 +96,7 @@ class CompanyToolBar extends Component{
                     <Button style={{ marginRight:10, borderRadius:0}} className="btn-ubuntu" onClick={()=>{ this.onAction('create') }} > <i className="fa fa-plus"></i> Tạo { listBtn[this.state.tab].name } </Button>
 
 
-                    <Input  placeholder="Tìm kiếm" onChange={()=> this.onAction('search')}  style={{borderRadius:0}} className="hidden" />
+                    <Input  placeholder="Tìm kiếm" onChange={()=> this.onAction('search')}  style={{borderRadius:0}}  />
                     <Button style={{marginRight:10}}  className="btn-ubuntu"> <i className="fa fa-search"></i> </Button>
 
 
