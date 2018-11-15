@@ -31,19 +31,13 @@ class CompanyAside extends Component{
   constructor(props){
     super(props);
 
-    this.form = {
-      name:'Bộ phận',
-      status:'',
-      curInfo:{},
 
-    }
+    this.name = 'Bộ phận';
 
-    this.state = {
-      modal:false,
-      popoverOpen:false,
 
-      currentId:0,
-      data:[
+    this.data = {
+      id:0,
+      list:[
         {
           id:0,
           code:'',
@@ -52,26 +46,185 @@ class CompanyAside extends Component{
 
         }
       ]
+    };
+
+    this.state = {
+      modal:false,
+      popoverOpen:false,
+
+      onAction:'', /* HOLD ACTION ON THIS GUY*/
+      status:'',
     }
 
-    this.create = this.create.bind(this);
-    this.toggle = this.toggle.bind(this);
+
+
     this.togglePopoverDelete = this.togglePopoverDelete.bind(this);
     this.onItem = this.onItem.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
 
 
-    this.refTxtCode = React.createRef();
-    this.refTxtName = React.createRef();
+
+
     this.refErr = React.createRef();
 
 
   }
 
+  /* CONNECT WITH PARENT OBEJECT HERE */
+  onStateChange(obj){
+    /**/
+
+    this.setState(Object.assign(this.state,obj))
+    this.props.onStateChange(obj)
+
+
+
+
+  }
+  onDataChange(){
+    this.props.onDataChange(this.data);
+    this.onStateChange({
+      onAction:'read',
+      status:'done'
+    })
+  }
+
+  /* END CONNECT*/
+
+
+  hook = {
+
+    parent:this,
+    success(onAction,idata){
+
+        switch(onAction){
+          case 'post':
+              this.parent.data.list.push(idata.data);
+              this.parent.onDataChange();
+
+              this.parent.modal.toggle();
+          break;
+          case 'put':
+
+              /* UPDATE LOCAL DATA*/
+              this.parent.data.list.filter((item)=>{
+                if(item.id===this.parent.modal.data.id){
+                  item.name = this.parent.modal.data.name
+                }
+              });
+
+              this.parent.onDataChange();
+              this.parent.modal.toggle();
+
+
+
+
+          break;
+        }
+
+
+    },
+
+
+    error(err){
+
+
+
+        const data = err.response.data ;
+        const msg = data.errors[0];
+
+        this.showErr(msg);
+
+    },
+    showErr(msg){
+
+
+        msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
+        this.parent.refErr.current.textContent = msg;
+
+        setTimeout(()=>{
+          this.parent.refErr.current.textContent = 'status';
+        },2000);
+    },
+  }
+
+
+  /* INTERACT INSIDE*/
+  modal= {
+    active:false,
+    me:this,
+
+    data:{
+      id:0,
+      code:'',
+      name:''
+    },
+
+    open(type,info){
+
+      this.data = info || this.data;
+
+
+      this.active = true ;
+      this.me.onStateChange({
+        onAction:type,
+        status:'modal opening'
+      });
+
+
+    },
+
+    toggle(){
+      this.active = !this.active;
+      this.data = {
+        code:'',
+        name:''
+      }
+      this.me.onStateChange({
+        onAction:'',
+        status:'close modal'
+      })
+    },
+
+    popover:{
+      active:false,
+
+      btnYes(){
+        alert('yes okay man')
+      },
+      toggle(parent){
+
+         this.active = !this.active;
+
+         parent.onStateChange({
+           status:'open popover'
+         });
+
+
+      }
+    },
+    submit(){
+
+       const _this = this ;
+
+       const METHOD = this.me.state.onAction;
+       const URI = METHOD === 'post' ? '/departments' : '/departments?id='+this.data.id
+
+       server.axios(METHOD,URI,this.data,(idata)=>{
+         _this.me.hook.success(_this.me.state.onAction,idata);
+       },(err)=>{
+
+           _this.me.hook.error(err);
+       })
+
+    }
+
+  }
+
+
   getInfo(id){
 
     let ret = null
-    this.state.data.map((item)=>{
+    this.data.list.map((item)=>{
       if(parseInt(item.id)===parseInt(id)){
          ret = item
       }
@@ -80,140 +233,7 @@ class CompanyAside extends Component{
     return ret;
   }
 
-  /*
-  AFFTER : PLACE after save data done
 
-  */
-  after(idata){
-      let err = ''
-      if(idata.name==='success'){
-
-          switch(this.form.status){
-            case 'create':
-                const data = this.state.data ;
-                data.unshift(idata.data);
-                this.setState({
-                  data:data
-                });
-
-            break;
-          }
-      }else{
-        err = idata.message.replace('Validation error','') === '' ? 'Mã này đã được sử dụng' : idata.message.replace('Validation error','');
-        this.refErr.current.textContent = err;
-
-        setTimeout(()=>{
-          this.refErr.current.textContent = 'status';
-        },4000);
-      }
-
-
-  }
-  onError(err){
-    const data = err.response.data;
-    this.refErr.current.textContent = data.errors[0]['message'];
-
-    setTimeout(()=>{
-      this.refErr.current.textContent = 'status';
-    },4000);
-
-  }
-
-  onSubmit(e){
-
-    const _this = this ;
-
-
-
-    switch(this.form.status){
-        case 'create':
-
-
-
-            server.post('/departments',{
-              code:_this.refTxtCode.current.value.trim(),
-              name:_this.refTxtName.current.value.trim()
-            },function(idata){
-
-                _this.after(idata);
-
-
-            },function(err){
-
-                _this.onError(err);
-
-            })
-
-        break;
-        case 'update':
-
-          const id = this.state.currentId;
-
-          server.put('/departments?id='+id,{
-            name: _this.refTxtName.current.value
-          },function(idata){
-
-              /* UPDATE LOCAL DATA*/
-              _this.state.data.filter((item)=>{
-                if(item.id===id){
-                  item.name = _this.refTxtName.current.value;
-                }
-              });
-
-              _this.toggle()
-
-          },function(err){
-            alert(JSON.stringify(err));
-          })
-        break;
-    }
-  }
-
-  setStatus(status){
-    this.form.status = status;
-  }
-  create(){
-    //this.props.onStateChange('pass data to parent ');
-    /*
-    xử lý model
-    */
-
-    this.setStatus('create');
-    this.setState({
-      modal:true
-    });
-
-
-
-
-  }
-
-  update(item){
-
-    this.setStatus('update');
-    this.setState({
-      modal:true,
-      currentId:item.id
-    });
-
-
-  }
-
-  delete(){
-
-    this.setStatus('delete');
-    this.setState({
-      modal:true
-    })
-  }
-
-  toggle() {
-    this.setStatus('')
-    this.setState({
-      modal: !this.state.modal,
-
-    });
-  }
   togglePopoverDelete(){
     this.setState({
       popoverOpen: !this.state.popoverOpen
@@ -228,23 +248,15 @@ class CompanyAside extends Component{
 
   render(){
 
-    const listItem = this.state.data;
-    const strModalTitle = this.form.status ==='create' ? 'Tạo ' : 'Cập nhật ';
-
-
-    this.form.curInfo = this.getInfo(this.state.currentId);
-
-
-
-
-
+    const listItem = this.data.list;
+    const strModalTitle = this.state.onAction ==='post' ? 'Tạo ' : 'Cập nhật ';
 
 
     return(
       <div>
           <nav style={{background:'#DEDEDE'}}>
 
-              <Button onClick={ this.create } color="primary" style={{ width:'100%', color:'#fff',background:"#617B88", border:0 }}> Tạo bộ phận </Button>
+              <Button onClick={ ()=>{  this.modal.open('post') } } color="primary" style={{ width:'100%', color:'#fff',background:"#617B88", border:0 }}> Tạo bộ phận </Button>
 
               <div style={{marginTop:20}}>
                 <ul className="nav">
@@ -252,10 +264,10 @@ class CompanyAside extends Component{
                     {
                       listItem.map((item,index)=>{
 
-                        let active = parseInt(item.id) === this.state.currentId ? true  : false;
+                        let active = parseInt(item.id) === this.data.id ? true  : false;
 
                         return(
-                           <ItemList active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this.update(item) } }  onClick={()=>{ this.onItem(item) }}  name={ item.name}  num={item.num}  />
+                           <ItemList active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this.modal.open('put',{ id:item.id,code:item.code,name:item.name } ) } }  onClick={()=>{ this.onItem(item) }}  name={ item.name}  num={item.num}  />
                         )
                       })
                     }
@@ -265,19 +277,19 @@ class CompanyAside extends Component{
               </div>
           </nav>
 
-          <Modal isOpen={this.state.modal} fade={false}   toggle={this.toggle} >
-             <ModalHeader toggle={this.toggle}> <i className="fa fa-plus"></i> { strModalTitle + this.form.name }  </ModalHeader>
+          <Modal isOpen={this.modal.active} fade={false}   toggle={()=>{ this.modal.toggle() }} >
+             <ModalHeader toggle={()=>{ this.modal.toggle() }} > <i className="fa fa-plus"></i> { strModalTitle + this.name }  </ModalHeader>
              <ModalBody>
                 <Row>
                     <Col md="12">
 
                       <div className="form-group">
-                        <label>Mã { this.form.name }</label>
-                        <input ref={this.refTxtCode}  className="form-control" id="code" defaultValue={ this.form.status ==='create' ? '' : this.form.curInfo['code'] }   type="text" placeholder="Nhập mã"/>
+                        <label>Mã { this.name }</label>
+                        <input  className="form-control" id="code" onChange={(e)=>{ this.modal.data.code = e.target.value.trim() }} defaultValue={ this.state.onAction ==='post' ? '' : this.modal.data.code }   type="text" placeholder="Nhập mã"/>
                       </div>
                       <div className="form-group">
-                        <label>Tên { this.form.name } </label>
-                        <input ref={ this.refTxtName}  className="form-control" id="name" defaultValue={ this.form.status ==='create' ? '' : this.form.curInfo['name'] }   type="text" placeholder="Nhập tên"/>
+                        <label>Tên { this.name } </label>
+                        <input onChange={(e)=>{ this.modal.data.name = e.target.value.trim() }}  className="form-control" id="name" defaultValue={ this.state.onAction ==='post' ? '' : this.modal.data.name }   type="text" placeholder="Nhập tên"/>
                       </div>
                     </Col>
                 </Row>
@@ -286,8 +298,8 @@ class CompanyAside extends Component{
              <div className="my-modal-footer">
                 <div className="float-right">
                     <div role="group" className="btn-group">
-                          <Button className="btn-ubuntu" onClick={ this.toggle }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
-                          <Button className="btn-ubuntu-ok" onClick={  this.onSubmit }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
+                          <Button className="btn-ubuntu" onClick={ ()=>{ this.modal.toggle() } }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
+                          <Button className="btn-ubuntu-ok" onClick={ ()=>{ this.modal.submit() } }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
                     </div>
 
                 </div>
@@ -298,15 +310,15 @@ class CompanyAside extends Component{
                     status
                 </div>
                 <div className="float-right">
-                  <a id="btn-del-department" hidden={ this.form.status === 'create' ? true : false  } className={'text-muted btn-delete ' } onClick={this.togglePopoverDelete}>
+                  <a id="btn-del-department" hidden={ this.state.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ ()=>{ this.modal.popover.toggle(this) } }>
                     <i className="fa fa-trash"></i> Xoá
                   </a>
-                  <Popover placement="bottom" isOpen={this.state.popoverOpen} target="btn-del-department"  toggle={this.togglePopoverDelete}>
+                  <Popover placement="bottom" isOpen={this.modal.popover.active } target="btn-del-department"  toggle={ ()=>{ this.modal.popover.toggle(this) } }>
                     <PopoverHeader>Bạn có chắc chắn không?</PopoverHeader>
                     <PopoverBody className="text-center pa-15">
-                      <button className="btn btn-sm btn-success mr-20">Có</button>
+                      <button onClick={ ()=>{  this.modal.popover.btnYes(this) } } className="btn btn-sm btn-success mr-20">Có</button>
 
-                      <button className="btn btn-sm btn-secondary">Không</button>
+                      <button onClick={ ()=>{  this.modal.popover.toggle(this) } } className="btn btn-sm btn-secondary">Không</button>
                     </PopoverBody>
                   </Popover>
                 </div>
@@ -321,23 +333,29 @@ class CompanyAside extends Component{
     )
   }
 
+
   componentDidMount(){
       const _this = this ;
 
 
+      this.onStateChange({
+        onAction:'read',
+        status:'loading'
+      })
+
       server.get('/departments?p=0?max=30',function(data){
 
-        let listData = _this.state.data;
+        let listData = _this.data.list;
+
         data.rows.map((item)=>{
-          listData.push(item)
-        })
+          _this.data.list.push(item)
+        });
 
+        _this.onDataChange()
 
-        _this.setState({
-          data:listData
-        })
+      },function(data){
 
-      },function(data){})
+      })
   }
 
 }
