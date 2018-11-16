@@ -28,7 +28,10 @@ MODAL
 a.btn-delete{ cursor: pointer;}
 a.btn-delete:hover{ color:#DC3545 !important}
 
-.modal-dialog{ border: 1px solid rgba(0,0,0,0.1) !important }
+.custom-modal{
+  max-width: 100% !important;
+}
+.modal-dialog{ border: 1px solid rgba(0,0,0,0.1) !important; width: 100% !important}
 .modal-lg{ width: 80% !important}
 .modal-header{
   height: 50px !important; border-bottom: 1px solid rgba(0,0,0,0.1); background: #F0F3F5;
@@ -36,12 +39,17 @@ a.btn-delete:hover{ color:#DC3545 !important}
 .modal-header h5.modal-title{ height: 50px !important; line-height: 16px; font-size: 15px !important; }
 .modal-header button{ height: 50px !important; line-height: 16px;}
 .modal-body{ font-size: 16px !important}
-.my-modal-footer{ padding: 1rem; border-top: 0px solid rgba(6,6,6,0.1)}
+.my-modal-footer{ padding: 1rem; border-top: 1px solid rgba(6,6,6,0.1); border-bottom-right-radius: 9px !important;
+
+  border-bottom-left-radius: 9px !important;
+}
 .modal-err{
   padding: 5px 10px;
   background: #F0F3F5;
 
   border-top: 1px solid rgba(0,0,0,0.1);
+  border-bottom-right-radius: 9px !important;
+  border-bottom-left-radius: 9px !important;
 
 }
 
