@@ -10,65 +10,90 @@ class CompanyToolBar extends Component{
   constructor(props){
     super(props);
 
-    this.state = {
-      tab:props.tab,
-      tabAction:'',
+    this.name = 'Toolbar';
+    this.info = {} /* KEEP CURRENT INFO*/
 
-      currentItem:{},
-
-      data:{
-        office:{
-          code:'office',
-          icon:'fa-tags',
-          name:'Văn phòng'
-        },
-        store:{
-          code:'store',
-          icon:'fa-tags',
-          name:'Cửa hàng'
-        },
-        user:{
-          code:'user',
-          icon:'fa-user',
-          name:'Nhân viên'
-        }
-
+    this.data = {
+      office:{
+        code:'office',
+        icon:'fa-tags',
+        name:'Văn phòng'
+      },
+      store:{
+        code:'store',
+        icon:'fa-tags',
+        name:'Cửa hàng'
+      },
+      user:{
+        code:'user',
+        icon:'fa-user',
+        name:'Nhân viên'
       }
+    }
+
+    this.state = {
+
+      onAction:'',
+      status:'',
+
+      onTab:props.onTab
+
     }
 
     this.onChange = this.onChange.bind(this);
     this.onAction = this.onAction.bind(this);
   }
 
+  onStateChange(newState){
+    this.setState(Object.assign(this.state,newState))
+    this.props.onStateChange(newState)
 
-  onAction(val){
-    this.setState({
+  }
+
+  onDataChange(data){
+    this.props.onDataChange(this.data);
+    this.onStateChange({
+      onAction:'read',
+      status:'done'
+    })
+  }
+
+  /* ON CLICK CHANGE TAB*/
+  onChange(obj){
+
+    this.onStateChange({
+      onTab:obj.code,
+      onAction:'change tab',
+      status:'done'
+    })
+  }
+
+  onAction(action){
+
+    this.onStateChange({
+      onAction:action,
+      onTab:this.state.onTab
+
+    })
+
+
+    /*this.setState({
       tabAction:val
     });
 
     this.props.onStateChange({
       tab:this.state.tab,
       tabAction:val
-    })
+    })*/
   }
-  onChange(obj){
 
-      this.setState({tab:obj.code})
-
-      this.props.onStateChange({
-        tab:obj.code,
-        tabAction:''
-
-      })
-
-
-  }
 
   render(){
 
 
 
-    const listBtn = this.state.data ;
+    const listBtn = this.data ;
+
 
     return(
       <div className="toolbar">
@@ -78,7 +103,7 @@ class CompanyToolBar extends Component{
                     {
                       Object.keys(listBtn).map((key)=>{
 
-                        let active = key === this.state.tab ? 'active ':''
+                        let active = key === this.state.onTab ? 'active ':''
                         return(
                             <Button key={key}  onClick={ ()=>{ this.onChange(listBtn[key]) } } className={ 'btn-ubuntu btn-ubuntu-'+active} ><i className={'fa '+listBtn[key].icon}></i> { listBtn[key].name} </Button>
                         )
@@ -93,7 +118,7 @@ class CompanyToolBar extends Component{
 
 
                 <ButtonGroup>
-                    <Button style={{ marginRight:10, borderRadius:0}} className="btn-ubuntu" onClick={()=>{ this.onAction('create') }} > <i className="fa fa-plus"></i> Tạo { listBtn[this.state.tab].name } </Button>
+                    <Button style={{ marginRight:10, borderRadius:0}} className="btn-ubuntu" onClick={()=>{ this.onAction('create') }} > <i className="fa fa-plus"></i> Tạo { listBtn[this.state.onTab].name } </Button>
 
 
                     <Input  placeholder="Tìm kiếm" onChange={()=> this.onAction('search')}  style={{borderRadius:0}}  />
