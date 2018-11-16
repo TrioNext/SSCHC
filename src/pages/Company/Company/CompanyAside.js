@@ -49,21 +49,11 @@ class CompanyAside extends Component{
     };
 
     this.state = {
-      modal:false,
-      popoverOpen:false,
-
       onAction:'', /* HOLD ACTION ON THIS GUY*/
       status:'',
     }
 
-
-
-    this.togglePopoverDelete = this.togglePopoverDelete.bind(this);
     this.onItem = this.onItem.bind(this);
-
-
-
-
     this.refErr = React.createRef();
 
 
@@ -114,11 +104,25 @@ class CompanyAside extends Component{
 
               this.parent.onDataChange();
               this.parent.modal.toggle();
+          break;
 
+          case 'delete':
+
+
+              //alert(JSON.stringify(this.parent.data.list));
+              const newList = this.parent.data.list.filter(item => parseInt(item.id) !== parseInt(idata.id));
+
+              this.parent.data.list = newList;
+
+              this.parent.onDataChange();
+
+
+              this.parent.modal.toggle();
 
 
 
           break;
+
         }
 
 
@@ -137,6 +141,7 @@ class CompanyAside extends Component{
     },
     showErr(msg){
 
+        const _this = this ;
 
         msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
         this.parent.refErr.current.textContent = msg;
@@ -144,6 +149,8 @@ class CompanyAside extends Component{
         setTimeout(()=>{
           this.parent.refErr.current.textContent = 'status';
         },2000);
+
+
     },
   }
 
@@ -171,6 +178,9 @@ class CompanyAside extends Component{
       });
 
 
+
+
+
     },
 
     toggle(){
@@ -182,15 +192,30 @@ class CompanyAside extends Component{
       this.me.onStateChange({
         onAction:'',
         status:'close modal'
-      })
+      });
+
+      this.popover.active = false;
+
     },
 
     popover:{
       active:false,
 
+      me:this,
       btnYes(){
-        alert('yes okay man')
+
+        const _this = this ;
+        const id = this.me.modal.data.id;
+
+        server.delete('/departments/'+id,(res)=>{
+           _this.me.hook.success('delete',res);
+        },(err)=>{
+           _this.me.hook.error(err);
+        })
+
+
       },
+
       toggle(parent){
 
          this.active = !this.active;
@@ -233,12 +258,6 @@ class CompanyAside extends Component{
     return ret;
   }
 
-
-  togglePopoverDelete(){
-    this.setState({
-      popoverOpen: !this.state.popoverOpen
-    });
-  }
 
   onItem(item){
       //this.update(item);
@@ -305,15 +324,16 @@ class CompanyAside extends Component{
                 </div>
 
              </div>
+
              <div className="modal-err " >
                 <div className="float-left form-err text-muted" ref={ this.refErr }>
                     status
                 </div>
                 <div className="float-right">
-                  <a id="btn-del-department" hidden={ this.state.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ ()=>{ this.modal.popover.toggle(this) } }>
+                  <a id="btnDel" hidden={ this.state.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ ()=>{ this.modal.popover.toggle(this) } }>
                     <i className="fa fa-trash"></i> Xoá
                   </a>
-                  <Popover placement="bottom" isOpen={this.modal.popover.active } target="btn-del-department"  toggle={ ()=>{ this.modal.popover.toggle(this) } }>
+                  <Popover placement="bottom" isOpen={this.modal.popover.active } target="btnDel"  toggle={ ()=>{ this.modal.popover.toggle(this) } }>
                     <PopoverHeader>Bạn có chắc chắn không?</PopoverHeader>
                     <PopoverBody className="text-center pa-15">
                       <button onClick={ ()=>{  this.modal.popover.btnYes(this) } } className="btn btn-sm btn-success mr-20">Có</button>
@@ -343,7 +363,7 @@ class CompanyAside extends Component{
         status:'loading'
       })
 
-      server.get('/departments?p=0?max=30',function(data){
+      server.get('/departments',function(data){
 
         let listData = _this.data.list;
 
@@ -356,6 +376,15 @@ class CompanyAside extends Component{
       },function(data){
 
       })
+  }
+
+  componentWillReceiveProps(){
+    //alert('componentWillReceiveProps');
+  }
+
+  componentDidUpdate(){
+    //alert('componentDidUpdate');
+
   }
 
 }
