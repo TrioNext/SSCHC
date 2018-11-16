@@ -32,54 +32,92 @@ class Company extends Component {
 
     this.state = {
 
-      onTab:'user',
+      onTab:'office',
       onAction:'',
       status:'',
 
       department:{},
-      office:{},
-      store:{},
-      users:{},
 
-    }
-
-    this.onDepartmentChange = this.onDepartmentChange.bind(this);
-    this.onDepartmentDataChange = this.onDepartmentDataChange.bind(this);
-
-    this.onToolBarChange = this.onToolBarChange.bind(this);
-  }
-
-  onToolBarChange(obj){
-
-    this.setState({
-      onTab:obj.onTab,
-      onAction:obj.onAction
-    });
-
-
-
-  }
-  onDepartmentChange(obj){
-
-
-      this.state.department = obj
-
-      console.log('departments : action = '+this.state.department.onAction);
-      console.log('departments : status = '+this.state.department.status);
-
-      /* KHI HOAN THÀNH 1 TÁC VỤ : refesh render */
-      if(obj.status==='done'){
-        this.setState({status:'done'})
+      body:{
+        office:{},
+        store:{},
+        users:{},
       }
 
 
-      //alert(JSON.stringify(obj))
+    }
+
+    this.onStateChange = this.onStateChange.bind(this);
+    this.onDataChange = this.onDataChange.bind(this);
   }
 
-  /* DO TRIGGER HERE */
-  onDepartmentDataChange(data){
-    this.data.departments = data;
-    console.log(this.data.departments);
+  onStateChange(type,newState){
+
+      switch (type) {
+        case 'toolbar':
+          this.setState({
+            onTab:newState.onTab,
+            onAction:newState.onAction
+          });
+        break;
+        case 'body':
+
+            this.state.body[newState.onTab] = newState;
+
+
+            console.log(type);
+            console.log(this.state.body[newState.onTab]);
+
+
+            //console.log(newState);
+            //this.state['body'] =
+            //console.log(newState);
+
+            //console.log(this.state[type]);
+
+        break;
+
+        case 'footer':
+
+        break ;
+        default:
+          this.state[type] = newState;
+
+
+          console.log(type);
+          console.log(this.state[type]);
+
+          /* KHI HOAN THÀNH 1 TÁC VỤ : refesh render : */
+          if(newState.status==='done'){
+            this.setState({status:'done'})
+          }
+        break;
+
+      }
+
+  }
+
+  onDataChange(type,newData){
+
+      switch (type) {
+        case 'toolbar':
+          this.data[type] = newData;
+          console.log(this.data[type]);
+        break;
+
+        case 'body':
+
+        break;
+
+        case 'footer':
+
+        break;
+
+        default:
+
+        break;
+      }
+
   }
 
   render(){
@@ -93,15 +131,15 @@ class Company extends Component {
       <div className="animated fadeIn">
         <div className="ubuntu-app mb-4">
 
-            <CompanyAside onDataChange={ (data)=>{ this.onDepartmentDataChange(data) } } onStateChange={ (val)=>{ this.onDepartmentChange(val) } } />
+            <CompanyAside onDataChange={ (data)=>{ this.onDataChange('departments',data) } } onStateChange={ (newState)=>{ this.onStateChange('department',newState) } } />
 
             <main>
 
-                <CompanyToolBar onDataChange="" onStateChange={(val)=>{ this.onToolBarChange(val) }} tab={ onTab } />
+                <CompanyToolBar onDataChange={ (data)=>{ this.onDataChange('toolbar',data) } }  onStateChange={ (newState)=>{ this.onStateChange('toolbar',newState) } } onTab={ onTab } />
 
-                <CompanyBody onStateChange="" onDataChange="" onTab={onTab} onAction={ onAction } />
+                <CompanyBody onDataChange={ (data)=>{ this.onDataChange('body',data) } } onStateChange={ (newState)=>{ this.onStateChange('body',newState) } }  onTab={onTab} onAction={ onAction } />
 
-                <CompanyFooter onStateChange="" onDataChange="" />
+                <CompanyFooter onDataChange={ (data)=>{ this.onDataChange('footer',data) } } onStateChange={ (newState)=>{ this.onStateChange('footer',newState) } } />
 
             </main>
 
