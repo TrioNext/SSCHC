@@ -4,6 +4,14 @@ import axios from 'axios';
 const server = {
   host:"http://localhost",
   port:3333,
+
+  url:'',
+  paginate:{
+    p:0,
+    max:10,
+    is_deleted:0
+  },
+
   base(){
     return this.host+':'+this.port
   },
@@ -78,10 +86,47 @@ const server = {
 
 
   },
+
+  goto(p,onSuccess,onError){
+      this.paginate.p = p; ;
+      const url = this.base()+this.url + '?p='+this.paginate.p+'&max='+this.paginate.max+'&is_deleted='+this.paginate.is_deleted;
+
+      this.get(url,(res)=>{
+        onSuccess(res);
+      },(err)=>{
+        onError(err);
+      })
+  },
+
+  pre(onSuccess,onError){
+
+      this.paginate.p -=1 ;
+      const url = this.base()+this.url + '?p='+this.paginate.p+'&max='+this.paginate.max+'&is_deleted='+this.paginate.is_deleted;
+
+      this.get(url,(res)=>{
+        onSuccess(res);
+      },(err)=>{
+        onError(err);
+      })
+  },
+  next(onSuccess,onError){
+
+      this.paginate.p +=1 ;
+      const url = this.base()+this.url + '?p='+this.paginate.p+'&max='+this.paginate.max+'&is_deleted='+this.paginate.is_deleted;
+
+      this.get(url,(res)=>{
+        onSuccess(res);
+      },(err)=>{
+        onError(err);
+      })
+
+
+  },
   get(url,onSuccess,onError){
 
+      this.url = url ;
 
-      url = this.base()+url;
+      url = this.base()+url + '?p='+this.paginate.p+'&max='+this.paginate.max+'&is_deleted='+this.paginate.is_deleted;
       const config = this.setHeader();
 
       axios.get(url,config)
