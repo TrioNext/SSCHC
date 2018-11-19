@@ -3,11 +3,9 @@ import React, {Component} from 'react';
 
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,  Form, FormGroup,FormText, Input,
   Popover, PopoverHeader, PopoverBody
- } from 'reactstrap';
+} from 'reactstrap';
 
-
-
-import server from '../../../config/server';
+import Model from '../../../config/model';
 
 
 function BlockItem(props){
@@ -18,11 +16,13 @@ function BlockItem(props){
         <div className="file" >
 
               <div className="block">
-                <i className="fa fa-map-pin " style={{marginRight:5}}></i> {data.name} <br/>
-                Nhân viên : {data.num}
+                <i className="fa fa-map-pin mr-5"></i> {data.name} <br/>
+                <i className="fa fa-phone mr-5"></i> { data.phone === null ? 'n/a' : data.phone } <br/>
+                <i className="fa fa-clock-o mr-5"></i> { data.working_begin + ' - '+ data.working_end  } <br/>
+
               </div>
               <div className="file-name">
-                <i className="fa fa-map-marker"></i> { data.address}
+                <i className="fa fa-map-marker mr-5"></i> { data.address.substring(0,30) }
                 <br/>
                 <span>Added: Jan 11, 2016</span>
               </div>
@@ -37,6 +37,8 @@ class Office extends Component{
     constructor(props){
       super(props);
 
+      this.model = new Model('offices');
+
       this.base = '/offices';
       this.code ='office';
       this.name = 'Văn phòng';
@@ -45,6 +47,7 @@ class Office extends Component{
       this.data = {
         id:0,
         list:[]
+
       }
 
 
@@ -89,9 +92,54 @@ class Office extends Component{
     hook = {
         parent:this,
 
-        success(){},
-        err(){},
-        showErr(){}
+        before(form){
+          let err = '' ;
+
+          delete form.ip_chamcong;
+
+          Object.keys(form).map((key)=>{
+            if(form[key]===''){
+               err = 'Vui lòng nhập đầy đủ thông tin '
+            }
+          });
+
+          this.parent.refErr.current.textContent = err;
+
+
+          return err;
+        },
+
+        success(){
+                alert('success');
+        },
+
+        error(err){
+
+
+            const data = err.response.data ;
+            const msg = data.errors[0];
+
+
+
+            this.showErr(msg);
+
+        },
+        showErr(msg){
+
+            const _this = this ;
+
+
+
+            msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
+
+            this.parent.refErr.current.textContent = msg;
+
+            setTimeout(()=>{
+              this.parent.refErr.current.textContent = 'status';
+            },2000);
+
+
+        },
     }
 
     /* COMPONENT NÀY DÙNG MODAL : INTERAC INSIDE  */
@@ -101,8 +149,84 @@ class Office extends Component{
       parent:this,
 
       /* KEEP CURRENT  DATA INFO FORM ON MODAL */
-      data:{
 
+
+      form:{
+        code:'',
+        name:'',
+        phone:'',
+        region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
+        subregion_code:'760', // MAC DINH LÀ QUẬN 1
+        address:'',
+        ip_chamcong:'',
+        working_begin:'08:00',
+        working_end:'17:30',
+
+      },
+
+      onSubmit(){
+
+        const _this = this ;
+
+
+
+
+          this.parent.model.axios('post',this.form,(res)=>{
+              _this.parent.hook.success();
+          },(err)=>{
+              _this.parent.hook.error(err);
+          })
+
+
+
+      },
+      onHourChange(name,e){
+
+          let hour = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
+          let minute = this.form[name].split(':');
+          minute = minute[1];
+
+          this.form[name] = hour + ':'+minute;
+
+      },
+
+      onMinuteChange(name,e){
+          let minute = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
+          let hour = this.form[name].split(':');
+          hour = hour[0];
+          this.form[name] = hour+':'+minute;
+
+
+      },
+
+
+      onChangeCity(e){
+         const code = e.target.value;
+         this.form['region_code'] = code ;
+
+         this.parent.loadDistrictList(code);
+
+
+      },
+      onChange(name,e){
+
+        this.form[name] = e.target.value;
+
+      },
+
+      listCity:[],
+      listDistrict:[],
+
+      getCity(id){
+
+        let ret = {}
+        this.listCity.map((item)=>{
+          if(id===item.id){
+            ret = item
+          }
+        })
+
+        return ret ;
       },
 
       /* type : post || put =>  open modal : info || null  */
@@ -155,9 +279,6 @@ class Office extends Component{
           }
       },
 
-      submit(){
-        alert('on submit modal form')
-      }
     }
 
     getInfo(id){
@@ -172,38 +293,72 @@ class Office extends Component{
       return ret;
     }
 
+    /* STUPID COMPONENT*/
 
-    listWorkHour( hour ){
+    SelectDist(props){
 
-       hour = hour || 8 ;
+      let list = [];
+      this.modal.listDistrict.map((item)=>{
+        list.push(<option id={item.id} key={item.id} value={ item.code } > { item.name_with_type } </option>)
+      })
 
-       let list = [] ;
-       for(let i=0 ; i < 24 ; i++){
-         const num = i < 10 ? '0'+i : i
-
-         const active = i === hour ? true : false
-         list.push(<option selected={active} > {  num +' giờ' } </option>)
-       }
-
-       return list ;
-
+      return(
+        <Input onChange={ (e)=>{ console.log(e.target);  } }  type="select" defaultValue={ props.selected }>
+          {list}
+        </Input>
+      )
     }
 
-    listWorkMinute( minute ){
+    SelectCity(props){
 
-      minute = minute || 0 ;
+      let list = [] ;
+
+
+      this.modal.listCity.map((item)=>{
+        list.push(<option id={item.id} value={item.code} key={item.id} > { item.name } </option>)
+      })
+
+      return(
+        <Input onChange={ (e)=>{  this.modal.onChangeCity(e)  } }  type="select" defaultValue={ props.selected }>
+          {list}
+        </Input>
+      )
+    }
+
+    /* build item component*/
+    SelectHour(props){
+
+      let list = [] ;
+      for(let i=0 ; i < 24 ; i++){
+       const num = i < 10 ? '0'+i : i
+       list.push(<option key={i} value={ i }  > {  num +' giờ' } </option>)
+      }
+
+      return(
+        <Input onChange={(e)=>{ this.modal.onHourChange(props.type,e) }}  type="select" defaultValue={ props.selected }>
+          {list}
+        </Input>
+      )
+    }
+
+    SelectMinute(props){
 
       let list = [] ;
       for(let i=0 ; i < 60 ; i++){
         const num = i < 10 ? '0'+i : i
 
-        const active = i === minute ? true : false
-
-        list.push(<option selected={ active } > {  num +' phút' } </option>)
+        list.push(<option key={i} value={ i } > {  num +' phút' } </option>)
       }
 
-      return list ;
+      return(
+        <Input onChange={(e)=>{  this.modal.onMinuteChange(props.type,e)  }}  type="select" defaultValue={ props.selected }>
+          {list}
+        </Input>
+      )
+
     }
+
+    /*END STUPID COMPONENT*/
 
 
 
@@ -225,74 +380,58 @@ class Office extends Component{
                           <Row form>
                             <Col md={4}>
                               <FormGroup>
-                                <Label> Mã văn phòng </Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.data.code = e.target.value  } } defaultValue={''}  placeholder="Tạo mã" />
+                                <Label> Mã văn phòng <span className="text-danger">*</span></Label>
+                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('code',e);  } } defaultValue={ this.modal.form.code }  placeholder="Tạo mã" />
                               </FormGroup>
                             </Col>
                             <Col md={8}>
                               <FormGroup>
-                                <Label> Tên văn phòng </Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.data.name = e.target.value  } } defaultValue={''}  placeholder="Nhập tên" />
+                                <Label> Tên văn phòng <span className="text-danger">*</span></Label>
+                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('name',e);  } } defaultValue={ this.modal.form.name }  placeholder="Nhập tên" />
                               </FormGroup>
                             </Col>
                           </Row>
                           <Row form>
                             <Col md={4}>
                               <FormGroup>
-                                <Label> Số ĐT </Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.data.code = e.target.value  } } defaultValue={''}  placeholder="Tạo mã" />
+                                <Label> Số ĐT <span className="text-danger">*</span></Label>
+                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('phone',e);  } } defaultValue={ this.modal.form.phone }  placeholder="nhập số ĐT" />
                               </FormGroup>
                             </Col>
                             <Col md={4}>
                               <FormGroup>
                                 <Label> Tỉnh / Thành </Label>
-                                  <Input type="select" name="select" onChange={ (e)=>{  alert(e.target.value) } }>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                  </Input>
+                                  { this.SelectCity({selected:'79'})}
                               </FormGroup>
                             </Col>
                             <Col md={4}>
                               <FormGroup>
                                 <Label> Quận/Huyện </Label>
-                                  <Input type="select" name="select" id="exampleSelect">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                  </Input>
+                                  { this.SelectDist({parent:79,selected:760}) }
                               </FormGroup>
                             </Col>
                           </Row>
                           <FormGroup>
-                            <Label>Địa chỉ</Label>
-                              <Input type="text"  placeholder="Nhập địa chỉ"/>
+                            <Label>Địa chỉ <span className="text-danger">*</span></Label>
+                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('address',e);  } } defaultValue = { this.modal.form.address } placeholder="Nhập địa chỉ"/>
                           </FormGroup>
 
                           <FormGroup>
                             <Label>IP được chấm công</Label>
-                              <Input type="text"  placeholder="Nhập địa chỉ"/>
+                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('ip_chamcong',e);  } } defaultValue = { this.modal.form.ip_chamcong }  placeholder="Nhập địa chỉ IP"/>
                           </FormGroup>
 
                           <Row form>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> Giờ làm việc </Label>
-                                  <Input type="select" name="select" id="exampleSelect">
-                                      { this.listWorkHour(8) }
-                                  </Input>
+                                  { this.SelectHour({selected:8,type:'working_begin'}) }
                               </FormGroup>
                             </Col>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> . </Label>
-                                  <Input type="select" name="select" id="exampleSelect">
-                                  { this.listWorkMinute() }
-                                  </Input>
+                                  { this.SelectMinute({selected:0,type:'working_begin'}) }
                               </FormGroup>
                             </Col>
                           </Row>
@@ -301,17 +440,15 @@ class Office extends Component{
                             <Col md={6}>
                               <FormGroup>
                                 <Label> Giờ tan ca </Label>
-                                  <Input type="select" name="select" id="exampleSelect">
-                                      { this.listWorkHour(17) }
-                                  </Input>
+
+                                    { this.SelectHour({selected:17,type:'working_end'}) }
+
                               </FormGroup>
                             </Col>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> . </Label>
-                                  <Input type="select" name="select" id="exampleSelect">
-                                  { this.listWorkMinute(30) }
-                                  </Input>
+                                  { this.SelectMinute({selected:30,type:'working_end'}) }
                               </FormGroup>
                             </Col>
                           </Row>
@@ -325,7 +462,7 @@ class Office extends Component{
                       <div className="float-right">
                           <div role="group" className="btn-group">
                                 <Button className="btn-ubuntu" onClick={ ()=>{ this.modal.toggle() } }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
-                                <Button className="btn-ubuntu-ok" onClick={ ()=>{ this.modal.submit() } }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
+                                <Button className="btn-ubuntu-ok" onClick={ ()=>{ this.modal.onSubmit() } }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
                           </div>
 
                       </div>
@@ -398,26 +535,77 @@ class Office extends Component{
 
     }
 
-    componentDidMount(){
 
-      const _this = this ;
+    loading(){
       this.onStateChange(Object.assign(this.state,{
         onAction:'read',
         status:'loading'
       }));
+    }
 
 
-      server.get(this.base,(res)=>{
+    /* load mặc định là TPHCM*/
+    loadDistrictList(parent_code){
+        const _this = this;
+        const District = new Model('subregions');
 
+        District.set('paginate',{
+          p:0,
+          max:'all',
+          sort_by:'name',
+          sort_type:'asc',
+          parent_code:parent_code
+        })
+
+        District.get((res)=>{
+          _this.modal.listDistrict = res.rows;
+          _this.onDataChange();
+
+        },(err)=>{
+          _this.hook.err(err)
+        })
+    }
+
+    loadCityList(){
+        const _this = this;
+        const City = new Model('regions');
+        City.set('paginate',{
+          p:0,
+          max:'all',
+          sort_by:'name',
+          sort_type:'asc'
+        })
+
+
+        City.get((res)=>{
+          _this.modal.listCity = res.rows;
+        },(err)=>{
+          _this.hook.err(err)
+        })
+
+    }
+
+    loadOffice(){
+      const _this = this ;
+      this.loading();
+
+      this.model.get((res)=>{
         res.rows.map((item)=>{
           _this.data.list.push(item)
         });
-
         _this.onDataChange();
-
       },(err)=>{
         _this.hook.err(err)
-      })
+      });
+
+    }
+    componentDidMount(){
+
+      this.loadOffice();
+      this.loadCityList();
+      this.loadDistrictList(this.modal.form.region_code); // code : tp ho chi minh
+
+
 
     }
 
