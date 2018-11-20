@@ -8,30 +8,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,  F
 import Model from '../../../config/model';
 
 
-function BlockItem(props){
-
-  const data = props.data;
-  return(
-    <Col md="3" className="file-box">
-        <div className="file" >
-
-              <div className="block">
-                <i className="fa fa-map-pin mr-5"></i> {data.name} <br/>
-                <i className="fa fa-phone mr-5"></i> { data.phone === null ? 'n/a' : data.phone } <br/>
-                <i className="fa fa-clock-o mr-5"></i> { data.working_begin + ' - '+ data.working_end  } <br/>
-
-              </div>
-              <div className="file-name">
-                <i className="fa fa-map-marker mr-5"></i> { data.address.substring(0,30) }
-                <br/>
-                <span>Added: Jan 11, 2016</span>
-              </div>
-
-        </div>
-    </Col>
-  )
-}
-
 class Office extends Component{
 
     constructor(props){
@@ -109,8 +85,53 @@ class Office extends Component{
           return err;
         },
 
-        success(){
-                alert('success');
+        success(onAction,idata){
+
+            switch(onAction){
+              case 'post':
+
+                  if(idata.name==='success'){
+                    this.parent.data.list.push(idata.data);
+                    this.parent.onDataChange();
+                    this.parent.modal.toggle();
+
+                  }else{  this.parent.refErr.current.textContent = idata.mesage }
+
+
+              break;
+              case 'put':
+
+                  /* UPDATE LOCAL DATA
+                  this.parent.data.list.filter((item)=>{
+                    if(item.id===this.parent.modal.data.id){
+                      item.name = this.parent.modal.data.name
+                    }
+                  });
+
+                  this.parent.onDataChange();
+                  this.parent.modal.toggle();*/
+              break;
+
+              case 'delete':
+
+
+                  //alert(JSON.stringify(this.parent.data.list));
+                  /*const newList = this.parent.data.list.filter(item => parseInt(item.id) !== parseInt(idata.id));
+
+                  this.parent.data.list = newList;
+
+                  this.parent.onDataChange();
+
+
+                  this.parent.modal.toggle();*/
+
+
+
+              break;
+
+            }
+
+
         },
 
         error(err){
@@ -170,30 +191,34 @@ class Office extends Component{
 
 
 
-
           this.parent.model.axios('post',this.form,(res)=>{
-              _this.parent.hook.success();
+              _this.parent.hook.success('post',res);
           },(err)=>{
+            alert('loi')
               _this.parent.hook.error(err);
           })
 
 
 
       },
-      onHourChange(name,e){
+      onHourChange(name, e){
 
           let hour = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
-          let minute = this.form[name].split(':');
-          minute = minute[1];
+          let minute = this.form[name] ? this.form[name].split(':') : '';
+
+          minute = minute === '' ? '' : minute[1];
 
           this.form[name] = hour + ':'+minute;
 
+
+
       },
 
-      onMinuteChange(name,e){
+      onMinuteChange(name, e){
           let minute = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
-          let hour = this.form[name].split(':');
-          hour = hour[0];
+          let hour = this.form[name] ? this.form[name].split(':') : '';
+
+          hour = hour === '' ? '00' : hour[0];
           this.form[name] = hour+':'+minute;
 
 
@@ -208,7 +233,7 @@ class Office extends Component{
 
 
       },
-      onChange(name,e){
+      onChange(name, e){
 
         this.form[name] = e.target.value;
 
@@ -230,22 +255,25 @@ class Office extends Component{
       },
 
       /* type : post || put =>  open modal : info || null  */
-      open(type,info={}){
-        this.data = info || this.data;
+      open(type, info){
 
-
+        this.form = info || this.form;
         this.active = true ;
+
+
+
         this.parent.onStateChange({
           onAction:type,
           status:'modal opening'
         });
+
       },
 
       toggle(){
 
-
           this.active = !this.active;
-          this.data = {}
+
+          this.form = {}
 
           this.parent.onStateChange({
             onAction:'',
@@ -295,6 +323,33 @@ class Office extends Component{
 
     /* STUPID COMPONENT*/
 
+    BlockItem(props){
+      const data = props.data;
+      return(
+        <Col md="3" key={ props.key } className="file-box">
+            <div className="file" >
+
+                  <div className="block">
+                    <div>
+                       <span><i className="fa fa-map-pin mr-5"></i> {data.name}</span>
+                       <span className="pull-right">
+                         <a onClick={ ()=>{ this.modal.open('put',data) } }> <i className="fa fa-gear"></i> </a>
+                       </span>
+                    </div>
+                    <i className="fa fa-phone mr-5"></i> { data.phone === null ? 'n/a' : data.phone } <br/>
+                    <i className="fa fa-clock-o mr-5"></i> { data.working_begin === null ? 'n/a' : data.working_begin + ' - '+ data.working_end  } <br/>
+
+                  </div>
+                  <div className="file-name">
+                    <i className="fa fa-map-marker mr-5"></i> { data.address.substring(0,30) }
+                    <br/>
+                    <span> { data.date_created } </span>
+                  </div>
+
+            </div>
+        </Col>
+      )
+    }
     SelectDist(props){
 
       let list = [];
@@ -335,7 +390,7 @@ class Office extends Component{
       }
 
       return(
-        <Input onChange={(e)=>{ this.modal.onHourChange(props.type,e) }}  type="select" defaultValue={ props.selected }>
+        <Input onChange={(e)=>{ this.modal.onHourChange(props.type, e) }}  type="select" defaultValue={ props.selected }>
           {list}
         </Input>
       )
@@ -351,7 +406,7 @@ class Office extends Component{
       }
 
       return(
-        <Input onChange={(e)=>{  this.modal.onMinuteChange(props.type,e)  }}  type="select" defaultValue={ props.selected }>
+        <Input onChange={(e)=>{  this.modal.onMinuteChange(props.type, e)  }}  type="select" defaultValue={ props.selected }>
           {list}
         </Input>
       )
@@ -381,13 +436,13 @@ class Office extends Component{
                             <Col md={4}>
                               <FormGroup>
                                 <Label> Mã văn phòng <span className="text-danger">*</span></Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('code',e);  } } defaultValue={ this.modal.form.code }  placeholder="Tạo mã" />
+                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('code', e);  } } defaultValue={ this.modal.form.code }  placeholder="Tạo mã" />
                               </FormGroup>
                             </Col>
                             <Col md={8}>
                               <FormGroup>
                                 <Label> Tên văn phòng <span className="text-danger">*</span></Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('name',e);  } } defaultValue={ this.modal.form.name }  placeholder="Nhập tên" />
+                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('name', e);  } } defaultValue={ this.modal.form.name }  placeholder="Nhập tên" />
                               </FormGroup>
                             </Col>
                           </Row>
@@ -395,7 +450,7 @@ class Office extends Component{
                             <Col md={4}>
                               <FormGroup>
                                 <Label> Số ĐT <span className="text-danger">*</span></Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('phone',e);  } } defaultValue={ this.modal.form.phone }  placeholder="nhập số ĐT" />
+                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('phone', e);  } } defaultValue={ this.modal.form.phone }  placeholder="nhập số ĐT" />
                               </FormGroup>
                             </Col>
                             <Col md={4}>
@@ -407,31 +462,31 @@ class Office extends Component{
                             <Col md={4}>
                               <FormGroup>
                                 <Label> Quận/Huyện </Label>
-                                  { this.SelectDist({parent:79,selected:760}) }
+                                  { this.SelectDist({parent:79, selected:760}) }
                               </FormGroup>
                             </Col>
                           </Row>
                           <FormGroup>
                             <Label>Địa chỉ <span className="text-danger">*</span></Label>
-                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('address',e);  } } defaultValue = { this.modal.form.address } placeholder="Nhập địa chỉ"/>
+                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('address', e);  } } defaultValue = { this.modal.form.address } placeholder="Nhập địa chỉ"/>
                           </FormGroup>
 
                           <FormGroup>
                             <Label>IP được chấm công</Label>
-                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('ip_chamcong',e);  } } defaultValue = { this.modal.form.ip_chamcong }  placeholder="Nhập địa chỉ IP"/>
+                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('ip_chamcong', e);  } } defaultValue = { this.modal.form.ip_chamcong }  placeholder="Nhập địa chỉ IP"/>
                           </FormGroup>
 
                           <Row form>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> Giờ làm việc </Label>
-                                  { this.SelectHour({selected:8,type:'working_begin'}) }
+                                  { this.SelectHour({selected:8, type:'working_begin'}) }
                               </FormGroup>
                             </Col>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> . </Label>
-                                  { this.SelectMinute({selected:0,type:'working_begin'}) }
+                                  { this.SelectMinute({selected:0, type:'working_begin'}) }
                               </FormGroup>
                             </Col>
                           </Row>
@@ -441,14 +496,14 @@ class Office extends Component{
                               <FormGroup>
                                 <Label> Giờ tan ca </Label>
 
-                                    { this.SelectHour({selected:17,type:'working_end'}) }
+                                    { this.SelectHour({selected:17, type:'working_end'}) }
 
                               </FormGroup>
                             </Col>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> . </Label>
-                                  { this.SelectMinute({selected:30,type:'working_end'}) }
+                                  { this.SelectMinute({selected:30, type:'working_end'}) }
                               </FormGroup>
                             </Col>
                           </Row>
@@ -495,9 +550,10 @@ class Office extends Component{
 
                     {
                       list.map((item)=>{
-                        return(
-                          <BlockItem key={item.id} data={item} />
-                        )
+
+
+                        return this.BlockItem({key:item.id, data:item});
+
                       })
                     }
 
@@ -627,7 +683,7 @@ class Office extends Component{
     }
 
 
-    shouldComponentUpdate(newProps,newState){
+    shouldComponentUpdate(newProps, newState){
 
       return newProps.onTab===this.code ? true : false;
 
