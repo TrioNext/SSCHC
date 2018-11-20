@@ -88,10 +88,13 @@ class CompanyAside extends Component{
 
         switch(onAction){
           case 'post':
-              this.parent.data.list.push(idata.data);
-              this.parent.onDataChange();
 
-              this.parent.modal.toggle();
+              if(idata.name==='success'){
+                this.parent.data.list.push(idata.data);
+                this.parent.onDataChange();
+                this.parent.modal.toggle();
+              }else{  this.parent.refErr.current.textContent = idata.mesage }
+
           break;
           case 'put':
 
@@ -148,7 +151,7 @@ class CompanyAside extends Component{
 
         setTimeout(()=>{
           this.parent.refErr.current.textContent = 'status';
-        },2000);
+        },1000);
 
 
     },
