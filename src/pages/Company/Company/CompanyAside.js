@@ -251,14 +251,7 @@ class CompanyAside extends Component{
 
   getInfo(id){
 
-    let ret = null
-    this.data.list.map((item)=>{
-      if(parseInt(item.id)===parseInt(id)){
-         ret = item
-      }
-    })
-
-    return ret;
+    return this.data.list.find(item=> item.id == id);
   }
 
 
