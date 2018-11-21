@@ -6,6 +6,15 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,  F
 } from 'reactstrap';
 
 import Model from '../../../config/model';
+import Hook from '../../../config/hook.class';
+
+import moment from 'moment';
+import 'moment/locale/vi';
+
+
+ /* actions after done some thing */
+
+
 
 
 class Office extends Component{
@@ -13,9 +22,9 @@ class Office extends Component{
     constructor(props){
       super(props);
 
-      this.model = new Model('offices');
 
-      this.base = '/offices';
+
+
       this.code ='office';
       this.name = 'Văn phòng';
       this.info = {};
@@ -25,6 +34,8 @@ class Office extends Component{
         list:[]
 
       }
+
+
 
 
       this.state = {
@@ -38,7 +49,12 @@ class Office extends Component{
 
       this.refErr = React.createRef();
 
+      this.setup()
+    }
 
+    setup(){
+      this.model = new Model('offices');
+      this.hook = new Hook(this);
     }
 
     onStateChange(newState){
@@ -64,104 +80,7 @@ class Office extends Component{
     }
 
 
-    /* actions after done some thing */
-    hook = {
-        parent:this,
 
-        before(form){
-          let err = '' ;
-
-          delete form.ip_chamcong;
-
-          Object.keys(form).map((key)=>{
-            if(form[key]===''){
-               err = 'Vui lòng nhập đầy đủ thông tin '
-            }
-          });
-
-          this.parent.refErr.current.textContent = err;
-
-
-          return err;
-        },
-
-        success(onAction,idata){
-
-            switch(onAction){
-              case 'post':
-
-                  if(idata.name==='success'){
-                    this.parent.data.list.push(idata.data);
-                    this.parent.onDataChange();
-                    this.parent.modal.toggle();
-
-                  }else{  this.parent.refErr.current.textContent = idata.mesage }
-
-
-              break;
-              case 'put':
-
-                  /* UPDATE LOCAL DATA
-                  this.parent.data.list.filter((item)=>{
-                    if(item.id===this.parent.modal.data.id){
-                      item.name = this.parent.modal.data.name
-                    }
-                  });
-
-                  this.parent.onDataChange();
-                  this.parent.modal.toggle();*/
-              break;
-
-              case 'delete':
-
-
-                  //alert(JSON.stringify(this.parent.data.list));
-                  /*const newList = this.parent.data.list.filter(item => parseInt(item.id) !== parseInt(idata.id));
-
-                  this.parent.data.list = newList;
-
-                  this.parent.onDataChange();
-
-
-                  this.parent.modal.toggle();*/
-
-
-
-              break;
-
-            }
-
-
-        },
-
-        error(err){
-
-
-            const data = err.response.data ;
-            const msg = data.errors[0];
-
-
-
-            this.showErr(msg);
-
-        },
-        showErr(msg){
-
-            const _this = this ;
-
-
-
-            msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
-
-            this.parent.refErr.current.textContent = msg;
-
-            setTimeout(()=>{
-              this.parent.refErr.current.textContent = 'status';
-            },2000);
-
-
-        },
-    }
 
     /* COMPONENT NÀY DÙNG MODAL : INTERAC INSIDE  */
     modal= {
@@ -171,6 +90,12 @@ class Office extends Component{
 
       /* KEEP CURRENT  DATA INFO FORM ON MODAL */
 
+      defaultValue:{
+        region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
+        subregion_code:'760', // MAC DINH LÀ QUẬN 1
+        working_begin:'2018-11-21 08:00:00',
+        working_end:'2018-11-21 17:30:00',
+      },
 
       form:{
         code:'',
@@ -180,21 +105,20 @@ class Office extends Component{
         subregion_code:'760', // MAC DINH LÀ QUẬN 1
         address:'',
         ip_chamcong:'',
-        working_begin:'08:00',
-        working_end:'17:30',
+        working_begin:'2018-11-21 08:00:00',
+        working_end:'2018-11-21 17:30:00',
 
       },
 
       onSubmit(){
 
         const _this = this ;
+        const {onAction} = this.parent.state
 
 
-
-          this.parent.model.axios('post',this.form,(res)=>{
-              _this.parent.hook.success('post',res);
+          this.parent.model.axios(onAction,this.form,(res)=>{
+              _this.parent.hook.success(onAction,res);
           },(err)=>{
-            alert('loi')
               _this.parent.hook.error(err);
           })
 
@@ -224,6 +148,11 @@ class Office extends Component{
 
       },
 
+
+      onChangeDist(e){
+        const code = e.target.value;
+        this.form['subregion_code'] = code ;
+      },
 
       onChangeCity(e){
          const code = e.target.value;
@@ -261,7 +190,11 @@ class Office extends Component{
         this.active = true ;
 
 
+        if(typeof info !== 'undefined'){ this.parent.loadDistrictList(info.region_code);  }
 
+
+
+        /* SET STATE CHANGE */
         this.parent.onStateChange({
           onAction:type,
           status:'modal opening'
@@ -273,7 +206,7 @@ class Office extends Component{
 
           this.active = !this.active;
 
-          this.form = {}
+          this.form = this.defaultValue;
 
           this.parent.onStateChange({
             onAction:'',
@@ -291,16 +224,30 @@ class Office extends Component{
 
           btnYes(){
 
-            alert('click yes')
+            const parent = this.me ;
+            const id = parent.modal.form.id;
 
+            parent.onStateChange({
+              onAction:'delete',
+              status:'on comfirm delete..'
+            });
+
+            parent.model.delete(id,(res)=>{
+
+
+              parent.hook.success(parent.state.onAction,res);
+
+            },(err)=>{
+              parent.hook.error(err);
+            })
 
           },
 
-          toggle(parent){
+          toggle(){
 
              this.active = !this.active;
 
-             parent.onStateChange({
+             this.me.onStateChange({
                status:'toggle popover'
              });
 
@@ -311,39 +258,43 @@ class Office extends Component{
 
     getInfo(id){
 
-      let ret = null
-      this.data.list.map((item)=>{
-        if(parseInt(item.id)===parseInt(id)){
-           ret = item
-        }
-      })
 
-      return ret;
+
+      return this.data.list.find(item=> item.id == id);
+
+
     }
 
     /* STUPID COMPONENT*/
 
     BlockItem(props){
       const data = props.data;
+
+      const date = moment(data.date_created).format('YYYY-MM-DD HH:mm:ss');
+      const begin = moment(data.working_begin).format('HH:mm');
+      const end = moment(data.working_end).format('HH:mm');
+
+
+
       return(
-        <Col md="3" key={ props.key } className="file-box">
+        <Col md="3" key={ Math.random() } className="file-box">
             <div className="file" >
 
                   <div className="block">
                     <div>
                        <span><i className="fa fa-map-pin mr-5"></i> {data.name}</span>
                        <span className="pull-right">
-                         <a onClick={ ()=>{ this.modal.open('put',data) } }> <i className="fa fa-gear"></i> </a>
+                         <a className='pointer' onClick={ ()=>{ this.modal.open('put',data) } }> <i className="fa fa-gear"></i> </a>
                        </span>
                     </div>
                     <i className="fa fa-phone mr-5"></i> { data.phone === null ? 'n/a' : data.phone } <br/>
-                    <i className="fa fa-clock-o mr-5"></i> { data.working_begin === null ? 'n/a' : data.working_begin + ' - '+ data.working_end  } <br/>
+                    <i className="fa fa-clock-o mr-5"></i> { data.working_begin === null ? 'n/a' : begin + ' - '+ end  } <br/>
 
                   </div>
                   <div className="file-name">
                     <i className="fa fa-map-marker mr-5"></i> { data.address.substring(0,30) }
                     <br/>
-                    <span> { data.date_created } </span>
+                    <span> {   moment(date).fromNow() } </span>
                   </div>
 
             </div>
@@ -358,7 +309,7 @@ class Office extends Component{
       })
 
       return(
-        <Input onChange={ (e)=>{ console.log(e.target);  } }  type="select" defaultValue={ props.selected }>
+        <Input onChange={ (e)=>{  this.modal.onChangeDist(e)  } }  type="select" defaultValue={ props.selected }>
           {list}
         </Input>
       )
@@ -422,7 +373,11 @@ class Office extends Component{
         const list = this.data.list ;
         const modalTitle = this.state.onAction ==='post' ? 'Tạo ': 'Cập nhật ';
 
+        const { form } =  this.modal;
 
+
+        const begin = moment(form.working_begin).format('HH:mm').split(':');
+        const end = moment(form.working_end).format('HH:mm').split(':');
 
 
         return(
@@ -456,37 +411,37 @@ class Office extends Component{
                             <Col md={4}>
                               <FormGroup>
                                 <Label> Tỉnh / Thành </Label>
-                                  { this.SelectCity({selected:'79'})}
+                                  { this.SelectCity({selected:form.region_code})}
                               </FormGroup>
                             </Col>
                             <Col md={4}>
                               <FormGroup>
                                 <Label> Quận/Huyện </Label>
-                                  { this.SelectDist({parent:79, selected:760}) }
+                                  { this.SelectDist({parent:form.region_code, selected:form.subregion_code}) }
                               </FormGroup>
                             </Col>
                           </Row>
                           <FormGroup>
                             <Label>Địa chỉ <span className="text-danger">*</span></Label>
-                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('address', e);  } } defaultValue = { this.modal.form.address } placeholder="Nhập địa chỉ"/>
+                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('address', e);  } } defaultValue = { form.address } placeholder="Nhập địa chỉ"/>
                           </FormGroup>
 
                           <FormGroup>
                             <Label>IP được chấm công</Label>
-                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('ip_chamcong', e);  } } defaultValue = { this.modal.form.ip_chamcong }  placeholder="Nhập địa chỉ IP"/>
+                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('ip_chamcong', e);  } } defaultValue = { form.ip_chamcong }  placeholder="Nhập địa chỉ IP"/>
                           </FormGroup>
 
                           <Row form>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> Giờ làm việc </Label>
-                                  { this.SelectHour({selected:8, type:'working_begin'}) }
+                                  { this.SelectHour({selected:Number(begin[0]), type:'working_begin'}) }
                               </FormGroup>
                             </Col>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> . </Label>
-                                  { this.SelectMinute({selected:0, type:'working_begin'}) }
+                                  { this.SelectMinute({selected:Number(begin[1]), type:'working_begin'}) }
                               </FormGroup>
                             </Col>
                           </Row>
@@ -496,14 +451,14 @@ class Office extends Component{
                               <FormGroup>
                                 <Label> Giờ tan ca </Label>
 
-                                    { this.SelectHour({selected:17, type:'working_end'}) }
+                                    { this.SelectHour({selected:Number(end[0]), type:'working_end'}) }
 
                               </FormGroup>
                             </Col>
                             <Col md={6}>
                               <FormGroup>
                                 <Label> . </Label>
-                                  { this.SelectMinute({selected:30, type:'working_end'}) }
+                                  { this.SelectMinute({selected:Number(end[1]), type:'working_end'}) }
                               </FormGroup>
                             </Col>
                           </Row>
@@ -529,15 +484,15 @@ class Office extends Component{
                           status
                       </div>
                       <div className="float-right">
-                        <a id="btnDel" hidden={ this.state.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ ()=>{ this.modal.popover.toggle(this) } }>
+                        <a id="btnDel" hidden={ this.state.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ ()=>{ this.modal.popover.toggle() } }>
                           <i className="fa fa-trash"></i> Xoá
                         </a>
-                        <Popover placement="bottom" isOpen={this.modal.popover.active } target="btnDel"  toggle={ ()=>{ this.modal.popover.toggle(this) } }>
+                        <Popover placement="bottom" isOpen={this.modal.popover.active } target="btnDel"  toggle={ ()=>{ this.modal.popover.toggle() } }>
                           <PopoverHeader>Bạn có chắc chắn không?</PopoverHeader>
                           <PopoverBody className="text-center pa-15">
-                            <button onClick={ ()=>{  this.modal.popover.btnYes(this) } } className="btn btn-sm btn-success mr-20">Có</button>
+                            <button onClick={ ()=>{  this.modal.popover.btnYes() } } className="btn btn-sm btn-success mr-20">Có</button>
 
-                            <button onClick={ ()=>{  this.modal.popover.toggle(this) } } className="btn btn-sm btn-secondary">Không</button>
+                            <button onClick={ ()=>{  this.modal.popover.toggle() } } className="btn btn-sm btn-secondary">Không</button>
                           </PopoverBody>
                         </Popover>
                       </div>
