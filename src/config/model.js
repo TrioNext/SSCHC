@@ -72,7 +72,11 @@ class Model {
 
   delete(id,onSuccess,onError){
 
-      const url = this.setting.base+'/'+id ;
+
+
+      const url = server.base() + this.model+'/'+id ;
+
+      
       axios.delete(url,this.setting.config)
             .then((res)=>{
               onSuccess(res.data)
@@ -100,6 +104,7 @@ class Model {
 
 
       const url = server.base() + this.model + '?id='+id;
+
       axios.put(url,data,this.setting.config)
             .then((res)=>{
               onSuccess(res.data)
