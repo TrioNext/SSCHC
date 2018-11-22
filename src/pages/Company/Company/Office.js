@@ -1,22 +1,20 @@
 
 import React, {Component} from 'react';
 
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,  Form, FormGroup,FormText, Input,
-  Popover, PopoverHeader, PopoverBody
-} from 'reactstrap';
+import { Row, Col, Label } from 'reactstrap';
 
 import Model from '../../../config/model';
 import Hook from '../../../config/hook.class';
+import OfficeClass from './office.class';
+import OfficeForm from './office.form';
+
+
 
 import moment from 'moment';
 import 'moment/locale/vi';
 
 
- /* actions after done some thing */
-
-
-
-
+/* actions after done some thing */
 class Office extends Component{
 
     constructor(props){
@@ -35,9 +33,6 @@ class Office extends Component{
 
       }
 
-
-
-
       this.state = {
 
         onAction:'',
@@ -55,6 +50,17 @@ class Office extends Component{
     setup(){
       this.model = new Model('offices');
       this.hook = new Hook(this);
+      this.modal = new OfficeClass(this);
+    }
+
+    setData(name,value){
+      this.data[name] = value;
+
+      /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
+      this.onStateChange({
+        status:'done'
+      })
+
     }
 
     onStateChange(newState){
@@ -68,9 +74,11 @@ class Office extends Component{
 
     }
 
-    onDataChange(){
+    onDataChange(list){
 
       /* TRẢ GIÁ TRỊ VỀ CHO PARENT COMPONENT SỬ DỤNG*/
+
+      this.data.list = list ;
       this.props.onDataChange(this.data);
 
       /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
@@ -83,178 +91,7 @@ class Office extends Component{
 
 
     /* COMPONENT NÀY DÙNG MODAL : INTERAC INSIDE  */
-    modal= {
 
-      active:false,
-      parent:this,
-
-      /* KEEP CURRENT  DATA INFO FORM ON MODAL */
-
-      defaultValue:{
-        region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
-        subregion_code:'760', // MAC DINH LÀ QUẬN 1
-        working_begin:'2018-11-21 08:00:00',
-        working_end:'2018-11-21 17:30:00',
-      },
-
-      form:{
-        code:'',
-        name:'',
-        phone:'',
-        region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
-        subregion_code:'760', // MAC DINH LÀ QUẬN 1
-        address:'',
-        ip_chamcong:'',
-        working_begin:'2018-11-21 08:00:00',
-        working_end:'2018-11-21 17:30:00',
-
-      },
-
-      onSubmit(){
-
-        const _this = this ;
-        const {onAction} = this.parent.state
-
-
-          this.parent.model.axios(onAction,this.form,(res)=>{
-              _this.parent.hook.success(onAction,res);
-          },(err)=>{
-              _this.parent.hook.error(err);
-          })
-
-
-
-      },
-      onHourChange(name, e){
-
-          let hour = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
-          let minute = this.form[name] ? this.form[name].split(':') : '';
-
-          minute = minute === '' ? '' : minute[1];
-
-          this.form[name] = hour + ':'+minute;
-
-
-
-      },
-
-      onMinuteChange(name, e){
-          let minute = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
-          let hour = this.form[name] ? this.form[name].split(':') : '';
-
-          hour = hour === '' ? '00' : hour[0];
-          this.form[name] = hour+':'+minute;
-
-
-      },
-
-
-      onChangeDist(e){
-        const code = e.target.value;
-        this.form['subregion_code'] = code ;
-      },
-
-      onChangeCity(e){
-         const code = e.target.value;
-         this.form['region_code'] = code ;
-
-         this.parent.loadDistrictList(code);
-
-
-      },
-      onChange(name, e){
-
-        this.form[name] = e.target.value;
-
-      },
-
-      listCity:[],
-      listDistrict:[],
-
-      getCity(id){
-
-        let ret = {}
-        this.listCity.map((item)=>{
-          if(id===item.id){
-            ret = item
-          }
-        })
-
-        return ret ;
-      },
-
-      /* type : post || put =>  open modal : info || null  */
-      open(type, info){
-
-        this.form = info || this.form;
-        this.active = true ;
-
-
-        if(typeof info !== 'undefined'){ this.parent.loadDistrictList(info.region_code);  }
-
-
-
-        /* SET STATE CHANGE */
-        this.parent.onStateChange({
-          onAction:type,
-          status:'modal opening'
-        });
-
-      },
-
-      toggle(){
-
-          this.active = !this.active;
-
-          this.form = this.defaultValue;
-
-          this.parent.onStateChange({
-            onAction:'',
-            status:'close modal'
-          });
-
-          this.popover.active = false;
-
-      },
-
-      popover:{
-          active:false,
-
-          me:this,
-
-          btnYes(){
-
-            const parent = this.me ;
-            const id = parent.modal.form.id;
-
-            parent.onStateChange({
-              onAction:'delete',
-              status:'on comfirm delete..'
-            });
-
-            parent.model.delete(id,(res)=>{
-
-
-              parent.hook.success(parent.state.onAction,res);
-
-            },(err)=>{
-              parent.hook.error(err);
-            })
-
-          },
-
-          toggle(){
-
-             this.active = !this.active;
-
-             this.me.onStateChange({
-               status:'toggle popover'
-             });
-
-          }
-      },
-
-    }
 
     getInfo(id){
 
@@ -271,8 +108,8 @@ class Office extends Component{
       const data = props.data;
 
       const date = moment(data.date_created).format('YYYY-MM-DD HH:mm:ss');
-      const begin = moment(data.working_begin).format('HH:mm');
-      const end = moment(data.working_end).format('HH:mm');
+      const begin = moment('2018-11-20 '+data.working_begin).format('HH:mm');
+      const end = moment('2018-11-20 '+data.working_end).format('HH:mm');
 
 
 
@@ -301,68 +138,11 @@ class Office extends Component{
         </Col>
       )
     }
-    SelectDist(props){
-
-      let list = [];
-      this.modal.listDistrict.map((item)=>{
-        list.push(<option id={item.id} key={item.id} value={ item.code } > { item.name_with_type } </option>)
-      })
-
-      return(
-        <Input onChange={ (e)=>{  this.modal.onChangeDist(e)  } }  type="select" defaultValue={ props.selected }>
-          {list}
-        </Input>
-      )
-    }
-
-    SelectCity(props){
-
-      let list = [] ;
 
 
-      this.modal.listCity.map((item)=>{
-        list.push(<option id={item.id} value={item.code} key={item.id} > { item.name } </option>)
-      })
 
-      return(
-        <Input onChange={ (e)=>{  this.modal.onChangeCity(e)  } }  type="select" defaultValue={ props.selected }>
-          {list}
-        </Input>
-      )
-    }
 
-    /* build item component*/
-    SelectHour(props){
 
-      let list = [] ;
-      for(let i=0 ; i < 24 ; i++){
-       const num = i < 10 ? '0'+i : i
-       list.push(<option key={i} value={ i }  > {  num +' giờ' } </option>)
-      }
-
-      return(
-        <Input onChange={(e)=>{ this.modal.onHourChange(props.type, e) }}  type="select" defaultValue={ props.selected }>
-          {list}
-        </Input>
-      )
-    }
-
-    SelectMinute(props){
-
-      let list = [] ;
-      for(let i=0 ; i < 60 ; i++){
-        const num = i < 10 ? '0'+i : i
-
-        list.push(<option key={i} value={ i } > {  num +' phút' } </option>)
-      }
-
-      return(
-        <Input onChange={(e)=>{  this.modal.onMinuteChange(props.type, e)  }}  type="select" defaultValue={ props.selected }>
-          {list}
-        </Input>
-      )
-
-    }
 
     /*END STUPID COMPONENT*/
 
@@ -376,130 +156,17 @@ class Office extends Component{
         const { form } =  this.modal;
 
 
-        const begin = moment(form.working_begin).format('HH:mm').split(':');
-        const end = moment(form.working_end).format('HH:mm').split(':');
+        const begin = moment('2018-11-20 '+form.working_begin).format('HH:mm').split(':');
+        const end = moment('2018-11-20 '+form.working_end).format('HH:mm').split(':');
+
+
 
 
         return(
             <div hidden={  this.state.onTab === 'office' ? false : true } >
 
-                <Modal  size="lg" isOpen={ this.modal.active } fade={false}   toggle={ ()=>{  this.modal.toggle() } } >
-                   <ModalHeader toggle={ ()=>{ this.modal.toggle() } }> <i className="fa fa-plus"></i> { modalTitle+ this.name }  </ModalHeader>
-                   <ModalBody>
-                      <Form>
-                          <Row form>
-                            <Col md={4}>
-                              <FormGroup>
-                                <Label> Mã văn phòng <span className="text-danger">*</span></Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('code', e);  } } defaultValue={ this.modal.form.code }  placeholder="Tạo mã" />
-                              </FormGroup>
-                            </Col>
-                            <Col md={8}>
-                              <FormGroup>
-                                <Label> Tên văn phòng <span className="text-danger">*</span></Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('name', e);  } } defaultValue={ this.modal.form.name }  placeholder="Nhập tên" />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                          <Row form>
-                            <Col md={4}>
-                              <FormGroup>
-                                <Label> Số ĐT <span className="text-danger">*</span></Label>
-                                <Input type="text" onChange={ (e)=>{ this.modal.onChange('phone', e);  } } defaultValue={ this.modal.form.phone }  placeholder="nhập số ĐT" />
-                              </FormGroup>
-                            </Col>
-                            <Col md={4}>
-                              <FormGroup>
-                                <Label> Tỉnh / Thành </Label>
-                                  { this.SelectCity({selected:form.region_code})}
-                              </FormGroup>
-                            </Col>
-                            <Col md={4}>
-                              <FormGroup>
-                                <Label> Quận/Huyện </Label>
-                                  { this.SelectDist({parent:form.region_code, selected:form.subregion_code}) }
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                          <FormGroup>
-                            <Label>Địa chỉ <span className="text-danger">*</span></Label>
-                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('address', e);  } } defaultValue = { form.address } placeholder="Nhập địa chỉ"/>
-                          </FormGroup>
 
-                          <FormGroup>
-                            <Label>IP được chấm công</Label>
-                              <Input type="text" onChange={ (e)=>{ this.modal.onChange('ip_chamcong', e);  } } defaultValue = { form.ip_chamcong }  placeholder="Nhập địa chỉ IP"/>
-                          </FormGroup>
-
-                          <Row form>
-                            <Col md={6}>
-                              <FormGroup>
-                                <Label> Giờ làm việc </Label>
-                                  { this.SelectHour({selected:Number(begin[0]), type:'working_begin'}) }
-                              </FormGroup>
-                            </Col>
-                            <Col md={6}>
-                              <FormGroup>
-                                <Label> . </Label>
-                                  { this.SelectMinute({selected:Number(begin[1]), type:'working_begin'}) }
-                              </FormGroup>
-                            </Col>
-                          </Row>
-
-                          <Row form>
-                            <Col md={6}>
-                              <FormGroup>
-                                <Label> Giờ tan ca </Label>
-
-                                    { this.SelectHour({selected:Number(end[0]), type:'working_end'}) }
-
-                              </FormGroup>
-                            </Col>
-                            <Col md={6}>
-                              <FormGroup>
-                                <Label> . </Label>
-                                  { this.SelectMinute({selected:Number(end[1]), type:'working_end'}) }
-                              </FormGroup>
-                            </Col>
-                          </Row>
-
-
-                       </Form>
-                   </ModalBody>
-
-
-                   <div className="my-modal-footer">
-                      <div className="float-right">
-                          <div role="group" className="btn-group">
-                                <Button className="btn-ubuntu" onClick={ ()=>{ this.modal.toggle() } }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
-                                <Button className="btn-ubuntu-ok" onClick={ ()=>{ this.modal.onSubmit() } }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
-                          </div>
-
-                      </div>
-
-                   </div>
-
-                   <div className="modal-err " >
-                      <div className="float-left form-err text-muted" ref={ this.refErr }>
-                          status
-                      </div>
-                      <div className="float-right">
-                        <a id="btnDel" hidden={ this.state.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ ()=>{ this.modal.popover.toggle() } }>
-                          <i className="fa fa-trash"></i> Xoá
-                        </a>
-                        <Popover placement="bottom" isOpen={this.modal.popover.active } target="btnDel"  toggle={ ()=>{ this.modal.popover.toggle() } }>
-                          <PopoverHeader>Bạn có chắc chắn không?</PopoverHeader>
-                          <PopoverBody className="text-center pa-15">
-                            <button onClick={ ()=>{  this.modal.popover.btnYes() } } className="btn btn-sm btn-success mr-20">Có</button>
-
-                            <button onClick={ ()=>{  this.modal.popover.toggle() } } className="btn btn-sm btn-secondary">Không</button>
-                          </PopoverBody>
-                        </Popover>
-                      </div>
-                   </div>
-
-
-                 </Modal>
+                 <OfficeForm name={this.name} onAction={ this.state.onAction} modal={ this.modal } refErr={ this.refErr} />
 
                  <Row>
 
@@ -515,35 +182,6 @@ class Office extends Component{
                   </Row>
             </div>
         )
-    }
-
-
-    /* NHẬN LỆNH TỪ NEW PROPS : PHÂN TỪ DATA VÀ ACTION*/
-    receiveAction(newProps){
-
-      //alert(JSON.stringify(this.state))
-      if(newProps.onTab===this.code){
-        if(newProps.tabAction==='create'){
-            this.modal.open('post');
-        }
-      }
-
-
-
-
-      /*let active = newProps.tab ==='office' ? newProps.tabAction ==='create' ? true: false : false ;
-
-      this.setState({
-        tab:newProps.tab,
-        action:newProps.tabAction,
-        modal:{
-          status:active
-        }
-
-      })*/
-
-
-
     }
 
 
@@ -570,7 +208,10 @@ class Office extends Component{
 
         District.get((res)=>{
           _this.modal.listDistrict = res.rows;
-          _this.onDataChange();
+
+          _this.setData('district',res.rows);
+
+
 
         },(err)=>{
           _this.hook.err(err)
@@ -601,16 +242,18 @@ class Office extends Component{
       this.loading();
 
       this.model.get((res)=>{
-        res.rows.map((item)=>{
-          _this.data.list.push(item)
-        });
-        _this.onDataChange();
+
+        const list = res.rows;
+
+        _this.onDataChange(list);
+
       },(err)=>{
         _this.hook.err(err)
       });
 
     }
     componentDidMount(){
+
 
       this.loadOffice();
       this.loadCityList();
@@ -620,14 +263,26 @@ class Office extends Component{
 
     }
 
+    /* NHẬN LỆNH TỪ NEW PROPS : PHÂN TỪ DATA VÀ ACTION*/
+    receiveAction(newProps){
+
+
+      if(newProps.onTab===this.code){
+
+        Object.assign(this.state,newProps);
+
+        if(newProps.tabAction==='create'){
+            this.modal.open('post');
+        }
+      }
+
+    }
+
     /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
     componentWillReceiveProps(newProps){
 
 
-
-        Object.assign(this.state,newProps);
         this.receiveAction(newProps);
-
 
         //alert('componentWillReceiveProps: '+JSON.stringify(newProps));
         //this.onAction(newProps);
@@ -638,22 +293,29 @@ class Office extends Component{
     }
 
 
+    /* 1 CONDITION ĐỂ ACTION COMPONENT DID UPDATE : AFTER RE-RENDER */
     shouldComponentUpdate(newProps, newState){
 
       return newProps.onTab===this.code ? true : false;
 
 
-
     }
 
-
+    /* TRIGGER AFFTER SOMETHING*/
     componentDidUpdate(prevProps, prevState){
 
+      //alert(JSON.stringifyr);
+      //alert('componentDidUpdate: '+ JSON.stringify(prevProps));
       //alert('componentDidUpdate');
       /*alert('ok man : componentDidUpdate');
       alert(JSON.stringify(prevProps));
       alert(JSON.stringify(prevState));*/
 
+    }
+
+    /* DESTROY - REMOVE SOMETHING*/
+    componentWillUnmount(){
+      alert('componentWillUnmount happen');
     }
 
 }
