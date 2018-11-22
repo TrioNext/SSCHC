@@ -11,8 +11,11 @@ class Hook {
 
             if(idata.name==='success'){
 
-              this.app.data.list.unshift(idata.data);
-              this.app.onDataChange();
+
+              const list = this.app.data.list;
+              list.unshift(idata.data);
+
+              this.app.onDataChange(list);
               this.app.modal.toggle();
 
             }else{  this.app.refErr.current.textContent = idata.message }
@@ -24,14 +27,16 @@ class Hook {
             if(idata.name==='success'){
 
               const {id} = idata.condition.where;
-              this.app.data.list.map((item,index)=>{
+              const list = this.app.data.list;
+
+              list.map((item,index)=>{
 
                 if(item.id == id){
-                   this.app.data.list[index] = item;
+                   list[index] = item;
                 }
               })
 
-              this.app.onDataChange();
+              this.app.onDataChange(list);
               this.app.modal.toggle();
 
             }else{ this.app.refErr.current.textContent = idata.message }
@@ -47,10 +52,10 @@ class Hook {
                  return parseInt(item.id) !== parseInt(idata.id);
                });
 
-               this.app.data.list = list;
+               //this.app.data.list = list ;
+               //alert(JSON.stringify(list));
 
-
-               this.app.onDataChange();
+               this.app.onDataChange(list);
                this.app.modal.toggle();
             }
 
