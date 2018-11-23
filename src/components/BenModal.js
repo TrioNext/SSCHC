@@ -1,9 +1,17 @@
 import React, {Component} from 'react';
 
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,  Form, FormGroup,FormText, Input,
+import { Button, Modal, ModalHeader, ModalBody, Form,
   Popover, PopoverHeader, PopoverBody
 } from 'reactstrap';
 
+
+/*
+BenModal : props
+  - state :  rule state : { onAction, status}
+  - modal : it is a controller class
+  - name : string
+  refErr : React.createRef  object
+*/
 
 class BenModal extends Component{
 
@@ -12,9 +20,7 @@ class BenModal extends Component{
 
     super(props)
 
-    this.state = {
-      onAction:this.props.onAction
-    }
+    this.state = props.state;
 
     this.modal = props.modal;
     this.name = props.name;
@@ -45,7 +51,7 @@ class BenModal extends Component{
         </div>
 
         <div className="modal-err " >
-           <div className="float-left form-err text-muted" ref={ this.refErr }>
+           <div className="float-left form-err text-muted" id="form-err" ref={ this.refErr }>
                status
            </div>
            <div className="float-right">
