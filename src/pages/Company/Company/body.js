@@ -12,6 +12,7 @@ class CompanyBody extends Component{
   constructor(props){
     super(props);
 
+
     this.name = 'Company Main';
     this.info = {}
 
@@ -28,8 +29,10 @@ class CompanyBody extends Component{
 
     }
 
+  }
 
-
+  setData(name,value){
+    this.data[name] = value;
   }
 
   onStateChange(newState){
@@ -45,6 +48,10 @@ class CompanyBody extends Component{
 
   onDataChange(type,newData){
 
+      //alert(type);
+      this.setData(type,newData);
+      this.props.onDataChange(newData);
+
   }
 
   /* NHẬN lệnh : từ NEW PROPS TỪ MAIN OBJECT*/
@@ -56,13 +63,15 @@ class CompanyBody extends Component{
 
 
 
-
   }
 
   render(){
 
     const onTab = this.props.onTab ;
     const onAction = this.props.onAction;
+
+    
+
 
     return(
       <div className="detail" >
