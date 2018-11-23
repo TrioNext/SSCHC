@@ -1,8 +1,22 @@
+
+/*
+OfficeModal :  it's a Controller for <BenModal/>
+
+*/
+
+import Model from '../../../config/model';
+
+
 class OfficeModal{
 
     constructor(app){
       this.active = false;
       this.app = app ;
+
+      this.state = {
+        onAction:'',
+        status:''
+      }
 
       this.defaultValue = {
         region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
@@ -28,10 +42,62 @@ class OfficeModal{
 
     }
 
+    loadCityList(){
+        const _this = this;
+
+        const City = new Model('regions');
+        City.set('paginate',{
+          p:0,
+          max:'all',
+          sort_by:'name',
+          sort_type:'asc'
+        })
+
+
+        City.get((res)=>{
+          _this.listCity = res.rows;
+        },(err)=>{
+          _this.app.hook.err(err)
+        })
+
+    }
+
+    loadDistrictList(parent_code,onSuccess){
+
+
+        const _this = this;
+
+        const District = new Model('subregions');
+
+        District.set('paginate',{
+          p:0,
+          max:'all',
+          sort_by:'name',
+          sort_type:'asc',
+          parent_code:parent_code
+        })
+
+        District.get((res)=>{
+
+          _this.listDistrict = res.rows;
+
+          /* refresh component*/
+          _this.app.setData('district',res.rows);
+
+          //onSuccess(res.rows)
+
+
+
+        },(err)=>{
+          _this.app.hook.err(err)
+        })
+    }
+
+
     onSubmit(){
 
       const _this = this ;
-      const {onAction} = this.app.state
+      const onAction = this.state.onAction;
 
       this.app.model.axios(onAction,this.form,(res)=>{
             _this.app.hook.success(onAction,res);
@@ -71,7 +137,7 @@ class OfficeModal{
        const code = e.target.value;
        this.form['region_code'] = code ;
 
-       this.app.loadDistrictList(code);
+       this.loadDistrictList(code);
 
 
     }
@@ -94,21 +160,37 @@ class OfficeModal{
       return ret ;
     }
 
+    setState(name,value){
+
+      this.state[name] = value ;
+    }
     open(type, info){
 
       this.form = info || this.form;
       this.active = true ;
 
+      const _this = this ;
+      this.setState('onAction',type);
 
-      if(typeof info !== 'undefined'){ this.app.loadDistrictList(info.region_code);  }
+
+      if(typeof info !== 'undefined'){
+        this.loadDistrictList(info.region_code,()=>{
+
+          /* SET STATE CHANGE */
+          _this.app.onStateChange({
+            onAction:type,
+            status:'modal opening'
+          });
 
 
 
-      /* SET STATE CHANGE */
-      this.app.onStateChange({
-        onAction:type,
-        status:'modal opening'
-      });
+        });
+
+      }
+
+
+
+
 
     }
 
