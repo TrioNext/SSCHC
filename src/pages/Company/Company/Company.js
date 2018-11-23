@@ -32,7 +32,7 @@ class Company extends Component {
 
     this.state = {
 
-      onTab:'office',
+      onTab:'user',
       onAction:'',
       status:'',
 
@@ -47,14 +47,17 @@ class Company extends Component {
 
     }
 
-    this.onStateChange = this.onStateChange.bind(this);
-    this.onDataChange = this.onDataChange.bind(this);
+
   }
 
   onStateChange(type,newState){
 
+
+
+
       switch (type) {
         case 'toolbar':
+
           this.setState({
             onTab:newState.onTab,
             onAction:newState.onAction
@@ -84,6 +87,7 @@ class Company extends Component {
           this.state[type] = newState;
 
 
+
           console.log(type);
           console.log(this.state[type]);
 
@@ -106,6 +110,7 @@ class Company extends Component {
         break;
 
         case 'body':
+          //alert(JSON.stringify(newData));
 
         break;
 
