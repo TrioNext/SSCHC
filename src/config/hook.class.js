@@ -1,3 +1,16 @@
+
+/*
+Hooks require
+  app class OBJECT
+    data = {
+      id:0,
+      list:[]
+    }
+
+    onDa
+
+*/
+
 class Hook {
 
   constructor(app){
@@ -18,7 +31,15 @@ class Hook {
               this.app.onDataChange(list);
               this.app.modal.toggle();
 
-            }else{  this.app.refErr.current.textContent = idata.message }
+            }else{
+
+
+                let el = document.getElementById('form-err');
+                el.innerHTML = idata.message;
+
+
+
+            }
 
 
         break;
@@ -39,7 +60,11 @@ class Hook {
               this.app.onDataChange(list);
               this.app.modal.toggle();
 
-            }else{ this.app.refErr.current.textContent = idata.message }
+            }else{
+
+              let el = document.getElementById('form-err');
+              el.innerHTML = idata.message;
+            }
 
 
         break;
@@ -79,11 +104,13 @@ class Hook {
 
       const _this = this ;
       msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
-      this.app.refErr.current.textContent = msg;
 
-      setTimeout(()=>{
-        this.app.refErr.current.textContent = 'status';
-      },1000);
+
+      let el = document.getElementById('form-err');
+      el.innerHTML = msg;
+
+
+
 
 
   }
