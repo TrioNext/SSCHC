@@ -1,10 +1,11 @@
 
 import React, {Component} from 'react';
+import { Row, Col } from 'reactstrap';
 
-import { Row, Col, Label } from 'reactstrap';
 
 import Model from '../../../config/model';
 import Hook from '../../../config/hook.class';
+
 import OfficeClass from './office.class';
 import OfficeForm from './office.form';
 
@@ -21,11 +22,9 @@ class Office extends Component{
       super(props);
 
 
-
-
       this.code ='office';
       this.name = 'Văn phòng';
-      this.info = {};
+
 
       this.data = {
         id:0,
@@ -42,7 +41,7 @@ class Office extends Component{
 
       }
 
-      this.refErr = React.createRef();
+
 
       this.setup()
     }
@@ -87,15 +86,8 @@ class Office extends Component{
       })
     }
 
-
-
-
     /* COMPONENT NÀY DÙNG MODAL : INTERAC INSIDE  */
-
-
     getInfo(id){
-
-
 
       return this.data.list.find(item=> item.id == id);
 
@@ -139,15 +131,6 @@ class Office extends Component{
       )
     }
 
-
-
-
-
-
-    /*END STUPID COMPONENT*/
-
-
-
     render(){
 
         const list = this.data.list ;
@@ -166,7 +149,7 @@ class Office extends Component{
             <div hidden={  this.state.onTab === 'office' ? false : true } >
 
 
-                 <OfficeForm name={this.name} onAction={ this.state.onAction} modal={ this.modal } refErr={ this.refErr} />
+                 <OfficeForm name={this.name} onAction={ this.state.onAction} modal={ this.modal } />
 
                  <Row>
 
@@ -193,50 +176,6 @@ class Office extends Component{
     }
 
 
-    /* load mặc định là TPHCM*/
-    loadDistrictList(parent_code){
-        const _this = this;
-        const District = new Model('subregions');
-
-        District.set('paginate',{
-          p:0,
-          max:'all',
-          sort_by:'name',
-          sort_type:'asc',
-          parent_code:parent_code
-        })
-
-        District.get((res)=>{
-          _this.modal.listDistrict = res.rows;
-
-          _this.setData('district',res.rows);
-
-
-
-        },(err)=>{
-          _this.hook.err(err)
-        })
-    }
-
-    loadCityList(){
-        const _this = this;
-        const City = new Model('regions');
-        City.set('paginate',{
-          p:0,
-          max:'all',
-          sort_by:'name',
-          sort_type:'asc'
-        })
-
-
-        City.get((res)=>{
-          _this.modal.listCity = res.rows;
-        },(err)=>{
-          _this.hook.err(err)
-        })
-
-    }
-
     loadOffice(){
       const _this = this ;
       this.loading();
@@ -256,8 +195,8 @@ class Office extends Component{
 
 
       this.loadOffice();
-      this.loadCityList();
-      this.loadDistrictList(this.modal.form.region_code); // code : tp ho chi minh
+      this.modal.loadCityList();
+      this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
 
 
 
@@ -267,6 +206,7 @@ class Office extends Component{
     receiveAction(newProps){
 
 
+      /* nhận lện có liên quan đến tab : office */
       if(newProps.onTab===this.code){
 
         Object.assign(this.state,newProps);
@@ -274,6 +214,13 @@ class Office extends Component{
         if(newProps.tabAction==='create'){
             this.modal.open('post');
         }
+      }else{
+
+        /* không liên quan => change tab*/
+
+        this.setState({
+          onTab:newProps.onTab
+        })
       }
 
     }
@@ -290,16 +237,10 @@ class Office extends Component{
         //this.modal.open('post');
 
 
-    }
-
-
-    /* 1 CONDITION ĐỂ ACTION COMPONENT DID UPDATE : AFTER RE-RENDER */
-    shouldComponentUpdate(newProps, newState){
-
-      return newProps.onTab===this.code ? true : false;
-
 
     }
+
+
 
     /* TRIGGER AFFTER SOMETHING*/
     componentDidUpdate(prevProps, prevState){
