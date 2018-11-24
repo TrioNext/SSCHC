@@ -14,6 +14,11 @@ class CompanyToolBar extends Component{
     this.info = {} /* KEEP CURRENT INFO*/
 
     this.data = {
+      user:{
+        code:'user',
+        icon:'fa-user',
+        name:'Nhân viên'
+      },
       office:{
         code:'office',
         icon:'fa-tags',
@@ -23,12 +28,8 @@ class CompanyToolBar extends Component{
         code:'store',
         icon:'fa-tags',
         name:'Cửa hàng'
-      },
-      user:{
-        code:'user',
-        icon:'fa-user',
-        name:'Nhân viên'
       }
+
     }
 
     this.state = {
