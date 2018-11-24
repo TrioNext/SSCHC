@@ -3,12 +3,9 @@ import '../../../scss/filemanager.scss';
 import '../../../scss/ubuntu-style.scss';
 
 
-
-import CompanyAside from './CompanyAside';
-
   import CompanyToolBar from './toolbar';
   import CompanyBody from './body';
-  import CompanyFooter from './footer';
+
 
 
 
@@ -134,9 +131,9 @@ class Company extends Component {
 
     return(
       <div className="animated fadeIn">
-        <div className="ubuntu-app mb-4">
+        <div className="ubuntu-app">
 
-            <CompanyAside onDataChange={ (data)=>{ this.onDataChange('departments',data) } } onStateChange={ (newState)=>{ this.onStateChange('department',newState) } } />
+
 
             <main>
 
@@ -144,7 +141,6 @@ class Company extends Component {
 
                 <CompanyBody onDataChange={ (data)=>{ this.onDataChange('body',data) } } onStateChange={ (newState)=>{ this.onStateChange('body',newState) } }  onTab={onTab} onAction={ onAction } />
 
-                <CompanyFooter onDataChange={ (data)=>{ this.onDataChange('footer',data) } } onStateChange={ (newState)=>{ this.onStateChange('footer',newState) } } />
 
             </main>
 
