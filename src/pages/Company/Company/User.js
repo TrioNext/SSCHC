@@ -7,7 +7,7 @@ npm install --save ag-grid-enterprise
 
 import React, {Component} from 'react';
 
-import {  Row, Col } from 'reactstrap';
+import {  Row, Col, ButtonGroup, Button } from 'reactstrap';
 
 import Model from '../../../config/model';
 
@@ -15,6 +15,11 @@ import Model from '../../../config/model';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import 'ag-grid-community/dist/styles/ag-theme-material.css';
+
+
+
+import CompanyAside from './CompanyAside';
 
 
 
@@ -42,17 +47,41 @@ class User extends Component{
         columnDefs: [
 
 
-                {headerName: "SID",field: "id",width:120,checkboxSelection: true},
+                {
+                  headerName: "SID",field: "id",width:120,checkboxSelection: true,
+                  filterParams: { newRowsAction: "keep" },
+                  checkboxSelection: function(params) {
+                    return params.columnApi.getRowGroupColumns().length === 0;
+                  },
+                  headerCheckboxSelection: function(params) {
+                    return params.columnApi.getRowGroupColumns().length === 0;
+                  }
+
+                },
                 {headerName: "Họ & Tên", field: "name"},
                 {headerName: "Văn phòng", field: "office_id"},
                 {headerName: "Cấp bậc", field: "job_level"},
                 {headerName: "Loại hình công việc", field: "job_type"},
                 {headerName: "Số Phone ", field: "phone"},
                 {headerName: "Người tạo ", field: "creator_id"},
-                {headerName: "Ngày ", field: "date_created"}
+                {headerName: "Ngày ", field: "date_created"},
+
 
 
             ],
+            rowSelection: "multiple",
+            rowGroupPanelShow: "always",
+            pivotPanelShow: "always",
+            paginationPageSize: 10,
+            paginationNumberFormatter: function(params) {
+              return "[" + params.value.toLocaleString() + "]";
+            },
+            defaultColDef: {
+              editable: true,
+              enableRowGroup: true,
+              enablePivot: true,
+              enableValue: true
+            },
             rowData: [
                     {
                       id:1,
@@ -155,19 +184,44 @@ class User extends Component{
 
         return(
             <div hidden={  this.state.onTab === this.code ? false : true } >
-              <div className="ag-theme-balham" id="myGrid" style={{boxSizing: "border-box", height: '74vh',width: '100%' }}>
 
-                    <AgGridReact
+              <div className="ubuntu-app mb-4">
+                  <CompanyAside  />
+                  <main>
 
-                        onGridReady={this.onGridReady.bind(this)}
-                        enableSorting={true}
+                    <div className="toolbar">
+                      <Row>
+                        <Col md={6}>
+                            <ButtonGroup>
+                              <Button className={ 'btn-ubuntu'} > <i className="fa fa-file-pdf-o"></i> </Button>
+                              <Button className={ 'btn-ubuntu'} > <i className="fa fa-pencil"></i> </Button>
+                              <Button className={ 'btn-ubuntu'} > <i className="fa fa-trash"></i> </Button>
 
-                        enableColResize={true}
-                        rowSelection="multiple"
-                        columnDefs={this.table.columnDefs}
-                        rowData={this.data.list}>
-                    </AgGridReact>
-               </div>
+                            </ButtonGroup>
+                        </Col>
+                      </Row>
+                    </div>
+                    <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: '70vh', padding:'1rem' }}>
+
+                          <AgGridReact
+
+
+
+                            enableSorting={true}
+                            rowSelection={this.table.rowSelection}
+                            enableColResize={true}
+
+
+                              defaultColDef={this.table.defaultColDef}
+                              onGridReady={this.onGridReady.bind(this)}
+
+                              columnDefs={this.table.columnDefs}
+                              rowData={this.data.list}>
+                          </AgGridReact>
+                     </div>
+                  </main>
+              </div>
+
             </div>
         )
     }
