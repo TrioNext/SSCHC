@@ -3,7 +3,10 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500&subset=vietnamese');
 
 body{
-  font-family: 'Roboto', sans-serif;
+
+  font: 15px "Roboto", sans-serif !important;
+
+
 }
 
 .btn-trio{
@@ -56,29 +59,53 @@ a.btn-delete:hover{ color:#DC3545 !important}
 
 /* DATA GRID*/
 
-@mixin scrollbar($size: 6px, $color: $xl-cool-grey-4-40) {
-    overflow: auto;
-
-    &::-webkit-scrollbar {
-        width: $size * 2;
-    }
-
-    &::-webkit-scrollbar-track,
-    &::-webkit-scrollbar-thumb {
-        border-radius: $size;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-clip: padding-box;
-        background-color: $color;
-        border: $size / 2 solid transparent;
-        min-height: 50px;
-    }
-
-    &::-webkit-scrollbar:horizontal {
-        height: $size * 2;
-    }
+.ag-theme-material .ag-header {
+  color: #fff !important;
+  font: 500 12px "Roboto", sans-serif !important;
+  background: #82c1b1 !important;
+  text-transform: uppercase !important;
 }
+
+.ag-theme-material .ag-header-cell {
+
+  border-left: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.ag-theme-material .ag-header-row {
+
+  border-style: solid !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  box-sizing: border-box;
+  border-width: 0px !important;
+}
+
+
+.ag-theme-material .ag-row {
+  border-style: solid;
+  border-color: #000 !important;
+  box-sizing: border-box;
+  border-width: 0 !important;
+
+}
+.ag-theme-material .ag-row:nth-child(2n+2){
+  background-color: #f0f0f0 !important;
+}
+
+
+.ag-theme-material .ag-cell {
+  line-height: 46px;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  font-size: 14px !important;
+
+  border-left: 1px solid rgba(0,0,0,0.1) !important;
+
+  padding-left: 23px;
+  padding-right: 23px;
+
+}
+
 
 
 .ag-row-hover {
@@ -99,6 +126,8 @@ a:hover, a:active {
 /****************************/
 /** Basic **/
 /****************************/
+
+
 .pointer{ cursor: pointer; color: red}
 .pa-0 {
   padding: 0px !important; }
