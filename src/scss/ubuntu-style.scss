@@ -13,7 +13,8 @@
     flex-direction: row;
     background: #fff;
     border: 1px solid #c8ced3;
-    height: 89vh + 0.5 ; overflow-y:hidden;
+    height: 80vh + 4.8 ; overflow-y:hidden;
+    border-bottom: 0px;
     overflow-x: hidden;
 }
 
@@ -40,7 +41,11 @@
     position: relative;
     padding: 0px 0px 0px 0px;
     font-size: 14px;
-    margin-bottom: 1px
+    margin-bottom: 1px;
+    font: 15.2px "Roboto", sans-serif !important;
+
+
+
 
 }
 .ubuntu-app nav .nav-item:hover,.ubuntu-app nav .nav-item.active {
@@ -76,7 +81,9 @@
 .ubuntu-app main .toolbar {
     padding-bottom: 0rem;
     border-bottom: 0px solid #c8ced3;
-    padding: 1rem
+    padding: 0rem;
+    padding-top: 1rem;
+    padding-left: 1rem;
 }
 
 .ubuntu-app main .detail{
