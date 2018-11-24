@@ -64,14 +64,14 @@ class CompanyAside extends Component{
     /**/
 
     this.setState(Object.assign(this.state,obj))
-    this.props.onStateChange(obj)
+    //this.props.onStateChange(obj)
 
 
 
 
   }
   onDataChange(){
-    this.props.onDataChange(this.data);
+    //this.props.onDataChange(this.data);
     this.onStateChange({
       onAction:'read',
       status:'done'
