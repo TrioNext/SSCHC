@@ -15,8 +15,19 @@ class DefaultFooter extends Component {
 
     return (
       <React.Fragment>
-        <span> &copy; 2018 Phiên bản 1.0</span>
-        <span className="ml-auto">Powered by <a href="https://coreui.io/react"> Benjamin HD </a></span>
+        <span className="mr-10">Đang làm việc </span>
+        <span>
+          <div className="avatars-stack mt-2">
+            <div className="avatar avatar-xs">
+              <img src={'assets/img/avatars/2.jpg'} title='tete' className="img-avatar" alt="admin@bootstrapmaster.com" />
+            </div>
+            <div className="avatar avatar-xs">
+              <img src={'assets/img/avatars/2.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+            </div>
+
+          </div>
+         </span>
+        <span className="ml-auto"> &copy; 2018   Code with <i className='fa fa-heart'> </i> </span>
       </React.Fragment>
     );
   }
