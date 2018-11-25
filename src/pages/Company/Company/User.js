@@ -7,7 +7,8 @@ npm install --save ag-grid-enterprise
 
 import React, {Component} from 'react';
 
-import {  Row, Col, ButtonGroup, Button } from 'reactstrap';
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,  Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
+
 
 import Model from '../../../config/model';
 
@@ -16,6 +17,8 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
+
+import GridFooter from '../../../components/GridFooter';
 
 
 
@@ -48,7 +51,7 @@ class User extends Component{
 
 
                 {
-                  headerName: "SID",field: "id",width:120,checkboxSelection: true,
+                  headerName: "SID",field: "id",width:130,checkboxSelection: true,
                   filterParams: { newRowsAction: "keep" },
                   checkboxSelection: function(params) {
                     return params.columnApi.getRowGroupColumns().length === 0;
@@ -70,38 +73,14 @@ class User extends Component{
 
             ],
             rowSelection: "multiple",
-            rowGroupPanelShow: "always",
-            pivotPanelShow: "always",
-            paginationPageSize: 10,
-            paginationNumberFormatter: function(params) {
-              return "[" + params.value.toLocaleString() + "]";
-            },
-            defaultColDef: {
+
+            /*defaultColDef: {
               editable: true,
               enableRowGroup: true,
               enablePivot: true,
               enableValue: true
-            },
-            rowData: [
-                    {
-                      id:1,
-                      name:'Benjamin',
-                      office:'Văn phòng quận 4',
-                      level:'Nhân viên',
-                      type:'Chuyên nghiệp',
-                      create_by:'mruan',
-                      date_created:'12-12-2012'
-                    },
-                    {
-                      id:2,
-                      name:'Takumi HD',
-                      office:'Văn phòng quận 11',
-                      level:'Nhân viên',
-                      type:'Chuyên nghiệp',
-                      create_by:'Benjamin',
-                      date_created:'12-12-2012'
-                    }
-            ]
+            },*/
+            rowData: []
       }
 
       this.setup();
@@ -112,7 +91,7 @@ class User extends Component{
 
       this.model.set('paginate',{
         p:0,
-        max:30,
+        max:20,
         sort_by:'id',
         sort_type:'desc'
       })
@@ -156,6 +135,66 @@ class User extends Component{
 
     }
 
+    goto(p){
+
+      const _this = this ;
+
+      this.mode.goto(p,(res)=>{
+        const list = res.rows;
+        _this.onDataChange(list);
+      },(err)=>{
+        _this.hook.err(err)
+      })
+    }
+
+    /*
+    type : get - pre - next
+    */
+    loadUser(type){
+      const _this = this ;
+
+
+      this.model[type]((res)=>{
+        const list = res.rows;
+        _this.onDataChange(list);
+      },(err)=>{
+          _this.hook.err(err)
+      })
+
+    }
+    componentDidMount(){
+      this.loadUser('get');
+    }
+    componentWillReceiveProps(newProps){
+
+        /* nhận lện có liên quan đến tab : office */
+        if(newProps.onTab===this.code){
+
+          Object.assign(this.state,newProps);
+
+          if(newProps.tabAction==='create'){
+              this.modal.open('post');
+          }
+        }else{
+
+          /* không liên quan => change tab*/
+          this.setState({
+            onTab:newProps.onTab
+          })
+        }
+
+    }
+
+
+
+
+
+    componentDidUpdate(prevProps, prevState){
+      /*alert('ok man : componentDidUpdate');
+      alert(JSON.stringify(prevProps));
+      alert(JSON.stringify(prevState));*/
+
+    }
 
     onGridReady(params){
       /*this.gridApi = params.api;
@@ -201,23 +240,23 @@ class User extends Component{
                         </Col>
                       </Row>
                     </div>
-                    <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: '70vh', padding:'1rem' }}>
+                    <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: '68vh', padding:'1rem' }}>
 
                           <AgGridReact
 
-
-
-                            enableSorting={true}
-                            rowSelection={this.table.rowSelection}
-                            enableColResize={true}
-
-
+                              enableSorting={true}
+                              rowSelection={this.table.rowSelection}
+                              enableColResize={true}
                               defaultColDef={this.table.defaultColDef}
                               onGridReady={this.onGridReady.bind(this)}
-
                               columnDefs={this.table.columnDefs}
                               rowData={this.data.list}>
+
                           </AgGridReact>
+
+                          <GridFooter onDataChange={(list)=>{  this.onDataChange(list)  }}  model={ this.model } />
+
+
                      </div>
                   </main>
               </div>
@@ -226,51 +265,9 @@ class User extends Component{
         )
     }
 
-    loadUser(){
-      const _this = this ;
-
-      this.model.get((res)=>{
-
-        const list = res.rows;
-        _this.onDataChange(list);
-
-      },(err)=>{
-        _this.hook.err(err)
-      });
-    }
-    componentDidMount(){
-      this.loadUser();
-    }
-    componentWillReceiveProps(newProps){
-
-        /* nhận lện có liên quan đến tab : office */
-        if(newProps.onTab===this.code){
-
-          Object.assign(this.state,newProps);
-
-          if(newProps.tabAction==='create'){
-              this.modal.open('post');
-          }
-        }else{
-
-          /* không liên quan => change tab*/
-          this.setState({
-            onTab:newProps.onTab
-          })
-        }
-
-    }
 
 
 
-
-
-    componentDidUpdate(prevProps, prevState){
-      /*alert('ok man : componentDidUpdate');
-      alert(JSON.stringify(prevProps));
-      alert(JSON.stringify(prevState));*/
-
-    }
 
 }
 
