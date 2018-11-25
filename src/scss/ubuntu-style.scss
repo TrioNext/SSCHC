@@ -5,6 +5,12 @@
 .btn-ubuntu-ok{ background: #eeb452;  border: 1px solid rgba(0,0,0,0.1); color: #fff; }
 .btn-ubuntu-ok:hover{ background-color: #b7852f; border: 1px solid rgba(0,0,0,0.1); color: #fff}
 
+/* btn-datagrid*/
+.btn-datagrid{ background: transparent;  border: 0px solid rgba(0,0,0,0.1) ;  color: #56a18e}
+.btn-datagrid:hover, .btn-ubuntu-active{ background: #56a18e; color: #fff; border: 1px solid rgba(0,0,0,0.1)}
+
+
+
 /* E-MAIL APP  : LEFT SIZE : RIGHT SIZE  */
 .ubuntu-app {
     display: -ms-flexbox;
