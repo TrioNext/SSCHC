@@ -22,7 +22,7 @@ class Model {
       base:server.base() + this.model+'?',
       config:'',
       paginate:server.paginate,
-
+      total:0
     };
 
     this.setup();
@@ -76,11 +76,13 @@ class Model {
 
       const url = server.base() + this.model+'/'+id ;
 
-      
+
       axios.delete(url,this.setting.config)
             .then((res)=>{
+              this.onSuccess(res);
               onSuccess(res.data)
             },(error)=>{
+              this.onError(error)
               onError(error)
             })
 
@@ -93,8 +95,11 @@ class Model {
 
     axios.post(url,data,this.setting.config)
           .then((res)=>{
+            this.onSuccess(res);
             onSuccess(res.data)
           },(error)=>{
+
+            this.onError(error);
             onError(error);
           });
 
@@ -107,8 +112,11 @@ class Model {
 
       axios.put(url,data,this.setting.config)
             .then((res)=>{
+              this.onSuccess(res);
               onSuccess(res.data)
             },(error)=>{
+
+              this.onError(error)
               onError(error);
       })
 
@@ -124,10 +132,11 @@ class Model {
       p:p
     }));
 
-
     this.get((res)=>{
+      this.onSuccess(res);
       onSuccess(res);
     },(err)=>{
+      this.onError(err);
       onError(err);
     });
   }
@@ -139,11 +148,13 @@ class Model {
       p:next
     }));
 
-
-
     this.get((res)=>{
+
+      this.onSuccess(res);
       onSuccess(res);
     },(err)=>{
+
+      this.onError(err);
       onError(err);
     });
 
@@ -158,8 +169,11 @@ class Model {
 
 
       this.get((res)=>{
+
+        this.onSuccess(res);
         onSuccess(res);
       },(err)=>{
+        this.onError(err);
         onError(err);
       });
 
@@ -167,15 +181,45 @@ class Model {
   }
 
 
+  /* SET TOTAL - SAVE MOBX PERSIST*/
+  onSuccess(list){
+
+
+     try{
+       //let data = res.data ;
+       this.set('total',list.count);
+
+     }catch(err){}
+
+
+
+
+
+
+  }
+
+  /* write log error*/
+  onError(err){
+
+  }
+
   get(onSuccess,onError){
 
+      const _this = this ;
       const {url, config} = this.setting ;
+
       axios.get(url,config)
-            .then((response) => {
-                onSuccess(response.data)
+            .then((res) => {
+
+
+              this.onSuccess(res.data);
+              onSuccess(res.data)
+
+
             },
             (error) => {
-                var status = error.response.status
+                var status = error.response.status;
+                this.onError(error)
                 onError(error);
               }
             );
