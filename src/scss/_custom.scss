@@ -59,6 +59,17 @@ a.btn-delete:hover{ color:#DC3545 !important}
 
 /* DATA GRID*/
 
+
+.ag-theme-material .ag-footer{
+  padding-top: 12px;
+}
+.ag-footer i{ padding:0 6px 0 6px }
+.ag-footer span.info{ color:#56a18e; font-weight: 500; padding-top: 12px; margin-left: 12px;}
+
+
+
+
+
 .ag-theme-material .ag-header {
   color: #fff !important;
   font: 500 12px "Roboto", sans-serif !important;
@@ -88,7 +99,7 @@ a.btn-delete:hover{ color:#DC3545 !important}
 
 }
 .ag-theme-material .ag-row:nth-child(2n+2){
-  background-color: #f0f0f0 !important;
+  background-color: #f0f0f0 ;
 }
 
 
@@ -107,10 +118,21 @@ a.btn-delete:hover{ color:#DC3545 !important}
 }
 
 
-
 .ag-row-hover {
     /* putting in !important so it overrides the theme's styling as it hovers the row also */
     background-color: #dfdfff !important;
+}
+
+.ag-theme-material .ag-icon-checkbox-checked {
+  background-color: transparent;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE2IDBIMmEyIDIgMCAwIDAtMiAydjE0YTIgMiAwIDAgMCAyIDJoMTRhMiAyIDAgMCAwIDItMlYyYTIgMiAwIDAgMC0yLTJ6TTcgMTRMMiA5bDEuNDEtMS40MUw3IDExLjE3bDcuNTktNy41OUwxNiA1bC05IDl6IiBmaWxsPSIjMzMzIi8+PC9zdmc+);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  height: 18px;
+  opacity: 0.87;
+  width: 18px;
+  display: inline-block;
 }
 
 /*.ag-column-hover {
