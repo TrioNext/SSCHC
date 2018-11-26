@@ -7,7 +7,7 @@
 
 /* btn-datagrid*/
 .btn-datagrid{ background: transparent;  border: 0px solid rgba(0,0,0,0.1) ;  color: #56a18e}
-.btn-datagrid:hover, .btn-ubuntu-active{ background: #56a18e; color: #fff; border: 1px solid rgba(0,0,0,0.1)}
+.btn-datagrid:hover{ background: #56a18e; color: #fff; border: 1px solid rgba(0,0,0,0.1)}
 
 
 
@@ -19,7 +19,7 @@
     flex-direction: row;
     background: #fff;
     border: 1px solid #c8ced3;
-    height: 80vh + 4.8 ; overflow-y:hidden;
+    height: 84vh + 5.2 ; overflow-y:hidden;
     border-bottom: 0px;
     overflow-x: hidden;
 }
