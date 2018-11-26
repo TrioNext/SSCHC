@@ -3,11 +3,8 @@ import '../../../scss/filemanager.scss';
 import '../../../scss/ubuntu-style.scss';
 
 
-  import CompanyToolBar from './toolbar';
-  import CompanyBody from './body';
-
-
-
+import CompanyToolBar from './toolbar';
+import CompanyBody from './body';
 
 
 
@@ -131,16 +128,13 @@ class Company extends Component {
 
     return(
       <div className="animated fadeIn">
-        <div className="ubuntu-app">
-
-
+        <div className="ubuntu-app" style={{ border:0}}>
 
             <main>
 
                 <CompanyToolBar onDataChange={ (data)=>{ this.onDataChange('toolbar',data) } }  onStateChange={ (newState)=>{ this.onStateChange('toolbar',newState) } } onTab={ onTab } />
 
                 <CompanyBody onDataChange={ (data)=>{ this.onDataChange('body',data) } } onStateChange={ (newState)=>{ this.onStateChange('body',newState) } }  onTab={onTab} onAction={ onAction } />
-
 
             </main>
 
