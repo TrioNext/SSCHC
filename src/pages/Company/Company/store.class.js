@@ -167,11 +167,7 @@ class StoreModal{
         });
 
       }
-
-
-
-
-
+      
     }
 
     toggle(){
