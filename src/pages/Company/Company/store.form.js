@@ -84,10 +84,6 @@ function FrmR3(props){
 
 
 
-
-
-
-
 class StoreForm extends Component{
 
   constructor(props){
@@ -100,8 +96,8 @@ class StoreForm extends Component{
     this.modal = props.modal;
     this.name = props.name;
 
-    this.refErr = React.createRef();
-    
+
+
   }
 
 
@@ -125,7 +121,7 @@ class StoreForm extends Component{
 
     return (
 
-      <BenModal name={modalTitle + this.name } state={ this.state} modal={ this.modal } refErr={ this.refErr} >
+      <BenModal name={modalTitle + this.name } state={ this.state} modal={ this.modal }  >
 
         <FrmR1 modal={ this.modal }  />
         <FrmR2 modal={ this.modal }  />
