@@ -7,10 +7,16 @@ npm install --save ag-grid-enterprise
 
 import React, {Component} from 'react';
 
-import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,  Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
+import {   Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
 
 
 import Model from '../../../config/model';
+import Hook from '../../../config/hook.class';
+
+import FormCtrl from './user.form.class';
+import UserForm from './user.form';
+
+
 
 
 import { AgGridReact } from 'ag-grid-react';
@@ -91,10 +97,16 @@ class User extends Component{
 
       this.model.set('paginate',{
         p:0,
-        max:20,
+        max:10,
         sort_by:'id',
         sort_type:'desc'
-      })
+      });
+
+      this.hook = new Hook(this);
+
+      this.modal = new FormCtrl(this);
+
+
 
 
     }
@@ -172,6 +184,9 @@ class User extends Component{
 
           Object.assign(this.state,newProps);
 
+
+
+
           if(newProps.tabAction==='create'){
               this.modal.open('post');
           }
@@ -218,11 +233,18 @@ class User extends Component{
     }
     render(){
 
+        /* list : users */
         const list = this.state.data ;
-        const modalTitle = this.state.action ==='create' ? 'Tạo ': 'Cập nhật ';
+
+        
+
+
 
         return(
             <div hidden={  this.state.onTab === this.code ? false : true } >
+
+
+              <UserForm name={ this.name } onAction={ this.state.onAction} modal={ this.modal } />
 
               <div className="ubuntu-app mb-4">
                   <CompanyAside  />
@@ -232,15 +254,20 @@ class User extends Component{
                       <Row>
                         <Col md={6}>
                             <ButtonGroup>
-                              <Button className={ 'btn-ubuntu'} > <i className="fa fa-file-pdf-o"></i> </Button>
+
                               <Button className={ 'btn-ubuntu'} > <i className="fa fa-pencil"></i> </Button>
                               <Button className={ 'btn-ubuntu'} > <i className="fa fa-trash"></i> </Button>
+                              <Button className={ 'btn-ubuntu'} > <i className="fa fa-download"></i> </Button>
+
 
                             </ButtonGroup>
                         </Col>
+                        <Col>
+                            sdsd
+                        </Col>
                       </Row>
                     </div>
-                    <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: '68vh', padding:'1rem' }}>
+                    <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: '72vh', padding:'1rem' }}>
 
                           <AgGridReact
 
