@@ -33,7 +33,9 @@ class BenModal extends Component{
       <Modal  size="lg" isOpen={ this.modal.active } fade={false}   toggle={ ()=>{  this.modal.toggle() } } >
         <ModalHeader toggle={ ()=>{ this.modal.toggle() } }> <i className="fa fa-plus"></i> { this.name }  </ModalHeader>
 
-        <ModalBody>
+        <ModalBody style={{
+            padding:30
+          }}>
           <Form>
             { this.props.children }
           </Form>
