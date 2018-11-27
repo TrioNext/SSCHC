@@ -58,10 +58,11 @@ class Department extends Component{
 
   onStateChange(newState){
     /* KEEP PRIVATE DATA*/
-    Object.assign(this.state,newState)
 
+    this.setState(Object.assign(this.state,newState));
     /* trả giá tri về cho parent component sử dụng */
-    this.props.onStateChange(this.state);
+    //this.props.onStateChange(this.state);
+
   }
 
   onDataChange(list){
@@ -101,7 +102,8 @@ class Department extends Component{
 
   render(){
 
-    const modalTitle = 'test name';
+    const modalTitle = this.state.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
+
 
     let list = [];
     this.data.list.map((item,index)=>{
@@ -115,7 +117,7 @@ class Department extends Component{
     return(
 
       <div>
-          <DepartmentForm onStateChange={(newState)=>{ this.onStateChange(newState) }} name={ modalTitle  } modal={ this.modal } />
+          <DepartmentForm onStateChange={(newState)=>{ this.onStateChange(newState) }} onAction={ this.state.onAction } name={ modalTitle  } modal={ this.modal } />
 
           <nav style={{background:'#DEDEDE'}}>
 
