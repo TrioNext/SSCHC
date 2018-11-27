@@ -62,7 +62,7 @@ class Store extends Component{
     onStateChange(newState){
 
       /* KEEP PRIVATE DATA*/
-      this.setState(Object.assign(this.state,newState));
+      Object.assign(this.state,newState)
 
       /* trả giá tri về cho parent component sử dụng */
       this.props.onStateChange(this.state);
@@ -122,17 +122,12 @@ class Store extends Component{
     }
 
 
-    loading(){
-      this.onStateChange(Object.assign(this.state,{
-        onAction:'read',
-        status:'loading'
-      }));
-    }
+
 
 
     loadStore(){
       const _this = this ;
-      this.loading();
+
 
       this.model.get((res)=>{
 
@@ -155,34 +150,19 @@ class Store extends Component{
 
     }
 
-    /* NHẬN LỆNH TỪ NEW PROPS : PHÂN TỪ DATA VÀ ACTION*/
-    receiveAction(newProps){
 
-
-      /* nhận lện có liên quan đến tab : office */
-      if(newProps.onTab===this.code){
-
-        Object.assign(this.state,newProps);
-
-        if(newProps.tabAction==='create'){
-            this.modal.open('post');
-        }
-      }else{
-
-        /* không liên quan => change tab*/
-
-        this.setState({
-          onTab:newProps.onTab
-        })
-      }
-
-    }
 
     /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
     componentWillReceiveProps(newProps){
 
 
-        this.receiveAction(newProps);
+      if(newProps.onTab===this.code){
+
+        Object.assign(this.state,newProps);
+        if(newProps.onAction==='post'){
+            this.modal.open('post');
+        }
+      }
 
 
 
@@ -210,16 +190,16 @@ class Store extends Component{
     render(){
 
         const list = this.data.list ;
-        const modalTitle = this.state.onAction ==='post' ? 'Tạo ': 'Cập nhật ';
+        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
 
-        const { form } =  this.modal;
+
 
 
         return(
-            <div hidden={  this.state.onTab === this.code ? false : true } >
+            <div hidden={  this.props.onTab === this.code ? false : true } >
 
 
-                 <StoreForm name={ modalTitle+' '+ this.name} onAction={ this.state.onAction} modal={ this.modal } />
+                 <StoreForm name={ modalTitle} onAction={ this.props.onAction} modal={ this.modal } />
 
                  <Row>
 
