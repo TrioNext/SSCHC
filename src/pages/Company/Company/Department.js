@@ -34,12 +34,13 @@ class Department extends Component{
 
     this.name = 'Bộ phận';
     this.data = {
+      id:0,
       name:'department',
       list:[]
     }
 
     this.state = {
-
+      name:'',
       onAction:'',
       status:'',
     }
@@ -56,11 +57,22 @@ class Department extends Component{
   }
 
   onStateChange(newState){
+    /* KEEP PRIVATE DATA*/
+    Object.assign(this.state,newState)
 
+    /* trả giá tri về cho parent component sử dụng */
+    this.props.onStateChange(this.state);
   }
 
   onDataChange(list){
-      this.data.list = list ;
+    this.data.list = list ;
+
+    this.props.onDataChange(this.data);
+
+    /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
+    this.onStateChange({
+      status:'done'
+    })
   }
 
 
