@@ -149,49 +149,27 @@ class OfficeForm extends Component{
     super(props);
 
     this.state = {
-      onAction:this.props.onAction
+      onAction:''
     }
 
-    this.modal = props.modal;
-    this.name = props.name;
-    
-    this.refErr = React.createRef();
-
 
   }
-
-
-  componentWillReceiveProps(newProps){
-
-      this.modal = newProps.modal;
-
-      this.setState({
-        onAction:newProps.onAction
-      });
-
-
-  }
-
-
-
-
+  
   render(){
-
-    const modalTitle = this.state.onAction ==='post' ? 'Tạo ': 'Cập nhật ';
 
     return (
 
-      <BenModal name={modalTitle + this.name } state={ this.state} modal={ this.modal } refErr={ this.refErr} >
+      <BenModal name={this.props.name} onAction={ this.props.onAction } modal={ this.props.modal }  >
 
-          <FrmR1 modal={ this.modal } />
+          <FrmR1 modal={ this.props.modal } />
 
-          <FrmR2 modal={ this.modal } />
+          <FrmR2 modal={ this.props.modal } />
 
-          <FrmR3 modal={ this.modal } />
+          <FrmR3 modal={ this.props.modal } />
 
-          <FrmR4 modal={ this.modal } />
+          <FrmR4 modal={ this.props.modal } />
 
-          <FrmR5 modal={ this.modal } />
+          <FrmR5 modal={ this.props.modal } />
 
       </BenModal>
 
