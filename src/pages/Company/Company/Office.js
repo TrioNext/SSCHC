@@ -26,7 +26,7 @@ class Office extends Component{
       this.name = 'Văn phòng';
 
       this.data = {
-
+        id:0,
         name:'office',
         list:[]
 
@@ -201,11 +201,7 @@ class Office extends Component{
         const list = this.data.list ;
         const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
 
-        const { form } =  this.modal;
 
-
-        const begin = moment('2018-11-20 '+form.working_begin).format('HH:mm').split(':');
-        const end = moment('2018-11-20 '+form.working_end).format('HH:mm').split(':');
 
 
 
