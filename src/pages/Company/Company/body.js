@@ -38,47 +38,35 @@ class CompanyBody extends Component{
   onStateChange(newState){
 
       /*keep private data*/
-      Object.assign(this.state,newState)
-
-      //alert(JSON.stringify(this.state))
-      /* share gia tri cho parent component dùng */
+      Object.assign(this.state,newState);
+      /* share gia tri cho parent component dùng  : để parent react component*/
       this.props.onStateChange(this.state);
+      
 
   }
 
-  onDataChange(type,newData){
+  onDataChange(newData){
 
-      //alert(type);
-      this.setData(type,newData);
+      //alert(JSON.stringify(newData));
+      //this.setData(type,newData);
       this.props.onDataChange(newData);
 
   }
 
-  /* NHẬN lệnh : từ NEW PROPS TỪ MAIN OBJECT*/
-  componentWillReceiveProps(newProps){
 
-    /* CẬP NHẬN STATE */
-    /* GUI CHO COMPONENT OFFICE : re-render*/
-    this.setState(Object.assign(this.state,newProps));
-
-
-
-  }
 
   render(){
 
     const onTab = this.props.onTab ;
     const onAction = this.props.onAction;
 
-    
-
 
     return(
       <div className="detail" >
 
-        <Office onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange('office',newData) } } onTab={onTab} tabAction={ onAction } />
-        <Store onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange('store',newData) } }  onTab={onTab} tabAction={onAction} />
-        <User onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange('user',newData) } } onTab={onTab} tabAction={onAction} />
+        <Office onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange(newData) } } onTab={onTab} onAction={ onAction } />
+        <Store onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange(newData) } }  onTab={onTab} onAction={onAction} />
+        <User onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange(newData) } } onTab={onTab} onAction={onAction} />
 
       </div>
     )
