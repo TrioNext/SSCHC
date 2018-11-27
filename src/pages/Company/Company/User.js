@@ -43,8 +43,13 @@ class User extends Component{
       this.name = 'Thành viên';
 
       this.data = {
+        name:'user',
         id:0,
-        list:[]
+        list:[],
+        department:{
+          id:0,
+          list:[]
+        }
       }
 
       this.state = {
@@ -128,6 +133,17 @@ class User extends Component{
 
     }
 
+    onDepartmentChange(data){
+        this.setData('department',data);
+
+
+        this.props.onDataChange(this.data);
+        /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
+        this.onStateChange({
+          status:'done'
+        })
+        
+    }
     onDataChange(list){
 
       /* TRẢ GIÁ TRỊ VỀ CHO PARENT COMPONENT SỬ DỤNG*/
@@ -237,12 +253,12 @@ class User extends Component{
             <div hidden={  this.props.onTab === this.code ? false : true } >
 
 
-              <UserForm name={ modalTitle } onStateChange={(newState)=>{ this.onStateChange(newState) }} onAction={ this.props.onAction} modal={ this.modal } />
+              <UserForm departments={ this.data.department.list } name={ modalTitle } onStateChange={(newState)=>{ this.onStateChange(newState) }} onAction={ this.props.onAction} modal={ this.modal } />
 
               <div className="ubuntu-app mb-4">
 
-                  <Department onStateChange={(newState)=>{ this.onStateChange(newState); }}  />
-                  
+                  <Department onDataChange={(list)=>{ this.onDepartmentChange(list) }}  onStateChange={(newState)=>{ this.onStateChange(newState); }}  />
+
 
                   <main>
 
