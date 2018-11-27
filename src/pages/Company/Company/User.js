@@ -29,6 +29,8 @@ import GridFooter from '../../../components/GridFooter';
 
 
 import CompanyAside from './CompanyAside';
+import Department from './Department';
+
 
 
 
@@ -118,7 +120,7 @@ class User extends Component{
     onStateChange(newState){
 
       /* KEEP PRIVATE DATA : refesh inside compoents */
-      this.setState(Object.assign(this.state,newState));
+      Object.assign(this.state,newState);
 
       /* trả giá tri về cho parent component sử dụng */
       this.props.onStateChange(this.state);
@@ -185,17 +187,9 @@ class User extends Component{
           Object.assign(this.state,newProps);
 
 
-
-
-          if(newProps.tabAction==='create'){
+          if(newProps.onAction==='post'){
               this.modal.open('post');
           }
-        }else{
-
-          /* không liên quan => change tab*/
-          this.setState({
-            onTab:newProps.onTab
-          })
         }
 
     }
@@ -235,19 +229,21 @@ class User extends Component{
 
         /* list : users */
         const list = this.state.data ;
-
-        
+        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
 
 
 
         return(
-            <div hidden={  this.state.onTab === this.code ? false : true } >
+            <div hidden={  this.props.onTab === this.code ? false : true } >
 
 
-              <UserForm name={ this.name } onAction={ this.state.onAction} modal={ this.modal } />
+              <UserForm name={ modalTitle } onStateChange={(newState)=>{ this.onStateChange(newState) }} onAction={ this.props.onAction} modal={ this.modal } />
 
               <div className="ubuntu-app mb-4">
-                  <CompanyAside  />
+
+                  <Department onStateChange={(newState)=>{ this.onStateChange(newState); }}  />
+                  
+
                   <main>
 
                     <div className="toolbar">
@@ -263,7 +259,7 @@ class User extends Component{
                             </ButtonGroup>
                         </Col>
                         <Col>
-                            sdsd
+
                         </Col>
                       </Row>
                     </div>
