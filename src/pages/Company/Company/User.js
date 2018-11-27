@@ -142,7 +142,7 @@ class User extends Component{
         this.onStateChange({
           status:'done'
         })
-        
+
     }
     onDataChange(list){
 
@@ -198,6 +198,7 @@ class User extends Component{
     componentWillReceiveProps(newProps){
 
         /* nhận lện có liên quan đến tab : office */
+        
         if(newProps.onTab===this.code){
 
           Object.assign(this.state,newProps);
