@@ -22,12 +22,12 @@ class Office extends Component{
       super(props);
 
 
-      this.code ='office';
+
       this.name = 'Văn phòng';
 
-
       this.data = {
-        id:0,
+
+        name:'office',
         list:[]
 
       }
@@ -65,7 +65,7 @@ class Office extends Component{
     onStateChange(newState){
 
       /* KEEP PRIVATE DATA*/
-      this.setState(Object.assign(this.state,newState));
+      Object.assign(this.state,newState);
 
       /* trả giá tri về cho parent component sử dụng */
       this.props.onStateChange(this.state);
@@ -94,8 +94,73 @@ class Office extends Component{
 
     }
 
-    /* STUPID COMPONENT*/
+    loadOffice(){
+      const _this = this ;
 
+
+      this.model.get((res)=>{
+
+        const list = res.rows;
+
+        _this.onDataChange(list);
+
+      },(err)=>{
+        _this.hook.err(err)
+      });
+
+    }
+    componentDidMount(){
+
+
+      this.loadOffice();
+      this.modal.loadCityList();
+      this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
+
+
+
+    }
+
+
+
+
+    /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
+    componentWillReceiveProps(newProps){
+
+
+      /* nhận lện có liên quan đến tab : office */
+      if(newProps.onTab===this.data.name){
+
+        Object.assign(this.state,newProps);
+
+        if(newProps.onAction==='post'){
+            this.modal.open('post');
+        }
+      }
+
+
+
+    }
+
+
+
+    /* TRIGGER AFFTER SOMETHING*/
+    componentDidUpdate(prevProps, prevState){
+
+      //alert(JSON.stringifyr);
+      //alert('componentDidUpdate: '+ JSON.stringify(prevProps));
+      //alert('componentDidUpdate');
+      /*alert('ok man : componentDidUpdate');
+      alert(JSON.stringify(prevProps));
+      alert(JSON.stringify(prevState));*/
+
+    }
+
+    /* DESTROY - REMOVE SOMETHING*/
+    componentWillUnmount(){
+      alert('componentWillUnmount happen');
+    }
+
+    /* STUPID COMPONENT*/
     BlockItem(props){
       const data = props.data;
 
@@ -134,7 +199,7 @@ class Office extends Component{
     render(){
 
         const list = this.data.list ;
-        const modalTitle = this.state.onAction ==='post' ? 'Tạo ': 'Cập nhật ';
+        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
 
         const { form } =  this.modal;
 
@@ -146,10 +211,10 @@ class Office extends Component{
 
 
         return(
-            <div hidden={  this.state.onTab === 'office' ? false : true } >
+            <div hidden={  this.props.onTab === 'office' ? false : true } >
 
 
-                 <OfficeForm name={this.name} onAction={ this.state.onAction} modal={ this.modal } />
+                 <OfficeForm onStateChange={(newState)=>{ this.onStateChange(newState) }} name={ modalTitle  } onAction={ this.props.onAction} modal={ this.modal } />
 
                  <Row>
 
@@ -168,96 +233,10 @@ class Office extends Component{
     }
 
 
-    loading(){
-      this.onStateChange(Object.assign(this.state,{
-        onAction:'read',
-        status:'loading'
-      }));
-    }
-
-
-    loadOffice(){
-      const _this = this ;
-      this.loading();
-
-      this.model.get((res)=>{
-
-        const list = res.rows;
-
-        _this.onDataChange(list);
-
-      },(err)=>{
-        _this.hook.err(err)
-      });
-
-    }
-    componentDidMount(){
-
-
-      this.loadOffice();
-      this.modal.loadCityList();
-      this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
 
 
 
-    }
 
-    /* NHẬN LỆNH TỪ NEW PROPS : PHÂN TỪ DATA VÀ ACTION*/
-    receiveAction(newProps){
-
-
-      /* nhận lện có liên quan đến tab : office */
-      if(newProps.onTab===this.code){
-
-        Object.assign(this.state,newProps);
-
-        if(newProps.tabAction==='create'){
-            this.modal.open('post');
-        }
-      }else{
-
-        /* không liên quan => change tab*/
-
-        this.setState({
-          onTab:newProps.onTab
-        })
-      }
-
-    }
-
-    /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
-    componentWillReceiveProps(newProps){
-
-
-        this.receiveAction(newProps);
-
-        //alert('componentWillReceiveProps: '+JSON.stringify(newProps));
-        //this.onAction(newProps);
-
-        //this.modal.open('post');
-
-
-
-    }
-
-
-
-    /* TRIGGER AFFTER SOMETHING*/
-    componentDidUpdate(prevProps, prevState){
-
-      //alert(JSON.stringifyr);
-      //alert('componentDidUpdate: '+ JSON.stringify(prevProps));
-      //alert('componentDidUpdate');
-      /*alert('ok man : componentDidUpdate');
-      alert(JSON.stringify(prevProps));
-      alert(JSON.stringify(prevState));*/
-
-    }
-
-    /* DESTROY - REMOVE SOMETHING*/
-    componentWillUnmount(){
-      alert('componentWillUnmount happen');
-    }
 
 }
 
