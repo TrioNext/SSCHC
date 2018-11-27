@@ -108,13 +108,21 @@ function FrmR4(props){
     list.push(<option value={item} key={index} id={ index} > { item } </option>)
   })
 
+  let listDep = [];
+  props.departments.map((item,index)=>{
+    listDep.push(<option value={item.id} key={index} id={ item.id} > { item.name } </option>)
+  })
+
+
   return (
     <Row form>
 
       <Col md={6}>
         <FormGroup>
           <Label> Bộ phận </Label>
-          <Input type="text" onChange={ (e)=>{ modal.onChange('email', e);  } } defaultValue={ modal.form.email }  placeholder="nhập e-mail" />
+          <Input type="select">
+            {listDep}
+          </Input>
 
         </FormGroup>
       </Col>
@@ -140,15 +148,15 @@ function FrmR5(props){
 
       <Col md={6}>
         <FormGroup>
-          <Label> ID Nội bộ </Label>
-          <Input type="text" onChange={ (e)=>{ modal.onChange('email', e);  } } defaultValue={ modal.form.email }  placeholder="nhập e-mail" />
+          <Label> Mã Nội bộ </Label>
+          <Input type="text" onChange={ (e)=>{ modal.onChange('code', e);  } } defaultValue={ modal.form.code }  placeholder="nhập mã" />
 
         </FormGroup>
       </Col>
       <Col md={6}>
         <FormGroup>
           <Label> Chức vụ <span className="text-danger">*</span></Label>
-          <Input type="text" onChange={ (e)=>{ modal.onChange('phone', e);  } } defaultValue={ modal.form.phone }  placeholder="nhập số ĐT" />
+          <Input type="text" onChange={ (e)=>{ modal.onChange('position', e);  } } defaultValue={ modal.form.position }  placeholder="nhập chức vụ" />
         </FormGroup>
       </Col>
 
@@ -209,7 +217,7 @@ class UserForm extends Component{
         <FrmR1 modal={ this.props.modal }  />
         <FrmR2 modal={ this.props.modal }  />
         <FrmR3 modal={ this.props.modal } jobtype={ this.job_type }  />
-        <FrmR4 modal={ this.props.modal } joblevel={ this.job_level }  />
+        <FrmR4 modal={ this.props.modal } departments={ this.props.departments }  joblevel={ this.job_level }  />
         <FrmR5 modal={ this.props.modal }  />
 
       </BenModal>
