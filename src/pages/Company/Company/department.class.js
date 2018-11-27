@@ -17,18 +17,8 @@ class FormCtrl {
     }
 
     this.form = {
-      name:'',
-      gender:1,
-      email:'',
-      phone:'',
-      office_id:0,
-      job_type:2,
-      department_id:0,
-      job_level:2,
-      username:'', /* ID NỘI BỘ*/
-      position:'',
-      is_limit_ip_chamcong:0
-
+      code:'',
+      name:''
 
     }
 
@@ -57,11 +47,12 @@ class FormCtrl {
 
     this.setState('onAction',type);
 
-    /* SET STATE CHANGE
+    
+    // SET STATE CHANGE
     this.app.onStateChange({
       onAction:type,
       status:'modal opening'
-    });*/
+    });
 
 
 
