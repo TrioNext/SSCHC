@@ -30,92 +30,29 @@ class Company extends Component {
       onAction:'',
       status:'',
 
-      department:{},
-
-      body:{
-        office:{},
-        store:{},
-        users:{},
-      }
-
-
     }
 
 
   }
 
-  onStateChange(type,newState){
+  onStateChange(newState){
+
+
+    //alert(JSON.stringify(newState))
 
 
 
-
-      switch (type) {
-        case 'toolbar':
-
-          this.setState({
-            onTab:newState.onTab,
-            onAction:newState.onAction
-          });
-        break;
-        case 'body':
-
-            this.state.body[newState.onTab] = newState;
-
-
-            console.log(type);
-            console.log(this.state.body[newState.onTab]);
-
-
-            //console.log(newState);
-            //this.state['body'] =
-            //console.log(newState);
-
-            //console.log(this.state[type]);
-
-        break;
-
-        case 'footer':
-
-        break ;
-        default:
-          this.state[type] = newState;
+    this.setState(Object.assign(this.state,newState));
 
 
 
-          console.log(type);
-          console.log(this.state[type]);
-
-          /* KHI HOAN THÀNH 1 TÁC VỤ : refesh render : */
-          if(newState.status==='done'){
-            this.setState({status:'done'})
-          }
-        break;
-
-      }
 
   }
 
-  onDataChange(type,newData){
+  onDataChange(newData){
 
-      switch (type) {
-        case 'toolbar':
-          this.data[type] = newData;
-          console.log(this.data[type]);
-        break;
+    //alert(JSON.stringify(newData));
 
-        case 'body':
-          //alert(JSON.stringify(newData));
-
-        break;
-
-        case 'footer':
-
-        break;
-
-        default:
-
-        break;
-      }
 
   }
 
@@ -126,15 +63,17 @@ class Company extends Component {
 
 
 
+
     return(
       <div className="animated fadeIn">
         <div className="ubuntu-app" style={{ border:0}}>
 
             <main>
 
-                <CompanyToolBar onDataChange={ (data)=>{ this.onDataChange('toolbar',data) } }  onStateChange={ (newState)=>{ this.onStateChange('toolbar',newState) } } onTab={ onTab } />
+                <CompanyToolBar  onStateChange={ (newState)=>{ this.onStateChange(newState) } } onTab={ onTab } />
 
-                <CompanyBody onDataChange={ (data)=>{ this.onDataChange('body',data) } } onStateChange={ (newState)=>{ this.onStateChange('body',newState) } }  onTab={onTab} onAction={ onAction } />
+
+                <CompanyBody onDataChange={ (data)=>{ this.onDataChange(data) } } onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={ onAction } />
 
             </main>
 
