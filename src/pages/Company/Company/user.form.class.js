@@ -52,17 +52,20 @@ class FormCtrl {
   open(type, info){
 
     this.form = info || this.form;
+    this.active = true ;
 
 
     this.setState('onAction',type);
 
-    /* SET STATE CHANGE */
+    /* SET STATE CHANGE
     this.app.onStateChange({
       onAction:type,
       status:'modal opening'
-    });
+    });*/
 
-    this.active = true ;
+
+
+
 
   }
 
