@@ -93,39 +93,18 @@ class StoreForm extends Component{
       onAction:this.props.onAction
     }
 
-    this.modal = props.modal;
-    this.name = props.name;
-
-
-
   }
-
-
-  componentWillReceiveProps(newProps){
-
-      this.modal = newProps.modal;
-
-      this.setState({
-        onAction:newProps.onAction
-      });
-
-
-  }
-
-
 
 
   render(){
 
-    const modalTitle = this.state.onAction ==='post' ? 'Tạo ': 'Cập nhật ';
-
     return (
 
-      <BenModal name={modalTitle + this.name } state={ this.state} modal={ this.modal }  >
+      <BenModal name={ this.props.name } onAction={ this.props.onAction } modal={ this.props.modal }  >
 
-        <FrmR1 modal={ this.modal }  />
-        <FrmR2 modal={ this.modal }  />
-        <FrmR3 modal={ this.modal }  />
+        <FrmR1 modal={ this.props.modal }  />
+        <FrmR2 modal={ this.props.modal }  />
+        <FrmR3 modal={ this.props.modal }  />
 
 
       </BenModal>
