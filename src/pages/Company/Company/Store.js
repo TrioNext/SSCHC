@@ -29,13 +29,14 @@ class Store extends Component{
 
       this.data = {
         id:0,
+        name:'store',
         list:[]
       }
 
       this.state = {
+        name:'store',
         onAction:'',
         status:'',
-
         onTab:props.onTab
       }
 
