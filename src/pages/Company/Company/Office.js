@@ -6,8 +6,8 @@ import { Row, Col } from 'reactstrap';
 import Model from '../../../config/model';
 import Hook from '../../../config/hook.class';
 
-import OfficeClass from './office.class';
-import OfficeForm from './office.form';
+import offModalCtrl from './offModalCtrl';
+import OffModalComp from './offModalComp';
 
 
 
@@ -38,7 +38,7 @@ class Office extends Component{
         status:'',
 
         onTab:props.onTab,
-
+        isIniData:false
       }
 
 
@@ -48,8 +48,16 @@ class Office extends Component{
 
     setup(){
       this.model = new Model('offices');
+
+      this.model.set('paginate',{
+        p:0,
+        max:'all',
+        is_deleted:0
+      })
+
+
       this.hook = new Hook(this);
-      this.modal = new OfficeClass(this);
+      this.modal = new offModalCtrl(this);
     }
 
     setData(name,value){
@@ -66,20 +74,16 @@ class Office extends Component{
 
       /* KEEP PRIVATE DATA*/
       Object.assign(this.state,newState);
-
       /* trả giá tri về cho parent component sử dụng */
       this.props.onStateChange(this.state);
 
-
     }
 
+    /* HERE ARE PLACE RECEIVE DATA FROM HOOK ON DONE WITH DATABASE  */
     onDataChange(list){
 
       /* TRẢ GIÁ TRỊ VỀ CHO PARENT COMPONENT SỬ DỤNG*/
-
       this.data.list = list ;
-      this.props.onDataChange(this.data);
-
       /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
       this.onStateChange({
         status:'done'
@@ -109,20 +113,27 @@ class Office extends Component{
       });
 
     }
-    componentDidMount(){
 
-
+    initData(){
       this.loadOffice();
       this.modal.loadCityList();
       this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
 
+      this.state.isIniData = true ;
 
 
     }
+    componentDidMount(){
+
+
+      //this.loadOffice();
+      //this.modal.loadCityList();
+      //this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
 
 
 
-
+    }
+    
     /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
     componentWillReceiveProps(newProps){
 
@@ -131,6 +142,11 @@ class Office extends Component{
       if(newProps.onTab===this.data.name){
 
         Object.assign(this.state,newProps);
+
+        if(!this.state.isIniData){
+          this.initData()
+        }
+
 
         if(newProps.onAction==='post'){
             this.modal.open('post');
@@ -186,7 +202,7 @@ class Office extends Component{
 
                   </div>
                   <div className="file-name">
-                    <i className="fa fa-map-marker mr-5"></i> { data.address.substring(0,30) }
+                    <i className="fa fa-map-marker mr-5"></i> { data.address }
                     <br/>
                     <span> {   moment(date).fromNow() } </span>
                   </div>
@@ -203,14 +219,11 @@ class Office extends Component{
 
 
 
-
-
-
         return(
             <div hidden={  this.props.onTab === 'office' ? false : true } >
 
 
-                 <OfficeForm onStateChange={(newState)=>{ this.onStateChange(newState) }} name={ modalTitle  } onAction={ this.props.onAction} modal={ this.modal } />
+                 <OffModalComp  name={ modalTitle  } onAction={ this.props.onAction} modal={ this.modal } />
 
                  <Row>
 
