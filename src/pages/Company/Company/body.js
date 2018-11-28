@@ -23,7 +23,7 @@ class CompanyBody extends Component{
     }
 
     this.state = {
-      onTab:props.onTab,
+      onTab:'',
       onAction:'',
       status:'',
 
@@ -42,17 +42,7 @@ class CompanyBody extends Component{
       /* share gia tri cho parent component dùng  : để parent react component*/
       this.props.onStateChange(this.state);
       
-
   }
-
-  onDataChange(newData){
-
-      //alert(JSON.stringify(newData));
-      //this.setData(type,newData);
-      this.props.onDataChange(newData);
-
-  }
-
 
 
   render(){
@@ -64,9 +54,9 @@ class CompanyBody extends Component{
     return(
       <div className="detail" >
 
-        <Office onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange(newData) } } onTab={onTab} onAction={ onAction } />
-        <Store onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange(newData) } }  onTab={onTab} onAction={onAction} />
-        <User onStateChange={ (newState)=>{ this.onStateChange(newState) } } onDataChange={ (newData)=>{ this.onDataChange(newData) } } onTab={onTab} onAction={onAction} />
+        <Office onStateChange={ (newState)=>{ this.onStateChange(newState) } } onTab={onTab} onAction={ onAction } />
+        <Store onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={onAction} />
+        <User onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={onAction} />
 
       </div>
     )
