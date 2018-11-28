@@ -8,8 +8,8 @@ import {  Row, Col } from 'reactstrap';
 import Model from '../../../config/model';
 import Hook from '../../../config/hook.class';
 
-import StoreClass from './store.class';
-import StoreForm from './store.form';
+import storeModalCtrl from './storeModalCtrl';
+import StoreModalComp from './StoreModalComp';
 
 
 
@@ -37,7 +37,9 @@ class Store extends Component{
         name:'store',
         onAction:'',
         status:'',
-        onTab:props.onTab
+        onTab:props.onTab,
+
+        isIniData:false
       }
 
       this.setup();
@@ -45,9 +47,15 @@ class Store extends Component{
 
     setup(){
       this.model = new Model('stores');
-      this.hook = new Hook(this);
 
-      this.modal = new StoreClass(this);
+      this.model.set('paginate',{
+        p:0,
+        max:'all',
+        is_deleted:0
+      })
+
+      this.hook = new Hook(this);
+      this.modal = new storeModalCtrl(this);
     }
 
     setData(name,value){
@@ -76,7 +84,8 @@ class Store extends Component{
       /* TRẢ GIÁ TRỊ VỀ CHO PARENT COMPONENT SỬ DỤNG*/
 
       this.data.list = list ;
-      this.props.onDataChange(this.data);
+      //this.props.onDataChange(this.data);
+
 
       /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
       this.onStateChange({
@@ -145,12 +154,19 @@ class Store extends Component{
     componentDidMount(){
 
 
+      //this.loadStore();
+      //this.modal.loadCityList();
+      //this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
+
+    }
+
+    initData(){
       this.loadStore();
       this.modal.loadCityList();
       this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
 
+      this.state.isIniData = true ;
     }
-
 
 
     /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
@@ -160,6 +176,11 @@ class Store extends Component{
       if(newProps.onTab===this.code){
 
         Object.assign(this.state,newProps);
+
+        if(!this.state.isIniData){
+          this.initData()
+        }
+        
         if(newProps.onAction==='post'){
             this.modal.open('post');
         }
@@ -200,7 +221,7 @@ class Store extends Component{
             <div hidden={  this.props.onTab === this.code ? false : true } >
 
 
-                 <StoreForm name={ modalTitle} onAction={ this.props.onAction} modal={ this.modal } />
+                 <StoreModalComp name={ modalTitle} onAction={ this.props.onAction} modal={ this.modal } />
 
                  <Row>
 
