@@ -1,9 +1,23 @@
 
 /* MODEL NÀY CÓ THỂ KẾT NỐI VỚI REDUX - MOBX để luu cache database dùng lại*/
 
+/*
+MODEL : MAKE RESFUL API
+
+    TRIGGER AFFTER DONE WITH DATABASE
+    - SAVE PRIVATE DATA
+    - SAVE GLOBAL DATA
+          on POST
+          on PUT
+          on DELETE
+
+    -> TRIGGER FOR MAIN DATACHANGE
+    -> TRIGGER ON ACTION GET ERROR
+*/
+
+
 import server from './server';
 import axios from 'axios';
-
 
 
 class Model {
@@ -13,6 +27,7 @@ class Model {
 
     this.data = [];
     this.status = '';
+    this.type = '';
 
     /* WHO */
     this.server = server ;
@@ -29,7 +44,6 @@ class Model {
 
 
   }
-
 
 
   setup(){
@@ -72,10 +86,8 @@ class Model {
 
   delete(id,onSuccess,onError){
 
-
-
+      this.type = 'DELETE';
       const url = server.base() + this.model+'/'+id ;
-
 
       axios.delete(url,this.setting.config)
             .then((res)=>{
@@ -91,6 +103,7 @@ class Model {
 
   post(data,onSuccess,onError){
 
+    this.type = 'POST';
     const url = server.base() + this.model;
 
     axios.post(url,data,this.setting.config)
@@ -107,7 +120,7 @@ class Model {
 
   put(id,data,onSuccess,onError){
 
-
+      this.type = 'PUT';
       const url = server.base() + this.model + '?id='+id;
 
       axios.put(url,data,this.setting.config)
@@ -119,8 +132,6 @@ class Model {
               this.onError(error)
               onError(error);
       })
-
-
 
   }
 
@@ -187,6 +198,8 @@ class Model {
 
      try{
        //let data = res.data ;
+
+       //alert(this.type);
        this.set('total',list.count);
 
      }catch(err){}
@@ -205,8 +218,12 @@ class Model {
 
   get(onSuccess,onError){
 
+      this.type = 'GET';
+
       const _this = this ;
       const {url, config} = this.setting ;
+
+
 
       axios.get(url,config)
             .then((res) => {
