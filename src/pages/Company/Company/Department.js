@@ -5,11 +5,13 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,
 
 } from 'reactstrap';
 
+/* lib*/
 import Model from '../../../config/model';
 import Hook from '../../../config/hook.class';
 
-import DepartmentFormCtrl from './department.class';
-import DepartmentForm from './department.form';
+/* Modal */
+import DepModalComp from './DepModalComp';
+import depModalCtrl from './depModalCtrl';
 
 
 function ItemList(props){
@@ -51,8 +53,16 @@ class Department extends Component{
   setup(){
 
     this.model = new Model('departments');
+    this.model.set('paginate',{
+      p:0,
+      max:'all',
+      is_deleted:0
+    })
+
+
+
     this.hook = new Hook(this);
-    this.modal = new DepartmentFormCtrl(this);
+    this.modal = new depModalCtrl(this);
 
   }
 
@@ -67,8 +77,8 @@ class Department extends Component{
 
   onDataChange(list){
     this.data.list = list ;
-
-    this.props.onDataChange(this.data);
+    
+    //this.props.onDataChange(this.data);
 
     /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
     this.onStateChange({
@@ -88,15 +98,12 @@ class Department extends Component{
       _this.onDataChange(list);
 
     },(err)=>{
-      _this.hook.err(err)
+      _this.hook.error(err)
     });
   }
   componentDidMount(){
       const _this = this ;
-
-
       this.loadDeparment();
-
 
   }
 
@@ -117,7 +124,7 @@ class Department extends Component{
     return(
 
       <div>
-          <DepartmentForm onStateChange={(newState)=>{ this.onStateChange(newState) }} onAction={ this.state.onAction } name={ modalTitle  } modal={ this.modal } />
+          <DepModalComp onStateChange={(newState)=>{ this.onStateChange(newState) }} onAction={ this.state.onAction } name={ modalTitle  } modal={ this.modal } />
 
           <nav style={{background:'#DEDEDE'}}>
 
