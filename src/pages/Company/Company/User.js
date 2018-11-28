@@ -149,7 +149,7 @@ class User extends Component{
       /* TRẢ GIÁ TRỊ VỀ CHO PARENT COMPONENT SỬ DỤNG*/
 
       this.data.list = list ;
-      this.props.onDataChange(this.data);
+      //this.props.onDataChange(this.data);
 
       /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
       this.onStateChange({
@@ -198,7 +198,7 @@ class User extends Component{
     componentWillReceiveProps(newProps){
 
         /* nhận lện có liên quan đến tab : office */
-        
+
         if(newProps.onTab===this.code){
 
           Object.assign(this.state,newProps);
@@ -210,6 +210,8 @@ class User extends Component{
         }
 
     }
+
+
 
 
 
@@ -258,7 +260,7 @@ class User extends Component{
 
               <div className="ubuntu-app mb-4">
 
-                  <Department onDataChange={(list)=>{ this.onDepartmentChange(list) }}  onStateChange={(newState)=>{ this.onStateChange(newState); }}  />
+                  <Department   onStateChange={(newState)=>{ this.onStateChange(newState); }}  />
 
 
                   <main>
