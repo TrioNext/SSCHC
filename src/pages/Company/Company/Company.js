@@ -16,14 +16,6 @@ class Company extends Component {
     this.name = "Công ty"
     this.info = {}
 
-    this.data = {
-      departments:[],
-      offices:[],
-      stores:[],
-      users:[]
-    }
-
-
     this.state = {
 
       onTab:'user',
@@ -31,38 +23,18 @@ class Company extends Component {
       status:'',
 
     }
-
-
+    
   }
 
+  /* main react for all components */
   onStateChange(newState){
-
-
-    //alert(JSON.stringify(newState))
-
-
-
     this.setState(Object.assign(this.state,newState));
-
-
-
-
-  }
-
-  onDataChange(newData){
-
-    //alert(JSON.stringify(newData));
-
-
   }
 
   render(){
 
     const onTab = this.state.onTab;
     const onAction = this.state.onAction;
-
-
-
 
     return(
       <div className="animated fadeIn">
@@ -73,7 +45,7 @@ class Company extends Component {
                 <CompanyToolBar  onStateChange={ (newState)=>{ this.onStateChange(newState) } } onTab={ onTab } />
 
 
-                <CompanyBody onDataChange={ (data)=>{ this.onDataChange(data) } } onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={ onAction } />
+                <CompanyBody  onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={ onAction } />
 
             </main>
 
