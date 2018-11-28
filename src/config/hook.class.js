@@ -1,14 +1,14 @@
 
 /*
-Hooks require
-  app class OBJECT
-    data = {
-      id:0,
-      list:[]
-    }
+HOOK :  TRIGGER AFFTER DONE WITH DATABASE
+    - SAVE PRIVATE DATA
+    - SAVE GLOBAL DATA
+          on POST
+          on PUT
+          on DELETE
 
-    onDa
-
+    -> TRIGGER FOR MAIN DATACHANGE
+    -> TRIGGER ON ACTION GET ERROR
 */
 
 class Hook {
@@ -33,11 +33,7 @@ class Hook {
 
             }else{
 
-
-                let el = document.getElementById('form-err');
-                el.innerHTML = idata.message;
-
-
+                this.showErr(idata.message);
 
             }
 
@@ -50,21 +46,20 @@ class Hook {
               const {id} = idata.condition.where;
               const list = this.app.data.list;
 
+              Object.assign(this.app.modal.form,{id:id});
+
               list.map((item,index)=>{
 
-                if(item.id == id){
-                   list[index] = item;
+                if(parseInt(item.id) == parseInt(id)){
+                   list[index] = this.app.modal.form;
                 }
-              })
+              });
 
+              
               this.app.onDataChange(list);
               this.app.modal.toggle();
 
-            }else{
-
-              let el = document.getElementById('form-err');
-              el.innerHTML = idata.message;
-            }
+            }else{ this.showErr(idata.message); }
 
 
         break;
@@ -77,12 +72,10 @@ class Hook {
                  return parseInt(item.id) !== parseInt(idata.id);
                });
 
-               //this.app.data.list = list ;
-               //alert(JSON.stringify(list));
-
                this.app.onDataChange(list);
                this.app.modal.toggle();
-            }
+
+            }else{ this.showErr(idata.message); }
 
         break;
 
@@ -102,16 +95,21 @@ class Hook {
   }
   showErr(msg){
 
-      const _this = this ;
-      msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
-
+      if(typeof msg === 'object'){
+        msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
+      }
 
       let el = document.getElementById('form-err');
-      el.innerHTML = msg;
 
-
-
-
+      if(typeof el ==='object'){
+        el.innerHTML = msg;
+        setTimeout(()=>{
+          el.innerHTML = 'status';
+        },2000)
+      }else{
+        alert('Đã xãy ra lỗi')
+        console.log(msg);
+      }
 
   }
 }
