@@ -8,6 +8,7 @@ const server = {
   url:'',
   paginate:{
     p:0,
+    offset:0,
     max:10,
     is_deleted:0
   },
