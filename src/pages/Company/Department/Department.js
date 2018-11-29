@@ -94,10 +94,6 @@ class Department extends Component{
           this.onStateChange({status:'success'});
         }
       }
-
-
-    },(err)=>{
-
     });
   }
   componentDidMount(){
