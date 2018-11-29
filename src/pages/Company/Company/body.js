@@ -1,9 +1,9 @@
 
 import React, { Component} from 'react';
 
-import Office from './Office';
-import Store from './Store';
-import User from './User';
+import Office from '../Office/Office';
+import Store from '../Store/Store';
+import User from '../User/User';
 
 
 
@@ -38,25 +38,36 @@ class CompanyBody extends Component{
   onStateChange(newState){
 
       /*keep private data*/
-      Object.assign(this.state,newState);
+      //Object.assign(this.state,newState);
+
+      //alert(JSON.stringify(this.state))
       /* share gia tri cho parent component dùng  : để parent react component*/
-      this.props.onStateChange(this.state);
-      
+      //this.props.onStateChange(this.state);
+
+      this.setState(newState)
+
+
   }
+
+  onDataChange(newState){
+     this.setState(Object.assign(this.state,newState))
+  }
+
 
 
   render(){
 
     const onTab = this.props.onTab ;
     const onAction = this.props.onAction;
+    const test = this.props.test;
 
 
     return(
       <div className="detail" >
 
-        <Office onStateChange={ (newState)=>{ this.onStateChange(newState) } } onTab={onTab} onAction={ onAction } />
-        <Store onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={onAction} />
-        <User onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={onAction} />
+        <Office onStateChange={ (newState)=>{ this.onDataChange(newState) } } onTab={onTab} onAction={ onAction } />
+        <Store onStateChange={ (newState)=>{ this.onDataChange(newState) } }  onTab={onTab} onAction={onAction} />
+        <User onStateChange={ (newState)=>{ this.onDataChange(newState) } }  onTab={onTab} onAction={onAction} />
 
       </div>
     )
