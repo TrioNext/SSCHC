@@ -83,8 +83,6 @@ class Office extends Component{
 
         }
 
-      },(err)=>{
-
       });
 
     }
