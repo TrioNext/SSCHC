@@ -61,9 +61,6 @@ class OfficeModal{
             list = City.getData('regions');
             _this.listCity = list;
 
-          },(err)=>{
-            //_this.app.hook.err(err);
-
           })
 
         }
@@ -91,8 +88,6 @@ class OfficeModal{
           _this.listDistrict = District.getData('subregions');
           _this.app.onStateChange({status:'success'})
 
-        },(err)=>{
-          //_this.app.hook.err(err)
         })
     }
 
@@ -112,10 +107,7 @@ class OfficeModal{
               }
             }
 
-        },(err)=>{
-            //_this.app.hook.error(err);
-
-      })
+        })
 
     }
 
@@ -244,8 +236,6 @@ class OfficeModal{
               }
             }
 
-          },(err)=>{
-            //this.parent.app.hook.error(err);
           })
 
         },
