@@ -120,16 +120,16 @@ class Model {
 
   }
 
-  axios(method,data={},onSuccess,onError){
+  axios(method,data={},onSuccess){
 
     switch (method) {
       case 'post':
-          this.post(data,onSuccess,onError);
+          this.post(data,onSuccess);
       break;
       case 'put':
           const id = data.id;
           delete data.id ;
-          this.put(id,data,onSuccess,onError);
+          this.put(id,data,onSuccess);
       break;
 
 
@@ -137,7 +137,7 @@ class Model {
 
   }
 
-  delete(id,onSuccess,onError){
+  delete(id,onSuccess){
 
       this.type = 'DELETE';
       const url = server.base() + '/' + this.model+'/'+id ;
@@ -148,13 +148,13 @@ class Model {
               onSuccess(res.data)
             },(error)=>{
               this.onError(error)
-              onError(error)
+
             })
 
 
   }
 
-  post(data,onSuccess,onError){
+  post(data,onSuccess){
 
     this.type = 'POST';
     this.status = data ;
@@ -169,12 +169,12 @@ class Model {
           },(error)=>{
 
             this.onError(error);
-            onError(error);
+
           });
 
   }
 
-  put(id,data,onSuccess,onError){
+  put(id,data,onSuccess){
 
       this.type = 'PUT';
       this.status = data ;
@@ -188,24 +188,21 @@ class Model {
             },(error)=>{
 
               this.onError(error)
-              onError(error);
+
       })
 
   }
 
 
-  goto(p=0,onSuccess,onError){
+  goto(p=0,onSuccess){
     const {url, config, paginate, total } = this.setting ;
 
     let offset = 0 ;
-    let page = p ;
-    let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
-
-    offset = parseInt(paginate.max) * (page);
-
+    offset = parseInt(paginate.max) * (p);
 
     this.set('paginate',Object.assign(paginate,{
-      p:offset
+      offset:offset,
+      p:p
     }));
 
     this.get((res)=>{
@@ -213,15 +210,15 @@ class Model {
       onSuccess(res);
     },(err)=>{
       this.onError(err);
-      onError(err);
+
     });
   }
-  pre(onSuccess,onError){
+  pre(onSuccess){
 
     const {url, config, paginate,total} = this.setting ;
     let next = paginate.p - 1;
 
-    next = parseInt(next) < 0 ? 0 : next ;
+    next = next < 0 ? 0 : next ;
 
     let offset = 0 ;
     let page = next ;
@@ -231,7 +228,8 @@ class Model {
 
 
     this.set('paginate',Object.assign(paginate,{
-      p:offset
+      offset:offset,
+      p:next
     }));
 
     this.get((res)=>{
@@ -241,28 +239,28 @@ class Model {
     },(err)=>{
 
       this.onError(err);
-      onError(err);
+
     });
 
   }
-  next(onSuccess,onError){
+  next(onSuccess){
 
       const {url, config, paginate, total } = this.setting ;
       let next = paginate.p + 1;
 
-      let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
 
-      next = next < pages ? pages : next ;
+      let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
+      next = next < pages ? next : pages - 1 ;
 
       let offset = 0 ;
       let page = next ;
-      
+
       offset = parseInt(paginate.max) * (page);
 
 
-
       this.set('paginate',Object.assign(paginate,{
-        p:offset
+        offset:offset,
+        p:next
       }));
 
 
@@ -272,7 +270,7 @@ class Model {
         onSuccess(res);
       },(err)=>{
         this.onError(err);
-        onError(err);
+
       });
 
 
@@ -352,7 +350,7 @@ class Model {
     }
   }
 
-  get(onSuccess,onError){
+  get(onSuccess){
 
       this.type = 'GET';
 
@@ -373,7 +371,7 @@ class Model {
             (error) => {
                 var status = error.response.status;
                 this.onError(error)
-                onError(error);
+
               }
             );
   }
