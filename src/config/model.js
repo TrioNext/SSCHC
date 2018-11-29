@@ -23,18 +23,18 @@ import axios from 'axios';
 class Model {
 
   constructor(model){
-    this.model = '/'+model;
+
+    this.model = model;
 
     this.data = [];
-    this.status = '';
-    this.type = '';
+    this.status = {}; /* keep context data on doing POST - PUT  */
+    this.type = ''; /* type : http: method */
 
-    /* WHO */
-    this.server = server ;
+
 
     this.setting = {
       url:'',
-      base:server.base() + this.model+'?',
+      base:server.base() + '/'+ this.model+'?',
       config:'',
       paginate:server.paginate,
       total:0
@@ -55,6 +55,8 @@ class Model {
     this.setting.url = url;
     this.setting.config = server.setHeader();
 
+    this.setData(this.model,[]);
+
   }
 
   set(name,value){
@@ -66,6 +68,57 @@ class Model {
 
   }
 
+  setData(name,list){
+     this.data[name] = list;
+  }
+  getData(name){
+    return this.data[name];
+  }
+
+  setItemData(name,json){
+
+    const list = this.getData(name);
+    list.unshift(json);
+    this.setData(name,list);
+
+  }
+
+  updateItemData(name,id,json){
+
+    const list = this.data[name];
+    list.map((item,index)=>{
+
+      if(parseInt(item.id) == parseInt(id)){
+         list[index] = json;
+      }
+
+    });
+
+    this.setData(name,list);
+
+  }
+
+  getItemData(name,id){
+    let info = {};
+    this.data[name].map((item)=>{
+      if(item.id===id){
+        info = item;
+      }
+    })
+
+    return info ;
+  }
+
+  delItemData(name,id){
+
+    let list = this.data[name].filter((item)=>{
+      return parseInt(item.id) !== parseInt(id);
+    });
+
+    this.setData(name,list);
+
+
+  }
 
   axios(method,data={},onSuccess,onError){
 
@@ -87,7 +140,7 @@ class Model {
   delete(id,onSuccess,onError){
 
       this.type = 'DELETE';
-      const url = server.base() + this.model+'/'+id ;
+      const url = server.base() + '/' + this.model+'/'+id ;
 
       axios.delete(url,this.setting.config)
             .then((res)=>{
@@ -104,7 +157,10 @@ class Model {
   post(data,onSuccess,onError){
 
     this.type = 'POST';
-    const url = server.base() + this.model;
+    this.status = data ;
+
+
+    const url = server.base()+ '/' + this.model;
 
     axios.post(url,data,this.setting.config)
           .then((res)=>{
@@ -121,7 +177,9 @@ class Model {
   put(id,data,onSuccess,onError){
 
       this.type = 'PUT';
-      const url = server.base() + this.model + '?id='+id;
+      this.status = data ;
+
+      const url = server.base() + '/' + this.model + '?id='+id;
 
       axios.put(url,data,this.setting.config)
             .then((res)=>{
@@ -155,6 +213,10 @@ class Model {
 
     const {url, config, paginate} = this.setting ;
     let next = paginate.p - 1;
+
+    next = parseInt(next) < 0 ? 0 : next ;
+
+
     this.set('paginate',Object.assign(paginate,{
       p:next
     }));
@@ -172,8 +234,16 @@ class Model {
   }
   next(onSuccess,onError){
 
-      const {url, config, paginate} = this.setting ;
+      const {url, config, paginate, total } = this.setting ;
       let next = paginate.p + 1;
+
+
+      const count =  Math.ceil(total /  paginate.max);
+
+      next = next < count ? count : next ;
+
+
+
       this.set('paginate',Object.assign(paginate,{
         p:next
       }));
@@ -193,27 +263,76 @@ class Model {
 
 
   /* SET TOTAL - SAVE MOBX PERSIST*/
-  onSuccess(list){
+  onSuccess(res){
 
 
-     try{
-       //let data = res.data ;
+      //this.set('total',list.count);
 
-       //alert(this.type);
-       this.set('total',list.count);
+      const idata = res.data || {};
 
-     }catch(err){}
+      switch(this.type){
+
+        case 'GET':
+
+          this.set('total',res.count);
+          this.setData(this.model,res.rows);
+
+
+        break;
+
+        case 'POST':
+
+          idata.name === 'success' ?   this.setItemData(this.model,idata.data) :  this.showErr(idata.message);
+
+        break;
+
+        case 'PUT':
+
+            const {id} = idata.condition.where;
+            let json = this.status ;
+            Object.assign(json,{id:id});
+
+            idata.name === 'success' ? this.updateItemData(this.model,id,json) : this.showErr(idata.message);
 
 
 
+        break;
 
+        case 'DELETE':
+            idata.name === 'success' ? this.delItemData(this.model,idata.id) : this.showErr(idata.message);
+
+
+
+        break;
+      }
 
 
   }
 
   /* write log error*/
   onError(err){
+    const data = err.response.data ;
+    const msg = data.errors[0];
 
+    this.showErr(msg);
+  }
+
+  showErr(msg){
+    if(typeof msg === 'object'){
+      msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
+    }
+
+    let el = document.getElementById('form-err');
+
+    if(typeof el ==='object'){
+      el.innerHTML = msg;
+      setTimeout(()=>{
+        el.innerHTML = 'status';
+      },2000)
+    }else{
+
+      console.log(msg);
+    }
   }
 
   get(onSuccess,onError){
@@ -223,8 +342,8 @@ class Model {
       const _this = this ;
       const {url, config} = this.setting ;
 
-
-
+      alert(url);
+      
       axios.get(url,config)
             .then((res) => {
 
