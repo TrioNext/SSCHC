@@ -195,10 +195,17 @@ class Model {
 
 
   goto(p=0,onSuccess,onError){
-    const {url, config, paginate} = this.setting ;
+    const {url, config, paginate, total } = this.setting ;
+
+    let offset = 0 ;
+    let page = p ;
+    let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
+
+    offset = parseInt(paginate.max) * (page);
+
 
     this.set('paginate',Object.assign(paginate,{
-      p:p
+      p:offset
     }));
 
     this.get((res)=>{
@@ -211,14 +218,20 @@ class Model {
   }
   pre(onSuccess,onError){
 
-    const {url, config, paginate} = this.setting ;
+    const {url, config, paginate,total} = this.setting ;
     let next = paginate.p - 1;
 
     next = parseInt(next) < 0 ? 0 : next ;
 
+    let offset = 0 ;
+    let page = next ;
+    let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
+
+    offset = parseInt(paginate.max) * (page);
+
 
     this.set('paginate',Object.assign(paginate,{
-      p:next
+      p:offset
     }));
 
     this.get((res)=>{
@@ -237,15 +250,19 @@ class Model {
       const {url, config, paginate, total } = this.setting ;
       let next = paginate.p + 1;
 
+      let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
 
-      const count =  Math.ceil(total /  paginate.max);
+      next = next < pages ? pages : next ;
 
-      next = next < count ? count : next ;
+      let offset = 0 ;
+      let page = next ;
+      
+      offset = parseInt(paginate.max) * (page);
 
 
 
       this.set('paginate',Object.assign(paginate,{
-        p:next
+        p:offset
       }));
 
 
@@ -342,8 +359,8 @@ class Model {
       const _this = this ;
       const {url, config} = this.setting ;
 
-      alert(url);
-      
+
+
       axios.get(url,config)
             .then((res) => {
 
