@@ -39,9 +39,7 @@ class FormCtrl {
             }
           }
 
-      },(err)=>{
-        //_this.app.hook.error(err);
-    })
+      })
 
   }
 
@@ -69,7 +67,7 @@ class FormCtrl {
       onAction:type,
       status:'modal opening'
     });
-    
+
   }
 
   toggle(){
@@ -109,10 +107,6 @@ class FormCtrl {
                _this.parent.toggle();
              }
            }
-
-
-        },(err)=>{
-          //this.parent.app.hook.error(err);
         })
 
       },
