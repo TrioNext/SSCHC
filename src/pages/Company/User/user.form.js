@@ -200,9 +200,7 @@ class UserForm extends Component{
       'Phó chủ tịch',
       'Chủ tịch'
     ];
-
-
-
+    
   }
 
 
