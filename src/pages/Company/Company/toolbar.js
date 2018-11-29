@@ -47,9 +47,7 @@ class CompanyToolBar extends Component{
   onStateChange(newState){
     Object.assign(this.state,newState);
     this.props.onStateChange(this.state);
-
-
-
+    
   }
 
   /* ON CLICK CHANGE TAB*/
