@@ -122,16 +122,13 @@ class Store extends Component{
 
     loadStore(){
       const _this = this ;
-
-
+      
       this.model.get((res)=>{
 
         if(typeof res.count !== 'undefined'){
             _this.onStateChange({status:'success'})
         }
 
-      },(err)=>{
-        //_this.hook.err(err)
       });
 
     }
