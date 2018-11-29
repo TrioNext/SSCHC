@@ -102,8 +102,6 @@ class FormCtrl {
 
           _this.parent.app.hook.success(_this.parent.app.state.onAction,res);
 
-        },(err)=>{
-          this.parent.app.hook.error(err);
         })
 
       },
