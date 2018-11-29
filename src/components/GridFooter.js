@@ -58,6 +58,52 @@ class GridFooter extends Component{
     })
   }
 
+  first(){
+    this.model.goto(0,(res)=>{
+        const list = res.rows ;
+        this.onDataChange(list);
+
+    },(err)=>{
+
+    })
+  }
+  last(){
+    const { paginate, total } =  this.model.setting;
+    const count =  Math.ceil(total /  paginate.max);
+
+    const p = count - 1;
+
+    this.model.goto(p,(res)=>{
+        const list = res.rows ;
+        this.onDataChange(list);
+
+    },(err)=>{
+
+    })
+
+
+  }
+
+  next(){
+    this.model.next((res)=>{
+        const list = res.rows ;
+        this.onDataChange(list);
+
+    },(err)=>{
+
+    })
+  }
+  pre(){
+    this.model.pre((res)=>{
+        const list = res.rows ;
+        this.onDataChange(list);
+
+    },(err)=>{
+
+    })
+  }
+
+
   render(){
 
     const { paginate, total } =  this.model.setting;
@@ -76,8 +122,8 @@ class GridFooter extends Component{
       <div className="ag-footer">
          <div className="text-center">
              <ButtonGroup>
-               <Button size="xs" className="btn-datagrid" > <i className="fa fa-step-backward"></i> </Button>
-               <Button size="xs" className="btn-datagrid" > <i className="fa fa-chevron-left"></i> </Button>
+               <Button size="xs" onClick={ ()=>{ this.first() } } className="btn-datagrid" > <i className="fa fa-step-backward"></i> </Button>
+               <Button size="xs" onClick={ ()=>{ this.pre() } } className="btn-datagrid" > <i className="fa fa-chevron-left"></i> </Button>
                <Input className="btn-datagrid" onChange={ (e)=>{ this.onChange(e) } } type="select" style={{
                  borderRadius:0,
                  borderLeft:0,
@@ -87,8 +133,8 @@ class GridFooter extends Component{
                }} name="select" id="exampleSelect">
                 { list }
                </Input>
-               <Button className="btn-datagrid"  size="xs" > <i className="fa fa-chevron-right"></i> </Button>
-               <Button size="xs" className="btn-datagrid" > <i className="fa fa-step-forward"></i> </Button>
+               <Button className="btn-datagrid" onClick={ ()=>{ this.next() } } size="xs" > <i className="fa fa-chevron-right"></i> </Button>
+               <Button size="xs" onClick={ ()=>{ this.last() } } className="btn-datagrid" > <i className="fa fa-step-forward"></i> </Button>
 
              </ButtonGroup>
              <span className="info">
