@@ -23,7 +23,7 @@ class Company extends Component {
       status:'',
 
     }
-    
+
   }
 
   /* main react for all components */
@@ -36,6 +36,8 @@ class Company extends Component {
     const onTab = this.state.onTab;
     const onAction = this.state.onAction;
 
+    
+
     return(
       <div className="animated fadeIn">
         <div className="ubuntu-app" style={{ border:0}}>
@@ -44,8 +46,7 @@ class Company extends Component {
 
                 <CompanyToolBar  onStateChange={ (newState)=>{ this.onStateChange(newState) } } onTab={ onTab } />
 
-
-                <CompanyBody  onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={ onAction } />
+                <CompanyBody   onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={ onAction } />
 
             </main>
 
