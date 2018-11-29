@@ -61,9 +61,6 @@ class StoreModal{
             list = City.getData('regions');
             _this.listCity = list;
 
-          },(err)=>{
-            //_this.app.hook.err(err);
-
           })
 
         }
@@ -93,11 +90,9 @@ class StoreModal{
               _this.listDistrict = District.getData('subregions')
               _this.app.onStateChange({status:'success'})
           }
-          
 
 
-        },(err)=>{
-          //_this.app.hook.err(err)
+
         })
     }
 
@@ -115,9 +110,7 @@ class StoreModal{
               _this.toggle();
             }
           }
-        },(err)=>{
-          //  _this.app.hook.error(err);
-      })
+        })
 
     }
 
@@ -226,8 +219,6 @@ class StoreModal{
 
 
 
-          },(err)=>{
-            //this.parent.app.hook.error(err);
           })
 
         },
