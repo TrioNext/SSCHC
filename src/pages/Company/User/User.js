@@ -45,6 +45,7 @@ class User extends Component{
       this.data = {
         name:'user',
         id:0,
+        p:0,
         list:[],
         department:{
           id:0,
@@ -56,7 +57,8 @@ class User extends Component{
         onAction:'',
         status:'',
 
-        onTab:props.onTab
+        onTab:props.onTab,
+        isIniData:false
       }
 
       this.table = {
@@ -100,9 +102,10 @@ class User extends Component{
     }
 
     setup(){
-      this.model = new Model('users');
+      this.model = new Model(this.base);
 
       this.model.set('paginate',{
+        offset:0,
         p:0,
         max:10,
         sort_by:'id',
@@ -110,59 +113,27 @@ class User extends Component{
       });
 
 
-
       this.modal = new FormCtrl(this);
 
 
-
-
     }
 
-    setData(name,value){
-      this.data[name] = value ;
-    }
+
 
     onStateChange(newState){
 
       /* KEEP PRIVATE DATA : refesh inside compoents */
       this.data.list = this.model.getData(this.base) || [] ;
+      const { paginate } = this.model.setting;
+      this.data.p = paginate.p ;
+
       this.setState(Object.assign(this.state,newState));
 
       /* trả giá tri về cho parent component sử dụng */
       //this.props.onStateChange(this.state);
 
-
-
     }
 
-
-    onDataChange(list){
-
-      /* TRẢ GIÁ TRỊ VỀ CHO PARENT COMPONENT SỬ DỤNG*/
-
-      this.data.list = list ;
-      /* RE RENDER : ON DATA CHANGE THÀNH CÔNG */
-      this.onStateChange({
-        status:'success'
-      })
-
-      
-    }
-
-    goto(p){
-
-      const _this = this ;
-
-      this.mode.goto(p,(res)=>{
-
-        if(typeof res.count !== 'undefined'){
-          _this.onStateChange({status:'success'});
-        }
-
-      },(err)=>{
-        //_this.hook.err(err)
-      })
-    }
 
     /*
     type : get - pre - next
@@ -173,19 +144,24 @@ class User extends Component{
 
       this.model[type]((res)=>{
 
-
         if(typeof res.count !== 'undefined'){
           _this.onStateChange({status:'success'});
         }
 
 
-      },(err)=>{
-          //_this.hook.err(err)
       })
 
     }
-    componentDidMount(){
+
+    initData(){
       this.loadUser('get');
+      this.state.isIniData = true ;
+    }
+
+    componentDidMount(){
+      if(!this.state.isIniData){
+        this.initData()
+      }
     }
     componentWillReceiveProps(newProps){
 
@@ -287,7 +263,7 @@ class User extends Component{
 
                           </AgGridReact>
 
-                          <GridFooter onDataChange={(list)=>{  this.onDataChange(list)  }}  model={ this.model } />
+                          <GridFooter p={ this.data.p} onStateChange={(newState)=>{  this.onStateChange(newState)  }}  model={ this.model } />
 
 
                      </div>
