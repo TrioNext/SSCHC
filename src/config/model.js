@@ -339,7 +339,7 @@ class Model {
 
     let el = document.getElementById('form-err');
 
-    if(typeof el ==='object'){
+    if(el !== null){
       el.innerHTML = msg;
       setTimeout(()=>{
         el.innerHTML = 'status';
