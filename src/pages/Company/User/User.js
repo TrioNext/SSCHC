@@ -9,7 +9,11 @@ import React, {Component} from 'react';
 
 import {   Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
 
+import moment from 'moment';
 
+
+
+import userConf from '../../../config/user.conf';
 import Model from '../../../config/model';
 
 
@@ -17,18 +21,11 @@ import FormCtrl from './user.form.class';
 import UserForm from './user.form';
 
 
-
-
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
 import GridFooter from '../../../components/GridFooter';
-
-
-
-
 import Department from '../Department/Department';
 
 
@@ -50,7 +47,9 @@ class User extends Component{
         department:{
           id:0,
           list:[]
-        }
+        },
+        job_type:userConf.job_type,
+        job_level: userConf.job_level
       }
 
       this.state = {
@@ -77,7 +76,7 @@ class User extends Component{
 
                 },
                 {headerName: "Họ & Tên", field: "name"},
-                {headerName: "Văn phòng", field: "office_id"},
+                {headerName: "Văn phòng", field: "offices.name"},
                 {headerName: "Cấp bậc", field: "job_level"},
                 {headerName: "Loại hình công việc", field: "job_type"},
                 {headerName: "Số Phone ", field: "phone"},
@@ -119,6 +118,23 @@ class User extends Component{
     }
 
 
+    resetGrid(){
+        const list = this.data.list ;
+
+        list.filter((item)=>{
+          item['job_level'] = this.data.job_level[item['job_level']];
+          item['job_type'] = this.data.job_level[item['job_type']];
+          item['phone'] = item['phone'] === null ? 'n/a' : item['phone'];
+          item['date_created'] = moment(item['date_created']).format('YYYY-MM-DD HH:mm:ss');
+
+
+
+
+        });
+
+        this.table.rowData = list ;
+
+    }
 
     onStateChange(newState){
 
@@ -127,10 +143,9 @@ class User extends Component{
       const { paginate } = this.model.setting;
       this.data.p = paginate.p ;
 
-      this.setState(Object.assign(this.state,newState));
+      this.resetGrid();
 
-      /* trả giá tri về cho parent component sử dụng */
-      //this.props.onStateChange(this.state);
+      this.setState(Object.assign(this.state,newState));
 
     }
 
@@ -180,11 +195,6 @@ class User extends Component{
     }
 
 
-
-
-
-
-
     componentDidUpdate(prevProps, prevState){
       /*alert('ok man : componentDidUpdate');
       alert(JSON.stringify(prevProps));
@@ -193,6 +203,12 @@ class User extends Component{
     }
 
     onGridReady(params){
+
+       //alert('grid ready ');
+       this.gridApi = params.api;
+
+       //console.log(this.gridApi);
+
       /*this.gridApi = params.api;
       this.gridColumnApi = params.columnApi;
 
@@ -211,6 +227,17 @@ class User extends Component{
           updateData(JSON.parse(httpRequest.responseText));
         }
       };*/
+    }
+
+    btnEdit(e){
+
+      const selectedNodes = this.gridApi.getSelectedNodes()
+      const selectedData = selectedNodes.map( node => node.data )
+
+      console.log(selectedData);
+
+
+
     }
     render(){
 
@@ -237,7 +264,7 @@ class User extends Component{
                         <Col md={6}>
                             <ButtonGroup>
 
-                              <Button className={ 'btn-ubuntu'} > <i className="fa fa-pencil"></i> </Button>
+                              <Button onClick={ this.btnEdit.bind(this) } className={ 'btn-ubuntu'} > <i className="fa fa-pencil"></i> </Button>
                               <Button className={ 'btn-ubuntu'} > <i className="fa fa-trash"></i> </Button>
                               <Button className={ 'btn-ubuntu'} > <i className="fa fa-download"></i> </Button>
 
@@ -259,7 +286,7 @@ class User extends Component{
                               defaultColDef={this.table.defaultColDef}
                               onGridReady={this.onGridReady.bind(this)}
                               columnDefs={this.table.columnDefs}
-                              rowData={this.data.list}>
+                              rowData={this.table.rowData}>
 
                           </AgGridReact>
 
