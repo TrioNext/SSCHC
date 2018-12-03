@@ -14,11 +14,12 @@ import moment from 'moment';
 
 
 import userConf from '../../../config/user.conf';
+
 import Model from '../../../config/model';
 
 
-import FormCtrl from './user.form.class';
-import UserForm from './user.form';
+import userModalCtrl from './userModalCtrl';
+import UserModalComp from './userModalComp';
 
 
 import { AgGridReact } from 'ag-grid-react';
@@ -80,7 +81,7 @@ class User extends Component{
                 {headerName: "Cấp bậc", field: "job_level"},
                 {headerName: "Loại hình công việc", field: "job_type"},
                 {headerName: "Số Phone ", field: "phone"},
-                {headerName: "Người tạo ", field: "creator_id"},
+                {headerName: "E-mail ", field: "email"},
                 {headerName: "Ngày ", field: "date_created"},
 
 
@@ -102,17 +103,23 @@ class User extends Component{
 
     setup(){
       this.model = new Model(this.base);
+      this.office = new Model('offices');
 
       this.model.set('paginate',{
         offset:0,
         p:0,
-        max:10,
-        sort_by:'id',
-        sort_type:'desc'
+        max:20,
+        is_deleted:0
       });
 
+      this.office.set('paginate',{
+        offset:0,
+        p:0,
+        max:'all',
+        is_deleted:0
+      });
 
-      this.modal = new FormCtrl(this);
+      this.modal = new userModalCtrl(this);
 
 
     }
@@ -121,25 +128,33 @@ class User extends Component{
     resetGrid(){
         const list = this.data.list ;
 
+
         list.filter((item)=>{
           item['job_level'] = this.data.job_level[item['job_level']];
           item['job_type'] = this.data.job_level[item['job_type']];
           item['phone'] = item['phone'] === null ? 'n/a' : item['phone'];
-          item['date_created'] = moment(item['date_created']).format('YYYY-MM-DD HH:mm:ss');
-
-
-
-
+          item['date_created'] = moment(item['date_created']).format('YYYY-MM-DD');
         });
+
 
         this.table.rowData = list ;
 
     }
 
+
+    onDepartmentChange(moDep){
+
+       const list = moDep.getData('departments');
+       this.data.department.list = list ;
+
+
+    }
     onStateChange(newState){
 
       /* KEEP PRIVATE DATA : refesh inside compoents */
-      this.data.list = this.model.getData(this.base) || [] ;
+      this.data.list = this.model.getData() || [] ;
+
+
       const { paginate } = this.model.setting;
       this.data.p = paginate.p ;
 
@@ -245,17 +260,28 @@ class User extends Component{
         const list = this.state.data ;
         const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
 
+        const listDeps = this.data.department;
 
+
+        if(this.table.rowData.length>0){
+          alert(this.table.rowData[0]['name']);
+        }
 
         return(
             <div hidden={  this.props.onTab === this.data.name ? false : true } >
 
 
-              <UserForm departments={ this.data.department.list } name={ modalTitle } onStateChange={(newState)=>{ this.onStateChange(newState) }} onAction={ this.props.onAction} modal={ this.modal } />
+              <UserModalComp
+                  moOffice={ this.office }
+                  departments={ this.data.department.list }
+                  name={ modalTitle }
+                  onStateChange={(newState)=>{ this.onStateChange(newState) }}
+                  onAction={ this.props.onAction} modal={ this.modal }
+              />
 
               <div className="ubuntu-app mb-4">
 
-                  <Department   />
+                  <Department onDepartmentChange={(moDeparment)=>{ this.onDepartmentChange(moDeparment) }}  />
 
                   <main>
 
