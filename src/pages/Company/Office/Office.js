@@ -50,6 +50,7 @@ class Office extends Component{
       this.model = new Model(this.base);
 
       this.model.set('paginate',{
+        offset:0,
         p:0,
         max:'all',
         is_deleted:0
