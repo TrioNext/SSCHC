@@ -53,6 +53,7 @@ class Department extends Component{
 
     this.model = new Model('departments');
     this.model.set('paginate',{
+      offset:0,
       p:0,
       max:'all',
       is_deleted:0
@@ -63,6 +64,7 @@ class Department extends Component{
 
   }
 
+
   onStateChange(newState){
     /* KEEP PRIVATE DATA*/
 
@@ -71,8 +73,8 @@ class Department extends Component{
 
     this.setState(Object.assign(this.state,newState));
 
-    /* trả giá tri về cho parent component sử dụng */
-    //this.props.onStateChange(this.state);
+    /* TRA VỀ TRANG THÁI LOAD DATA THÀNH CÔNG CHO PARENT*/
+    this.props.onDepartmentChange(this.model);
 
   }
 
