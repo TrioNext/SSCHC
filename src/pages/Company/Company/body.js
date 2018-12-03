@@ -14,7 +14,6 @@ class CompanyBody extends Component{
 
 
     this.name = 'Company Main';
-    this.info = {}
 
     this.data = {
       offices:[],
@@ -44,7 +43,8 @@ class CompanyBody extends Component{
       /* share gia tri cho parent component dùng  : để parent react component*/
       //this.props.onStateChange(this.state);
 
-      this.setState(newState)
+      this.setState(Object.assign(this.state,newState));
+
 
 
   }
@@ -65,9 +65,9 @@ class CompanyBody extends Component{
     return(
       <div className="detail" >
 
-        <Office onStateChange={ (newState)=>{ this.onDataChange(newState) } } onTab={onTab} onAction={ onAction } />
-        <Store onStateChange={ (newState)=>{ this.onDataChange(newState) } }  onTab={onTab} onAction={onAction} />
-        <User onStateChange={ (newState)=>{ this.onDataChange(newState) } }  onTab={onTab} onAction={onAction} />
+        <Office onStateChange={ (newState)=>{ this.onStateChange(newState) } } onTab={onTab} onAction={ onAction } />
+        <Store onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={onAction} />
+        <User onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={onAction} />
 
       </div>
     )
