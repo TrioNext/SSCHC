@@ -72,12 +72,13 @@ class Model {
      this.data[name] = list;
   }
   getData(name){
+    name = name || this.model;
     return this.data[name];
   }
 
   setItemData(name,json){
 
-    const list = this.getData(name);
+    const list = this.getData();
     list.unshift(json);
     this.setData(name,list);
 
@@ -297,7 +298,9 @@ class Model {
 
         case 'POST':
 
+
           idata.name === 'success' ?   this.setItemData(this.model,idata.data) :  this.showErr(idata.message);
+
 
         break;
 
