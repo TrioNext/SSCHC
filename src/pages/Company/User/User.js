@@ -263,10 +263,6 @@ class User extends Component{
         const listDeps = this.data.department;
 
 
-        if(this.table.rowData.length>0){
-          alert(this.table.rowData[0]['name']);
-        }
-
         return(
             <div hidden={  this.props.onTab === this.data.name ? false : true } >
 
