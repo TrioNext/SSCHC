@@ -254,8 +254,6 @@ class UserForm extends Component{
 
 
 
-
-
     return (
 
       <BenModal name={ this.props.name } onAction={ this.props.onAction } modal={ this.props.modal }  >
