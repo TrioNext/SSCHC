@@ -80,6 +80,18 @@ REDUX
 
 
         4. Component -> Actions
+            // passing dispatch to props
+            import { bindActionCreators } from 'redux';
+            function matchDispatchToProps(dispatch){
+              return bindActionCreators({
+                action(list){
+                  return {
+                    type:"ACTION_TYPE",
+                    payload:list
+                  }
+                }
+              }, dispatch)
+           }
 
         5. Actions -> Reducers :
 
