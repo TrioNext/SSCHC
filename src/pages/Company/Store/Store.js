@@ -82,7 +82,7 @@ class Store extends Component{
     /* COMPONENT NÀY DÙNG MODAL : INTERAC INSIDE  */
     getInfo(id){
 
-      return this.data.list.find(item=> item.id == id);
+      return this.data.list.find(item=> item.id === id);
 
     }
 
