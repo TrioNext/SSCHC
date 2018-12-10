@@ -80,7 +80,7 @@ class User extends Component{
                 {headerName: "Cấp bậc", field: "job_level"},
                 {headerName: "Loại hình công việc", field: "job_type"},
                 {headerName: "Số Phone ", field: "phone"},
-                {headerName: "Người tạo ", field: "creator_id"},
+                {headerName: "E-mail ", field: "email"},
                 {headerName: "Ngày ", field: "date_created"},
 
 
@@ -125,7 +125,7 @@ class User extends Component{
           item['job_level'] = this.data.job_level[item['job_level']];
           item['job_type'] = this.data.job_level[item['job_type']];
           item['phone'] = item['phone'] === null ? 'n/a' : item['phone'];
-          item['date_created'] = moment(item['date_created']).format('YYYY-MM-DD HH:mm:ss');
+          item['date_created'] = moment(item['date_created']).format('YYYY-MM-DD');
 
 
 
