@@ -87,15 +87,18 @@ class Model {
   updateItemData(name,id,json){
 
     const list = this.data[name];
-    list.map((item,index)=>{
 
-      if(parseInt(item.id) == parseInt(id)){
+    let newList =  list.map((item,index)=>{
+
+      if(parseInt(item.id) === parseInt(id)){
          list[index] = json;
       }
 
+      return list;
+
     });
 
-    this.setData(name,list);
+    this.setData(name,newList);
 
   }
 
