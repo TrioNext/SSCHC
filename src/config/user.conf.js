@@ -1,5 +1,6 @@
 export default {
 
+  defaultPass:'admin@333',
   job_type:[
     'Nhân viên chính thức',
     'Bán thời gian',

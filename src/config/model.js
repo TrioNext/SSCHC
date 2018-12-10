@@ -72,12 +72,13 @@ class Model {
      this.data[name] = list;
   }
   getData(name){
+    name = name || this.model;
     return this.data[name];
   }
 
   setItemData(name,json){
 
-    const list = this.getData(name);
+    const list = this.getData();
     list.unshift(json);
     this.setData(name,list);
 
@@ -86,15 +87,18 @@ class Model {
   updateItemData(name,id,json){
 
     const list = this.data[name];
-    list.map((item,index)=>{
 
-      if(parseInt(item.id) == parseInt(id)){
+    let newList =  list.map((item,index)=>{
+
+      if(parseInt(item.id) === parseInt(id)){
          list[index] = json;
       }
 
+      return list;
+
     });
 
-    this.setData(name,list);
+    this.setData(name,newList);
 
   }
 
@@ -297,7 +301,9 @@ class Model {
 
         case 'POST':
 
+
           idata.name === 'success' ?   this.setItemData(this.model,idata.data) :  this.showErr(idata.message);
+
 
         break;
 

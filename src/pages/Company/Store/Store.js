@@ -46,6 +46,7 @@ class Store extends Component{
       this.model = new Model(this.base);
 
       this.model.set('paginate',{
+        offset:0,
         p:0,
         max:'all',
         is_deleted:0
@@ -81,7 +82,7 @@ class Store extends Component{
     /* COMPONENT NÀY DÙNG MODAL : INTERAC INSIDE  */
     getInfo(id){
 
-      return this.data.list.find(item=> item.id == id);
+      return this.data.list.find(item=> item.id === id);
 
     }
 
@@ -122,7 +123,7 @@ class Store extends Component{
 
     loadStore(){
       const _this = this ;
-      
+
       this.model.get((res)=>{
 
         if(typeof res.count !== 'undefined'){

@@ -47,6 +47,7 @@ class OfficeModal{
 
         const City = new Model('regions');
         City.set('paginate',{
+          offset:0,
           p:0,
           max:'all',
           sort_by:'name',
@@ -76,6 +77,7 @@ class OfficeModal{
         const District = new Model('subregions');
 
         District.set('paginate',{
+          offset:0,
           p:0,
           max:'all',
           sort_by:'name',

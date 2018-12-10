@@ -1,6 +1,8 @@
 
+import userConf from '../../../config/user.conf';
 
-class FormCtrl {
+
+class userModalCtrl {
 
   constructor(app){
 
@@ -12,12 +14,10 @@ class FormCtrl {
       status:''
     }
 
-    this.defaultValue = {
-
-    }
 
     this.form = {
       name:'',
+      password:userConf.defaultPass,
       gender:1,
       email:'',
       phone:'',
@@ -34,7 +34,54 @@ class FormCtrl {
 
   }
 
+  emptyForm(){
+    Object.keys(this.form).map((item)=>{
+      if(typeof this.form[item] ==='string'){
+        this.form[item] = '';
+      }
+    });
+
+    this.form.password = userConf.defaultPass; /* reset defaultPass*/
+  }
+
+  /* kiem tra cac gia trị trong fields : empty or 0 */
+  HookBefore(fields=[]){
+    let ret = '' ;
+
+    if(fields.length>0){
+
+      Object.keys(this.form).map((item)=>{
+        fields.map((item2)=>{
+          if(this.form[item2] === '' ||  this.form[item2] === 0){
+            ret = 'vui lòng kiểm tra thông tin ' ;
+            document.getElementById(item2).focus();
+
+
+          }
+
+        });
+      });
+    }
+
+    let el = document.getElementById('form-err');
+    el.innerHTML = ret;
+    return ret ;
+  }
   onSubmit(){
+    const _this = this ;
+    const onAction = this.state.onAction;
+
+    if(this.HookBefore(['position','username','job_level','department_id','job_type','office_id','phone','email','name'])===''){
+      this.app.model.axios(onAction,this.form,(res)=>{
+          if(typeof res.name  !== 'undefined'){
+            const status = res.name ;
+            if(status==='success'){
+              _this.app.onStateChange({status:status});
+              _this.toggle();
+            }
+          }
+      })
+    }
 
   }
 
@@ -73,7 +120,8 @@ class FormCtrl {
 
       this.active = !this.active;
 
-      this.form = this.defaultValue;
+      this.emptyForm();
+
 
       this.app.onStateChange({
         onAction:'',
@@ -118,4 +166,4 @@ class FormCtrl {
   }
 }
 
-export default FormCtrl
+export default userModalCtrl
