@@ -5,12 +5,16 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,
 
 } from 'reactstrap';
 
+import { connect } from 'react-redux';
+
 /* lib*/
 import Model from '../../../config/model';
 
 /* Modal */
 import DepModalComp from './DepModalComp';
 import depModalCtrl from './depModalCtrl';
+
+
 
 
 function ItemList(props){
@@ -107,8 +111,7 @@ class Department extends Component{
   render(){
 
     const modalTitle = this.state.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
-
-
+    
     let list = [];
     this.data.list.map((item,index)=>{
 
@@ -142,4 +145,11 @@ class Department extends Component{
   }
 }
 
-export default Department;
+function mapStateToProps(state){
+   return {
+     department:state.department
+   }
+}
+
+
+export default connect(mapStateToProps)(Department);
