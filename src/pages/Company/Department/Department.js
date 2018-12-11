@@ -6,6 +6,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,
 } from 'reactstrap';
 
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 /* lib*/
 import Model from '../../../config/model';
@@ -38,11 +39,7 @@ class Department extends Component{
     super(props);
 
     this.name = 'Bộ phận';
-    this.data = {
-      id:0,
-      name:'department',
-      list:[]
-    }
+
 
     this.state = {
       name:'',
@@ -73,24 +70,25 @@ class Department extends Component{
     /* KEEP PRIVATE DATA*/
 
     const list = this.model.getData('departments');
-    this.setData(list);
+
+    /*this.props.dispatch({
+      type:'SET',
+      list:list
+    })*/
 
     this.setState(Object.assign(this.state,newState));
 
-    /* TRA VỀ TRANG THÁI LOAD DATA THÀNH CÔNG CHO PARENT*/
-    this.props.onDepartmentChange(this.model);
+
 
   }
 
-  setData(list){
 
-    this.data.list = list ;
-
-  }
 
 
   loadDeparment(){
     const _this = this ;
+
+
 
     this.model.get((res)=>{
 
@@ -104,22 +102,26 @@ class Department extends Component{
   }
   componentDidMount(){
       const _this = this ;
-      this.loadDeparment();
+      //this.loadDeparment();
+      this.props.fetch(this.model)
 
   }
 
   render(){
 
     const modalTitle = this.state.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
-    
+
     let list = [];
-    this.data.list.map((item,index)=>{
 
-      let active = parseInt(item.id) === this.data.id ? true  : false;
-      list.push(<ItemList active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this.modal.open('put',{ id:item.id,code:item.code,name:item.name } ) } }  onClick={()=>{ this.onItem(item) }}  name={ item.name}  num={item.num}  />)
+    this.props.department.map((item,index)=>{
+
+      let active = false ; //parseInt(item.id) === this.data.id ? true  : false;
+      list.push(<ItemList onClick={()=>{ console.log(item);  }} active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this.modal.open('put',{ id:item.id,code:item.code,name:item.name } ) } }   name={ item.name}    />)
 
 
-    })
+    });
+
+
 
 
     return(
@@ -145,11 +147,33 @@ class Department extends Component{
   }
 }
 
+
+const selectItem = ()=>{
+
+  return [];
+}
+
+const fetch = (model)=>{
+  return {
+    type:'FETCH',
+    model:model
+
+  }
+}
+
+function mapDispatchToPros(dispatch){
+   return bindActionCreators({
+     selectItem:selectItem,
+     fetch:fetch
+   },dispatch)
+}
+
 function mapStateToProps(state){
+
    return {
      department:state.department
    }
 }
 
 
-export default connect(mapStateToProps)(Department);
+export default connect(mapStateToProps,mapDispatchToPros)(Department);
