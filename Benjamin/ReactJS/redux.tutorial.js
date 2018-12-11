@@ -82,18 +82,85 @@ REDUX
         4. Component -> Actions
             // passing dispatch to props
             import { bindActionCreators } from 'redux';
-            function matchDispatchToProps(dispatch){
-              return bindActionCreators({
-                action(list){
-                  return {
-                    type:"ACTION_TYPE",
-                    payload:list
-                  }
+
+            // ACTIONS
+            export default actionMethod = (object)=>{
+                return {
+                   type:"ACTION_TYPE",
+                   payload:object
                 }
-              }, dispatch)
-           }
+            };
+
+            import { actionMethod } from './ actions/index'
+
+
+            function mapDispatchToPros(dispatch){
+                return {
+                  bindActionCreators({
+                    actionMethod:actionMethod
+                  },dispatch)
+               }
+            }
+
+            // Write Component on render() : with on CLick
+            <div onCLick={ ()=>{  this.props.actionMethod(object) } }></div>
 
         5. Actions -> Reducers :
+            - ActionType
+            - Action creator ==> Put Reducer : diagram flugin view
+
+
+        BASIC : EX
+            const myData = (state = [] ,action)=>{
+              switch(action.type){
+                case 'ADD':
+
+
+                  state.push(action.data);
+
+                  return state;
+
+
+                break ;
+
+                case 'UPDATE':
+
+
+                  return state;
+                break;
+
+                default :
+                  return state
+              }
+            }
+
+            /* STORE*/
+            const test = createStore(myData);
+
+            /* ACTIONS */
+            test.dispatch({
+              type:'ADD',
+              name:'takumi',
+              data:{
+                username:'benjamin',
+                name:'Benjamin HD'
+
+              }
+            });
+
+            test.dispatch({
+              type:'ADD',
+              name:'takumi',
+              data:{
+                username:'test001',
+                name:'User for testing'
+
+              }
+            })
+
+
+
+            console.log(test.getState());
 
 
 
