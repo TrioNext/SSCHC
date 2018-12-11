@@ -11,7 +11,7 @@ import {   Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
 
 import moment from 'moment';
 
-
+import { connect } from 'react-redux';
 
 import userConf from '../../../config/user.conf';
 
@@ -260,7 +260,6 @@ class User extends Component{
         const list = this.state.data ;
         const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
 
-        const listDeps = this.data.department;
 
 
         return(
@@ -269,7 +268,7 @@ class User extends Component{
 
               <UserModalComp
                   moOffice={ this.office }
-                  departments={ this.data.department.list }
+                  departments={ this.props.department }
                   name={ modalTitle }
                   onStateChange={(newState)=>{ this.onStateChange(newState) }}
                   onAction={ this.props.onAction} modal={ this.modal }
@@ -277,7 +276,7 @@ class User extends Component{
 
               <div className="ubuntu-app mb-4">
 
-                  <Department onDepartmentChange={(moDeparment)=>{ this.onDepartmentChange(moDeparment) }}  />
+                  <Department   />
 
                   <main>
 
@@ -323,10 +322,14 @@ class User extends Component{
         )
     }
 
-
-
-
-
 }
 
-export default User;
+/* GẮNG : redux data -> component props  */
+function mapStateToProps(state){
+
+   return {
+     department:state.department
+   }
+}
+
+export default connect(mapStateToProps)(User) ;
