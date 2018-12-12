@@ -30,8 +30,6 @@ import GridFooter from '../../../components/GridFooter';
 import Department from '../Department/Department';
 
 
-
-
 class User extends Component{
 
     constructor(props){
@@ -261,6 +259,8 @@ class User extends Component{
         const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
 
 
+        console.log(this.props.store);
+
 
         return(
             <div hidden={  this.props.onTab === this.data.name ? false : true } >
@@ -328,7 +328,7 @@ class User extends Component{
 function mapStateToProps(state){
 
    return {
-     department:state.department
+     store:state
    }
 }
 
