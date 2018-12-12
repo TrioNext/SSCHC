@@ -71,10 +71,10 @@ class Department extends Component{
 
     const list = this.model.getData('departments');
 
-    /*this.props.dispatch({
+    this.props.dispatch({
       type:'SET',
       list:list
-    })*/
+    })
 
     this.setState(Object.assign(this.state,newState));
 
@@ -102,8 +102,9 @@ class Department extends Component{
   }
   componentDidMount(){
       const _this = this ;
-      //this.loadDeparment();
-      this.props.fetch(this.model)
+      this.loadDeparment();
+      //this.props.fetch(this.model)
+
 
   }
 
@@ -176,4 +177,4 @@ function mapStateToProps(state){
 }
 
 
-export default connect(mapStateToProps,mapDispatchToPros)(Department);
+export default connect(mapStateToProps)(Department);
