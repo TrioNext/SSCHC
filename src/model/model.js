@@ -22,7 +22,7 @@ import axios from 'axios';
 
 class Model {
 
-  
+
   constructor(model){
 
     this.model = model; // string
@@ -89,7 +89,7 @@ class Model {
 
     const list = this.data[name];
 
-    let newList =  list.map((item,index)=>{
+    list.map((item,index)=>{
 
       if(parseInt(item.id) === parseInt(id)){
          list[index] = json;
@@ -99,7 +99,7 @@ class Model {
 
     });
 
-    this.setData(name,newList);
+
 
   }
 
@@ -313,6 +313,7 @@ class Model {
             const {id} = idata.condition.where;
             let json = this.status ;
             Object.assign(json,{id:id});
+
 
             idata.name === 'success' ? this.updateItemData(this.model,id,json) : this.showErr(idata.message);
 
