@@ -6,30 +6,49 @@ action = {
   data:{}
   id:0
 }
-
-II. REDUX :
-
-	2. Reducers : store  : COMUNICATE : model - socket
-		- Store data for  :
-			=> Model method : cached locally
-			=> Socket mehod : cached locally
-
-			<= Recieve data : on Model respone
-			<= Recieve data : on Socket respone
-
 */
 
-const reducerUser = (state=[], action={})=>{
-    switch(action.type){
-      case 'FETCH':
-          alert('fetch data from redux user');
-          
-          return state;
-      break ;
+const MODE = 'user';
 
-      default :
-        return state
-    }
-}
+export default function(state = [],action = {}){
+  switch(action.type){
 
-export default reducerUser;
+
+    case 'set-'+MODE:
+      state = action.list ;
+      return state ;
+    break ;
+
+    case 'SET':
+
+      state = action.list ;
+      return state ;
+
+    break ;
+
+    case 'get-'+MODE:
+
+       let ret = {};
+      state.map((item)=>{
+        if(parseInt(item)===action.id){
+          ret = item;
+        }
+      });
+
+      return ret ;
+    break;
+
+    case 'push-'+MODE:
+      return state ;
+    break;
+
+    case 'delete-'+MODE  :
+      return state ;
+    break;
+
+
+    default:
+      return state;
+
+  }
+};
