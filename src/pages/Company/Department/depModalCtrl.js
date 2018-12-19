@@ -1,5 +1,7 @@
 
 
+import hookBefore from '../../../hook/beforePost';
+
 class FormCtrl {
 
   constructor(app){
@@ -29,17 +31,24 @@ class FormCtrl {
     const _this = this ;
     const onAction = this.state.onAction;
 
-    this.app.model.axios(onAction,this.form,(res)=>{
 
-          if(typeof res.name  !== 'undefined'){
-            const status = res.name ;
-            if(status==='success'){
-              _this.app.onStateChange({status:status});
-              _this.toggle();
+    if(hookBefore(['code','name'],this.form)===''){
+        this.app.model.axios(onAction,this.form,(res)=>{
+
+            if(typeof res.name  !== 'undefined'){
+              const status = res.name ;
+              if(status==='success'){
+                _this.app.onStateChange({onAction:onAction,status:'success'});
+                _this.toggle();
+              }
             }
-          }
 
-      })
+        })
+    }
+
+
+
+
 
   }
 
