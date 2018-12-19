@@ -8,17 +8,17 @@ action = {
 }
 */
 
+const MODE = 'department';
+
 export default function(state = [],action = {}){
   switch(action.type){
 
 
-    case 'FETCH':
-        //alert('fetch data from redux');
+    case 'set-'+MODE:
+      state = action.list ;
+      return state ;
+    break ;
 
-
-
-        return state;
-    break;
     case 'SET':
 
       state = action.list ;
@@ -26,7 +26,7 @@ export default function(state = [],action = {}){
 
     break ;
 
-    case 'GET':
+    case 'get-'+MODE:
 
        let ret = {};
       state.map((item)=>{
@@ -38,17 +38,14 @@ export default function(state = [],action = {}){
       return ret ;
     break;
 
-    case 'POST':
+    case 'push-'+MODE:
       return state ;
     break;
 
-    case 'PUT':
-
+    case 'delete-'+MODE  :
+      return state ;
     break;
 
-    case 'DELETE':
-
-    break ;
 
     default:
       return state;
