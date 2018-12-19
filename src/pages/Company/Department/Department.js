@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 /* lib*/
-import Model from '../../../config/model';
+import Model from '../../../model/model';
 
 /* Modal */
 import DepModalComp from './DepModalComp';
@@ -68,34 +68,35 @@ class Department extends Component{
 
   onStateChange(newState){
     /* KEEP PRIVATE DATA*/
+    let list = [] ;
 
-    const list = this.model.getData('departments');
-
+    /* REDUX ACTIONS */
     this.props.dispatch({
       type:'SET',
-      list:list
-    })
+      list:this.model.getData('departments')
+    });
+
+
 
     this.setState(Object.assign(this.state,newState));
 
 
-
   }
-
+  
 
 
 
   loadDeparment(){
     const _this = this ;
 
-
-
     this.model.get((res)=>{
 
       if(typeof res.count !== 'undefined'){
         if(res.count > 0){
 
-          this.onStateChange({status:'success'});
+
+          this.onStateChange({onAction:'get',status:'success'});
+
         }
       }
     });
@@ -123,8 +124,6 @@ class Department extends Component{
     });
 
 
-
-
     return(
 
       <div>
@@ -149,28 +148,14 @@ class Department extends Component{
 }
 
 
-const selectItem = ()=>{
-
-  return [];
-}
-
-const fetch = (model)=>{
-  return {
-    type:'FETCH',
-    model:model
-
-  }
-}
-
-function mapDispatchToPros(dispatch){
+/*function mapDispatchToPros(dispatch){
    return bindActionCreators({
      selectItem:selectItem,
      fetch:fetch
    },dispatch)
-}
+}*/
 
 function mapStateToProps(state){
-
    return {
      department:state.department
    }
