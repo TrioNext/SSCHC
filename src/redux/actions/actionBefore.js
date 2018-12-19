@@ -2,7 +2,7 @@
 
 export default {
 
-  fetch(){
-    alert('asd')
+  fetch(model){
+
   }
 }
