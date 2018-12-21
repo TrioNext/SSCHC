@@ -6,6 +6,8 @@ OfficeModal :  it's a Controller for <BenModal/>
 
 import Model from '../../../config/model';
 
+import hookBefore from '../../../hook/beforePost';
+
 
 class OfficeModal{
 
@@ -17,6 +19,8 @@ class OfficeModal{
         onAction:'',
         status:''
       }
+
+      this.currentRegionCode = '79';
 
       this.defaultValue = {
         region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
@@ -40,32 +44,7 @@ class OfficeModal{
       this.listCity = [];
       this.listDistrict = [];
 
-    }
-
-    loadCityList(){
-        const _this = this;
-
-        const City = new Model('regions');
-        City.set('paginate',{
-          offset:0,
-          p:0,
-          max:'all',
-          sort_by:'name',
-          sort_type:'asc'
-        })
-
-        let list = City.getData('regions');
-        if(list.length===0){
-
-          City.get((res)=>{
-
-            list = City.getData('regions');
-            _this.listCity = list;
-
-          })
-
-        }
-
+      this.subregions = [] ;
 
     }
 
@@ -73,10 +52,9 @@ class OfficeModal{
 
 
         const _this = this;
+        this.moSubRegion = new Model('subregions');
 
-        const District = new Model('subregions');
-
-        District.set('paginate',{
+        this.moSubRegion.set('paginate',{
           offset:0,
           p:0,
           max:'all',
@@ -85,9 +63,11 @@ class OfficeModal{
           parent_code:parent_code
         })
 
-        District.get((res)=>{
+        this.moSubRegion.get((res)=>{
 
-          _this.listDistrict = District.getData('subregions');
+          _this.subregions = this.moSubRegion.getData('subregions');
+
+
           _this.app.onStateChange({status:'success'})
 
         })
@@ -99,17 +79,23 @@ class OfficeModal{
       const _this = this ;
       const onAction = this.state.onAction;
 
-      this.app.model.axios(onAction,this.form,(res)=>{
-            //_this.app.hook.success(onAction,res);
-            if(typeof res.name  !== 'undefined'){
-              const status = res.name ;
-              if(status==='success'){
-                _this.app.onStateChange({status:status});
-                _this.toggle();
-              }
-            }
+      if(hookBefore(['code','name','phone','address'],this.form)===''){
 
-        })
+        this.app.model.axios(onAction,this.form,(res)=>{
+              //_this.app.hook.success(onAction,res);
+              if(typeof res.name  !== 'undefined'){
+                const status = res.name ;
+                if(status==='success'){
+                  _this.app.onStateChange({status:status});
+                  _this.toggle();
+                }
+              }
+
+        });
+
+      }
+
+
 
     }
 
@@ -178,23 +164,17 @@ class OfficeModal{
       const _this = this ;
       this.setState('onAction',type);
 
+      this.currentRegionCode = typeof info !=='undefined' ? info.region_code : this.currentRegionCode;
 
-      if(typeof info !== 'undefined'){
-        this.loadDistrictList(info.region_code,()=>{
+      this.loadDistrictList(this.currentRegionCode,()=>{
 
-          /* SET STATE CHANGE */
-          _this.app.onStateChange({
-            onAction:type,
-            status:'modal opening'
-          });
-
-
-
+        /* SET STATE CHANGE */
+        _this.app.onStateChange({
+          onAction:type,
+          status:'modal opening'
         });
 
-      }
-
-
+      });
 
 
 
