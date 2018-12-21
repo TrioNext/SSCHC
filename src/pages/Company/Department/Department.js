@@ -1,12 +1,8 @@
 
 import React, {Component} from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label,
-    Popover, PopoverHeader, PopoverBody
+import { Button } from 'reactstrap';
 
-} from 'reactstrap';
-
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import store from '../../../redux/store';
 
 /* lib*/
 import Model from '../../../model/model';
@@ -40,9 +36,12 @@ class Department extends Component{
 
     this.name = 'Bộ phận';
 
+    this.data = {
+      department:[]
+    }
 
     this.state = {
-      name:'',
+      name:'department',
       onAction:'',
       status:'',
     }
@@ -58,33 +57,24 @@ class Department extends Component{
       p:0,
       max:'all',
       is_deleted:0
-    })
-
+    });
 
     this.modal = new depModalCtrl(this);
+
+    this.data.department = store.getState().department;
 
   }
 
 
   onStateChange(newState){
     /* KEEP PRIVATE DATA*/
-    let list = [] ;
 
     /* REDUX ACTIONS */
-    this.props.dispatch({
-      type:'SET',
-      list:this.model.getData('departments')
-    });
-
-
-
+    this.data.department = store.getState().department;
     this.setState(Object.assign(this.state,newState));
 
 
   }
-  
-
-
 
   loadDeparment(){
     const _this = this ;
@@ -93,7 +83,6 @@ class Department extends Component{
 
       if(typeof res.count !== 'undefined'){
         if(res.count > 0){
-
 
           this.onStateChange({onAction:'get',status:'success'});
 
@@ -115,7 +104,7 @@ class Department extends Component{
 
     let list = [];
 
-    this.props.department.map((item,index)=>{
+    this.data.department.map((item,index)=>{
 
       let active = false ; //parseInt(item.id) === this.data.id ? true  : false;
       list.push(<ItemList onClick={()=>{ console.log(item);  }} active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this.modal.open('put',{ id:item.id,code:item.code,name:item.name } ) } }   name={ item.name}    />)
@@ -155,11 +144,4 @@ class Department extends Component{
    },dispatch)
 }*/
 
-function mapStateToProps(state){
-   return {
-     department:state.department
-   }
-}
-
-
-export default connect(mapStateToProps)(Department);
+export default Department;
