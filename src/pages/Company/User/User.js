@@ -11,11 +11,10 @@ import {   Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
 
 import moment from 'moment';
 
-import { connect } from 'react-redux';
 
 import userConf from '../../../config/user.conf';
 
-import Model from '../../../config/model';
+import Model from '../../../model/model';
 
 
 import userModalCtrl from './userModalCtrl';
@@ -259,7 +258,6 @@ class User extends Component{
         const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
 
 
-        console.log(this.props.store);
 
 
         return(
@@ -324,12 +322,12 @@ class User extends Component{
 
 }
 
-/* GẮNG : redux data -> component props  */
+/* GẮNG : redux data -> component props
 function mapStateToProps(state){
 
    return {
      store:state
    }
-}
+}*/
 
-export default connect(mapStateToProps)(User) ;
+export default User ;
