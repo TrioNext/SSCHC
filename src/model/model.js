@@ -19,6 +19,9 @@ MODEL : MAKE RESFUL API
 import server from '../config/server';
 import axios from 'axios';
 
+import store from '../redux/store';
+
+
 
 class Model {
 
@@ -64,13 +67,18 @@ class Model {
     this.setting[name] = value;
     this.setup();
   }
-  get(name){
-    return this.setting[name];
 
-  }
 
+  /* CONNECT REDUX  HERE */
   setData(name,list){
      this.data[name] = list;
+        
+
+     store.dispatch({
+       type:this.type+'-'+name,
+       list:list
+     });
+
   }
   getData(name){
     name = name || this.model;
@@ -81,7 +89,7 @@ class Model {
 
     const list = this.getData();
     list.unshift(json);
-    this.setData(name,list);
+    this.setData(name,list); //  ADD REDUCER TOO
 
   }
 
@@ -98,6 +106,8 @@ class Model {
       return list;
 
     });
+
+    this.setData(name,list); // update to REDUCER
 
 
 
@@ -120,7 +130,7 @@ class Model {
       return parseInt(item.id) !== parseInt(id);
     });
 
-    this.setData(name,list);
+    this.setData(name,list); // UPDATE TO REDUCER
 
 
   }
