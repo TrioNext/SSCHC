@@ -49,17 +49,10 @@ class CompanyBody extends Component{
 
   }
 
-  onDataChange(newState){
-     this.setState(Object.assign(this.state,newState))
-  }
-
-
-
   render(){
 
     const onTab = this.props.onTab ;
     const onAction = this.props.onAction;
-    const test = this.props.test;
 
 
     return(
