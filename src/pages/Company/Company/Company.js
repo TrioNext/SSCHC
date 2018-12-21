@@ -14,11 +14,10 @@ class Company extends Component {
     super(props);
 
     this.name = "Công ty"
-    this.info = {}
 
     this.state = {
 
-      onTab:'user',
+      onTab:'office',
       onAction:'',
       status:'',
 
@@ -36,7 +35,7 @@ class Company extends Component {
     const onTab = this.state.onTab;
     const onAction = this.state.onAction;
 
-    
+
 
     return(
       <div className="animated fadeIn">
