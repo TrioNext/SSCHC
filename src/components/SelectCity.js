@@ -15,7 +15,8 @@ function SelectCity(props){
   let list = [] ;
   const modal = props.modal;
 
-  modal.listCity.map((item)=>{
+
+  props.regions.map((item)=>{
     list.push(<option id={item.id} value={item.code} key={item.id} > { item.name } </option>)
   })
 
