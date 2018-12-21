@@ -46,7 +46,7 @@ Lý thuyết : có thể sử dụng : phối hợp nhiều components chứa tr
                                 - initial other
                                 - add event listeners
 
-      componentWillReceiveProps(newProps) : phản ứng của component : react behavious :
+      componentWillReceiveProps(newProps) : phản ứng của component : react behavious : RE-RENDER
                                     when state change : parent state change (have new props input come : do this actions update component)
                                     : most usecase : Use setState()
 
@@ -61,7 +61,7 @@ Lý thuyết : có thể sử dụng : phối hợp nhiều components chứa tr
 
                                     - điều kiện để nó update components
 
-      componentWillUpdate (newProps, newState) :  Can’t use setState() here
+      componentWillUpdate (newProps, newState) :  Can’t use setState() here KHÔNG - RE-RENDER
                                                   - use it instead : componentWillReceiveProps()
 
 
