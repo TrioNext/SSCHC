@@ -3,18 +3,18 @@ import React, {Component} from 'react';
 import { Row, Col } from 'reactstrap';
 
 
-import Model from '../../../config/model';
+import store from '../../../redux/store';
+import Model from '../../../model/model';
 
-
-import offModalCtrl from './offModalCtrl';
+/* FORM MODAL POPUP */
 import OffModalComp from './offModalComp';
-
-
+import offModalCtrl from './offModalCtrl';
 
 import moment from 'moment';
-
 import 'moment/locale/vi';
 
+const OFFICES = 'offices';
+const REGIONS = 'regions';
 
 /* actions after done some thing */
 class Office extends Component{
@@ -22,18 +22,16 @@ class Office extends Component{
     constructor(props){
       super(props);
 
-      this.base = 'offices';
-      this.name = 'Văn phòng';
+
+      this.name = 'office';
+      this.title = 'Văn phòng'
 
       this.data = {
-        id:0,
-        name:'office',
-        list:[]
-
+        offices:store.getState().office,
+        regions:store.getState().region
       }
 
       this.state = {
-
         onAction:'',
         status:'',
 
@@ -42,47 +40,66 @@ class Office extends Component{
       }
 
 
-
       this.setup()
     }
 
     setup(){
-      this.model = new Model(this.base);
+
+      this.model = new Model(OFFICES);
 
       this.model.set('paginate',{
         offset:0,
         p:0,
         max:'all',
         is_deleted:0
-      })
+      });
+
+      this.moRegion = new Model(REGIONS);
+      this.moRegion.set('paginate',{
+        offset:0,
+        p:0,
+        max:'all',
+        sort_by:'name',
+        sort_type:'asc'
+      });
 
 
 
-      this.modal = new offModalCtrl(this);
+      /* modal form controller  */
+      this.modalOffice = new offModalCtrl(this);
     }
 
 
     onStateChange(newState){
 
       /* KEEP PRIVATE DATA*/
-      this.data.list = this.model.getData(this.base) || [] ;
+      this.data.offices =  store.getState().office ; //  this.model.getData(OFFICES) || [] ;
+
+      this.data.regions = store.getState().region;
+
 
       this.setState(Object.assign(this.state,newState));
 
 
     }
 
+    loadRegion(){
 
+      const _this = this ;
+      this.moRegion.get((res)=>{
+        if(typeof res.count !== 'undefined'){
+            _this.onStateChange({status:'success'})
+        }
+
+      });
+
+    }
     loadOffice(){
       const _this = this ;
-
-
       this.model.get((res)=>{
 
         if(typeof res.count !== 'undefined'){
-
             _this.onStateChange({status:'success'})
-
         }
 
       });
@@ -91,8 +108,10 @@ class Office extends Component{
 
     initData(){
       this.loadOffice();
-      this.modal.loadCityList();
-      this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
+      this.loadRegion();
+
+      //this.modalOffice.loadCityList();
+      //this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
 
       this.state.isIniData = true ;
 
@@ -114,7 +133,7 @@ class Office extends Component{
 
 
       /* nhận lện có liên quan đến tab : office */
-      if(newProps.onTab===this.data.name){
+      if(newProps.onTab===this.name){
 
         Object.assign(this.state,newProps);
 
@@ -124,7 +143,7 @@ class Office extends Component{
 
 
         if(newProps.onAction==='post'){
-            this.modal.open('post');
+            this.modalOffice.open('post');
         }
       }
 
@@ -169,7 +188,7 @@ class Office extends Component{
                     <div>
                        <span><i className="fa fa-map-pin mr-5"></i> {data.name}</span>
                        <span className="pull-right">
-                         <a className='pointer' onClick={ ()=>{ this.modal.open('put',data) } }> <i className="fa fa-gear"></i> </a>
+                         <a className='pointer' onClick={ ()=>{ this.modalOffice.open('put',data) } }> <i className="fa fa-gear"></i> </a>
                        </span>
                     </div>
                     <i className="fa fa-phone mr-5"></i> { data.phone === null ? 'n/a' : data.phone } <br/>
@@ -189,16 +208,14 @@ class Office extends Component{
 
     render(){
 
-        const list = this.data.list ;
-        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
-
-
-
+        const list = this.data.offices ;
+        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.title : 'Cập nhật '+this.title;
+        
         return(
             <div hidden={  this.props.onTab === 'office' ? false : true } >
 
 
-                 <OffModalComp  name={ modalTitle  } onAction={ this.props.onAction} modal={ this.modal } />
+                 <OffModalComp  name={ modalTitle  } regions={ this.data.regions } onAction={ this.props.onAction} modal={ this.modalOffice } />
 
                  <Row>
 
