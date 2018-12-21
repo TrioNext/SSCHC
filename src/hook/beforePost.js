@@ -1,3 +1,7 @@
+/*
+FUNCTION FOR EASY CALLING
+
+*/
 
 export default function(fields=[],form={}){
 
