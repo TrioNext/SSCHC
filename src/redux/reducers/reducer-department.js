@@ -8,43 +8,38 @@ action = {
 }
 */
 
-const MODE = 'department';
+import afterPost from '../../hook/afterPost';
+
+
+const MODE = 'departments';
 
 export default function(state = [],action = {}){
   switch(action.type){
 
 
-    case 'set-'+MODE:
-      state = action.list ;
-      return state ;
-    break ;
-
-    case 'SET':
-
+    case 'GET-'+MODE:
       state = action.list ;
       return state ;
 
     break ;
 
-    case 'get-'+MODE:
-
-       let ret = {};
-      state.map((item)=>{
-        if(parseInt(item)===action.id){
-          ret = item;
-        }
-      });
-
-      return ret ;
-    break;
-
-    case 'push-'+MODE:
+    case 'POST-'+MODE:
+      state = action.list ;
       return state ;
-    break;
 
-    case 'delete-'+MODE  :
+    break ;
+
+    case 'PUT-'+MODE:
+      state = action.list ;
       return state ;
-    break;
+
+    break ;
+
+    case 'DELETE-'+MODE:
+      state = action.list ;
+      return state ;
+
+    break ;
 
 
     default:
