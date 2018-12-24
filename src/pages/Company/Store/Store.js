@@ -5,7 +5,7 @@ import {  Row, Col } from 'reactstrap';
 
 
 
-import Model from '../../../config/model';
+import Model from '../../../model/model';
 
 import storeModalCtrl from './storeModalCtrl';
 import StoreModalComp from './StoreModalComp';
