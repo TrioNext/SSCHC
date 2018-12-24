@@ -3,17 +3,12 @@ import React, {Component} from 'react';
 import { Button } from 'reactstrap';
 
 import store from '../../../redux/store';
-
-/* lib*/
 import Model from '../../../model/model';
 import { DEPARTMENTS } from '../../../model/model-mode';
-
 
 /* Modal */
 import DepModalComp from './DepModalComp';
 import depModalCtrl from './depModalCtrl';
-
-
 
 
 function ItemList(props){
@@ -30,6 +25,8 @@ function ItemList(props){
     </li>
   )
 }
+
+
 
 class Department extends Component{
 
@@ -65,6 +62,7 @@ class Department extends Component{
     this.modal = new depModalCtrl(this);
 
 
+
     store.subscribe(()=>{
 
       this.data.department = store.getState().department.list;
@@ -86,8 +84,9 @@ class Department extends Component{
 
   componentDidMount(){
       const _this = this ;
+
+
       this.model.load();
-      //this.props.fetch(this.model)
 
 
   }
@@ -105,6 +104,7 @@ class Department extends Component{
 
 
     });
+
 
 
     return(
@@ -130,12 +130,16 @@ class Department extends Component{
   }
 }
 
-
-/*function mapDispatchToPros(dispatch){
+/*function mapStateToProps(state){
+   return {
+     departments:state.department
+   }
+}
+function mapDispatchToPros(dispatch){
    return bindActionCreators({
      selectItem:selectItem,
      fetch:fetch
    },dispatch)
 }*/
 
-export default Department;
+export default Department ;  //connect(mapStateToProps)(Department) ;
