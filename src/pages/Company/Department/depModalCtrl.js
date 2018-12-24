@@ -1,6 +1,7 @@
 
 
 import hookBefore from '../../../hook/beforePost';
+import { emptyForm,onSubmitAndCloseModal } from '../../../hook/afterPost'
 
 class FormCtrl {
 
@@ -14,9 +15,7 @@ class FormCtrl {
       status:''
     }
 
-    this.defaultValue = {
-
-    }
+    this.data = {}
 
     this.form = {
       code:'',
@@ -28,20 +27,17 @@ class FormCtrl {
 
   onSubmit(){
 
+
     const _this = this ;
     const onAction = this.state.onAction;
 
 
-    if(hookBefore(['code','name'],this.form)===''){
-        this.app.model.axios(onAction,this.form,(res)=>{
+    const data = onAction === 'post' ? this.form : this.data;
 
-            if(typeof res.name  !== 'undefined'){
-              const status = res.name ;
-              if(status==='success'){
-                _this.app.onStateChange({onAction:onAction,status:'success'});
-                _this.toggle();
-              }
-            }
+    if(hookBefore(['code','name'],data)===''){
+        this.app.model.axios(onAction,data,(res)=>{
+
+          onSubmitAndCloseModal(res,_this);
 
         })
     }
@@ -54,18 +50,27 @@ class FormCtrl {
 
   onChange(name, e){
 
-    this.form[name] = e.target.value;
+    if(this.state.onAction==='post'){
+        this.form[name] = e.target.value;
+    }else{  this.data[name] = e.target.value;  }
+
+
+
 
   }
 
   setState(name,value){
 
     this.state[name] = value ;
+
   }
 
   open(type, info){
 
-    this.form = info || this.form;
+    //this.form = info || this.form;
+
+    const temp = info || {} ;
+    this.data = temp ;
     this.active = true ;
 
     this.setState('onAction',type);
@@ -83,7 +88,8 @@ class FormCtrl {
 
       this.active = !this.active;
 
-      this.form = this.defaultValue;
+      //emptyForm(this.form);
+
 
       this.app.onStateChange({
         onAction:'',
@@ -101,7 +107,7 @@ class FormCtrl {
       btnYes(){
 
         const _this = this ;
-        const id = this.parent.form.id;
+        const id = this.parent.data.id;
 
         this.parent.app.onStateChange({
           onAction:'delete',
