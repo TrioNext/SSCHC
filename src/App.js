@@ -30,12 +30,15 @@ class App extends Component {
     });
 
 
-
     client.on('logout', ()=>{
       this.setState({login:null})
-    })
+    });
+
 
   }
+
+
+
   render() {
 
 
