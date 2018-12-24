@@ -210,7 +210,7 @@ class Office extends Component{
 
         const list = this.data.offices ;
         const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.title : 'Cập nhật '+this.title;
-        
+
         return(
             <div hidden={  this.props.onTab === 'office' ? false : true } >
 
