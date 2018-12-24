@@ -6,6 +6,8 @@ import store from '../../../redux/store';
 
 /* lib*/
 import Model from '../../../model/model';
+import { DEPARTMENTS } from '../../../model/model-mode';
+
 
 /* Modal */
 import DepModalComp from './DepModalComp';
@@ -51,6 +53,7 @@ class Department extends Component{
 
   setup(){
 
+
     this.model = new Model('departments');
     this.model.set('paginate',{
       offset:0,
@@ -61,7 +64,11 @@ class Department extends Component{
 
     this.modal = new depModalCtrl(this);
 
-    this.data.department = store.getState().department;
+
+    store.subscribe(()=>{
+
+      this.data.department = store.getState().department.list;
+    })
 
   }
 
@@ -70,29 +77,16 @@ class Department extends Component{
     /* KEEP PRIVATE DATA*/
 
     /* REDUX ACTIONS */
-    this.data.department = store.getState().department;
+
     this.setState(Object.assign(this.state,newState));
 
 
   }
 
-  loadDeparment(){
-    const _this = this ;
 
-    this.model.get((res)=>{
-
-      if(typeof res.count !== 'undefined'){
-        if(res.count > 0){
-
-          this.onStateChange({onAction:'get',status:'success'});
-
-        }
-      }
-    });
-  }
   componentDidMount(){
       const _this = this ;
-      this.loadDeparment();
+      this.model.load();
       //this.props.fetch(this.model)
 
 
@@ -107,7 +101,7 @@ class Department extends Component{
     this.data.department.map((item,index)=>{
 
       let active = false ; //parseInt(item.id) === this.data.id ? true  : false;
-      list.push(<ItemList onClick={()=>{ console.log(item);  }} active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this.modal.open('put',{ id:item.id,code:item.code,name:item.name } ) } }   name={ item.name}    />)
+      list.push(<ItemList onClick={()=>{ console.log(item);  }} active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this.modal.open('put',item ) } }   name={ item.name}    />)
 
 
     });
@@ -116,7 +110,7 @@ class Department extends Component{
     return(
 
       <div>
-          <DepModalComp onStateChange={(newState)=>{ this.onStateChange(newState) }} onAction={ this.state.onAction } name={ modalTitle  } modal={ this.modal } />
+          <DepModalComp  onAction={ this.state.onAction } name={ modalTitle  } modal={ this.modal } />
 
           <nav style={{background:'#DEDEDE'}}>
 
