@@ -30,7 +30,7 @@ class Login extends Component {
 
     const {email, password} = this.state;
 
-    alert(JSON.stringify(this.state))
+    
     return client.authenticate({
       "strategy":"local",
     	"email":email,
