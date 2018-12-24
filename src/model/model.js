@@ -72,12 +72,15 @@ class Model {
   /* CONNECT REDUX  HERE */
   setData(name,list){
      this.data[name] = list;
-        
+
 
      store.dispatch({
        type:this.type+'-'+name,
        list:list
      });
+
+
+
 
   }
   getData(name){
@@ -368,6 +371,27 @@ class Model {
     }
   }
 
+  load(){
+    this.type = 'GET';
+
+    const _this = this ;
+    const {url, config} = this.setting ;
+
+
+
+    axios.get(url,config)
+          .then((res) => {
+
+            this.onSuccess(res.data);
+
+          },
+          (error) => {
+              var status = error.response.status;
+              this.onError(error)
+
+            }
+          );
+  }
   get(onSuccess){
 
       this.type = 'GET';
