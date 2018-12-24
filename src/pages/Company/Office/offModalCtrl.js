@@ -4,7 +4,7 @@ OfficeModal :  it's a Controller for <BenModal/>
 
 */
 
-import Model from '../../../config/model';
+import Model from '../../../model/model';
 
 import hookBefore from '../../../hook/beforePost';
 
