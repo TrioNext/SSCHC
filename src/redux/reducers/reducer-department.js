@@ -10,34 +10,56 @@ action = {
 
 import afterPost from '../../hook/afterPost';
 
-
 const MODE = 'departments';
+
+
+const iniState = {
+  list:[]
+}
 
 export default function(state = [],action = {}){
   switch(action.type){
 
 
     case 'GET-'+MODE:
-      state = action.list ;
-      return state ;
+
+
+      return {
+        ...state,
+        list:action.list
+      }
 
     break ;
 
     case 'POST-'+MODE:
-      state = action.list ;
-      return state ;
+
+
+
+      return {
+        ...state,
+        list:action.list
+      }
 
     break ;
 
     case 'PUT-'+MODE:
-      state = action.list ;
-      return state ;
+
+
+
+      return {
+        ...state,
+        list:action.list
+      }
 
     break ;
 
     case 'DELETE-'+MODE:
-      state = action.list ;
-      return state ;
+
+
+      return {
+        ...state,
+        list:action.list
+      }
 
     break ;
 
