@@ -3,7 +3,7 @@ FUNCTION FOR EASY CALLING
 
 */
 
-export default function(fields=[],form={}){
+export default function(fields=[],data={}){
 
   let ret = '' ;
 
@@ -11,9 +11,10 @@ export default function(fields=[],form={}){
 
     fields = fields.reverse();
 
-    Object.keys(form).map((item)=>{
+    
+    Object.keys(data).map((item)=>{
       fields.map((item2)=>{
-        if(form[item2] === '' ||  form[item2] === 0){
+        if(data[item2] === '' ||  data[item2] === 0){
           ret = 'vui lòng kiểm tra thông tin ' ;
           document.getElementById(item2).focus();
 
