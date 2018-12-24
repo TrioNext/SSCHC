@@ -9,8 +9,13 @@ action = {
 */
 
 import afterPost from '../../hook/afterPost';
+import { OFFICES } from '../../model/model-mode';
 
-const MODE = 'offices';
+const MODE = OFFICES;
+const iniState = {
+  list:[]
+}
+
 
 export default function(state = [],action = {}){
   switch(action.type){
@@ -39,7 +44,7 @@ export default function(state = [],action = {}){
       return state ;
 
     break ;
-    
+
 
 
     default:
