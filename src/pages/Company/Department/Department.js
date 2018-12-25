@@ -62,7 +62,6 @@ class Department extends Component{
     this.modal = new depModalCtrl(this);
 
 
-
     store.subscribe(()=>{
 
       this.data.department = store.getState().department.list;
