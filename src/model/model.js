@@ -65,8 +65,12 @@ class Model {
 
   set(name,value){
     this.setting[name] = value;
+
     this.setup();
   }
+
+
+
 
 
   /* CONNECT REDUX  HERE */
@@ -376,7 +380,6 @@ class Model {
 
     const _this = this ;
     const {url, config} = this.setting ;
-
 
 
     axios.get(url,config)
