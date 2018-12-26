@@ -23,6 +23,10 @@ import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
 
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 class DefaultLayout extends Component {
 
   constructor(props){
@@ -65,7 +69,7 @@ class DefaultLayout extends Component {
 
             </Container>
 
-
+            <ToastContainer autoClose={2000} />
 
           </main>
           <AppAside fixed>
