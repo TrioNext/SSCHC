@@ -41,10 +41,7 @@ class FormCtrl {
 
         })
     }
-
-
-
-
+    
 
   }
 
@@ -59,9 +56,14 @@ class FormCtrl {
 
   }
 
-  setState(name,value){
+  setState(newState={}){
 
-    this.state[name] = value ;
+    /* update state*/
+    Object.assign(this.state,newState);
+
+    /* RE-RENDER COMPONENT*/
+    this.app.onStateChange(this.state);
+
 
   }
 
@@ -73,14 +75,13 @@ class FormCtrl {
     this.data = temp ;
     this.active = true ;
 
-    this.setState('onAction',type);
 
-
-    // SET STATE CHANGE
-    this.app.onStateChange({
+    /* RE-RENDER COMPONENT */
+    this.setState({
       onAction:type,
-      status:'modal opening'
+      status:'success'
     });
+
 
   }
 
@@ -88,13 +89,10 @@ class FormCtrl {
 
       this.active = !this.active;
 
-      //emptyForm(this.form);
-
-
-      this.app.onStateChange({
+      this.setState({
         onAction:'',
         status:'close modal'
-      });
+      })
 
       this.popover.active = false;
 
@@ -109,19 +107,10 @@ class FormCtrl {
         const _this = this ;
         const id = this.parent.data.id;
 
-        this.parent.app.onStateChange({
-          onAction:'delete',
-          status:'on comfirm delete..'
-        });
-
         this.parent.app.model.delete(id,(res)=>{
 
-           if(typeof res.name !== 'undefined'){
-             if(res.name==='success'){
-               _this.parent.app.onStateChange(res.name);
-               _this.parent.toggle();
-             }
-           }
+            onSubmitAndCloseModal(res,_this.parent);
+
         })
 
       },
@@ -129,6 +118,8 @@ class FormCtrl {
       toggle(){
 
          this.active = !this.active;
+
+
 
          this.parent.app.onStateChange({
            status:'toggle popover'
