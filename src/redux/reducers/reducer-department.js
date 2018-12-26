@@ -22,8 +22,7 @@ export default function(state = [],action = {}){
 
 
     case 'GET-'+DEPARTMENTS:
-
-
+      
       return {
         ...state,
         list:action.list
@@ -32,7 +31,7 @@ export default function(state = [],action = {}){
     break ;
 
     case 'POST-'+DEPARTMENTS:
-      
+
       return {
         ...state,
         list:action.list
