@@ -1,14 +1,15 @@
 
 
 import feathers from '../feathers'
-import store from '../redux/store';
-
 
 const  CREATED = 'created';
 const  UPDATED = 'updated';
 const  REMOVED = 'removed';
 
-class Socket {
+
+export default class Socket {
+
+  static client = feathers
 
   constructor(service){
 
@@ -16,44 +17,73 @@ class Socket {
     this.state = {};
     this.type = '';
 
-    this.socket = feathers.service(service) ;
-    this.socket.timeout = 5000 ;
+    this.service = feathers.service(service) ;
+    this.service.timeout = 5000 ;
+    this.time_respone = 2000 ;
+
+    this.setting = {
+      time_respone:2000
+    }
+
 
   }
 
-  /* send to reducers */
+  set(newSetting){
+    Object.assign(this.setting,newSetting)
+  }
+
+
+
+
+  /* RESONE TRUC TIẾP */
   onSuccess(onStatus,data){
+
+    /*
+     this.setState({
+       status:onStatus,
+       data:data
+     });
 
     store.dispatch({
       type:onStatus+'-'+this.service,
       socData:data
-    });
+    });*/
+
   }
 
 
-  
+
   create(data={}){ this.socket.create(data)}
   update(id=null,data={}){ this.socket.update(id,data,{}) }
   remove(id=null){ this.socket.remove(id,{ query:{ cascade:true} })  }
 
 
-  clientListenServer(){
+  clientListenServer(onSuccess){
       const _this = this ;
 
-      this.socket.on(CREATED,(data)=>{
+      this.service.on(CREATED,(data)=>{
         _this.onSuccess(CREATED,data);
+
+        window.setTimeout(()=>{
+          onSuccess(data);
+        },this.setting.time_respone)
+
       });
 
-      this.socket.on(UPDATED,(data)=>{
+      this.service.on(UPDATED,(data)=>{
         _this.onSuccess(UPDATED,data);
+        window.setTimeout(()=>{
+          onSuccess(data);
+        },this.setting.time_respone)
       });
 
-      this.socket.on(REMOVED,(data)=>{
+      this.service.on(REMOVED,(data)=>{
         _this.onSuccess(REMOVED,data);
+        window.setTimeout(()=>{
+          onSuccess(data);
+        },this.setting.time_respone)
       });
-
 
   }
-
 
 }
