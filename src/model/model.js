@@ -20,7 +20,7 @@ import server from '../config/server';
 import axios from 'axios';
 
 import store from '../redux/store';
-
+import LocalData from './localData'
 
 
 class Model {
@@ -34,7 +34,7 @@ class Model {
     this.status = {}; /* keep context data on doing POST - PUT  */
     this.type = ''; /* type : http: method */
 
-
+    this.localData = new LocalData(this.model);
 
     this.setting = {
       url:'',
@@ -52,6 +52,7 @@ class Model {
 
   setup(){
 
+    const _this = this ;
     let  url = this.setting.base +   Object.keys(this.setting.paginate).map((key)=>{
         return key +'='+ this.setting.paginate[key]
     }).join('&');
@@ -59,7 +60,19 @@ class Model {
     this.setting.url = url;
     this.setting.config = server.setHeader();
 
-    this.setData(this.model,[]);
+    /* chuan bi localData */
+    this.data = this.localData.list ;
+
+    this.localData.listenServer((data)=>{
+      _this.data = _this.localData.list;
+
+      console.log(_this.data);
+      
+      _this.setData(_this.model,_this.data);
+    })
+
+
+
 
   }
 
@@ -77,13 +90,14 @@ class Model {
   setData(name,list){
      this.data[name] = list;
 
+     /* save localData */
+     this.localData.set(list);
 
+     /* SEND TO REDUCER*/
      store.dispatch({
        type:this.type+'-'+name,
        list:list
      });
-
-
 
 
   }
@@ -375,14 +389,26 @@ class Model {
     }
   }
 
+
+  getLocalData(){
+
+    const storeData = store.getState();
+    const mo = this.model.substring(0,this.model.length - 1);
+    return storeData[mo];
+
+
+  }
+
   load(){
     this.type = 'GET';
 
     const _this = this ;
     const {url, config} = this.setting ;
 
+    if(this.data.length === 0){
 
-    axios.get(url,config)
+
+      axios.get(url,config)
           .then((res) => {
 
             this.onSuccess(res.data);
@@ -394,6 +420,15 @@ class Model {
 
             }
           );
+    }else{
+
+
+      this.set('total',this.data.length);
+      this.setData(this.model,this.data);
+
+    }
+
+
   }
   get(onSuccess){
 
