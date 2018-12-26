@@ -1,42 +1,48 @@
 import React, { Component } from 'react';
-import { HashRouter, BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+/*import { HashRouter, BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'; */
+import { HashRouter, Route } from 'react-router-dom';
 import './App.scss';
 // Containers
 import { DefaultLayout } from './containers';
 // Pages
-import { Login, Page404, Page500, Register } from './views/Pages';
-// import { renderRoutes } from 'react-router-config';
+import { Login } from './pages/pages';
+import socket from './model/socket';
 
-import client from './feathers';
 
 class App extends Component {
 
   constructor(props){
       super(props);
-      this.state = {}
+
+      this.state = {
+        login:false
+      }
+
+
   }
 
   componentDidMount(){
     // Try to authenticate with the JWT stored in localStorage
     //const users = client.service('users');
 
-    client.authenticate().catch((err)=>{
-      this.setState({login:null})
+    /* listening error */
+    
+    socket.client.authenticate().catch((err)=>{
+      this.setState({login:false})
       console.log(err);
     });
 
-    client.on('authenticated',login=>{
+
+    socket.client.on('authenticated',login=>{
       this.setState({login})
     });
 
 
-    client.on('logout', ()=>{
+    socket.client.on('logout', ()=>{
       this.setState({login:null})
     });
 
-
   }
-
 
 
   render() {
@@ -47,7 +53,7 @@ class App extends Component {
 
 
             {
-               this.state.login ? (<Route path="/" name="Home" component={DefaultLayout} />) : <Route exact path="/" name="Login Page" component={Login} />
+               this.state.login ? (<Route path="/" name="Home" component={DefaultLayout} />) : (<Route exact path="/" name="Login Page" component={Login} />)
             }
 
 
