@@ -11,6 +11,8 @@ import DepModalComp from './DepModalComp';
 import depModalCtrl from './depModalCtrl';
 
 
+
+
 function ItemList(props){
 
   const isActive =  props.active ? 'active' : '';
@@ -129,11 +131,12 @@ class Department extends Component{
   }
 }
 
-/*function mapStateToProps(state){
+function mapStateToProps(state){
    return {
      departments:state.department
    }
 }
+/*
 function mapDispatchToPros(dispatch){
    return bindActionCreators({
      selectItem:selectItem,
