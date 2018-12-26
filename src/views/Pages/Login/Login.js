@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 
-import client from '../../../feathers';
+
+import socket from '../../../model/socket';
+
 
 class Login extends Component {
 
@@ -9,7 +11,6 @@ class Login extends Component {
     super();
 
     this.state = {};
-
 
     this.updateField = this.updateField.bind(this);
 
@@ -30,8 +31,8 @@ class Login extends Component {
 
     const {email, password} = this.state;
 
-    
-    return client.authenticate({
+
+    return socket.client.authenticate({
       "strategy":"local",
     	"email":email,
     	"password":password
