@@ -3,23 +3,53 @@
 - trigger
   1. socket activities update channel room :  using socket class intances object
   2. component re-render : using class intance object
+
+  toast.success("Hello", options) // add type: 'success' to options
+  toast.info("World", options) // add type: 'info' to options
+  toast.warn(<Img />, options) // add type: 'warning' to options
+  toast.error(<Img />, options) // add type: 'error' to options
+  toast.dismiss() // Remove all toasts !
+
 */
 
 import userConf from '../config/user.conf';
 
+import { toast } from "react-toastify";
 
 
+const successMsg = {
+  "post":"Đã tạo thành công",
+  "put":"Đã cập nhật thành công",
+  "delete":"Đã xoá thành công"
+}
+
+export const toastSuccess = (type)=>{
+
+   const msg = successMsg[type]
+   toast.success(msg);
+}
+
+/* USING ON CONTROLLER MODAL ONLY*/
 export const onSubmitAndCloseModal = (res,_this)=>{
 
   if(typeof res.name  !== 'undefined'){
     const status = res.name ;
     if(status==='success'){
       //_this.app.onStateChange({onAction:_this.state.onAction,status:'success'});
+
+      /* refesh parent component*/
+      _this.setState({
+        onAction:_this.state.onAction,
+        status:'success'
+      })
+
+
+      emptyForm(_this.form);
+      toastSuccess(_this.state.onAction);
+
+      /* CLOSE MODAL FORM*/
       _this.toggle();
 
-      if(_this.state.onAction==='post'){
-        emptyForm(_this.form);
-      }
 
     }
   }
@@ -42,6 +72,5 @@ export const emptyFormUser = (form={})=>{
   });
 
   form.password = userConf.defaultPass; /* reset defaultPass*/
-
 
 }
