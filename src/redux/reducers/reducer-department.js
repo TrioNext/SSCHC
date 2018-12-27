@@ -8,7 +8,7 @@ action = {
 }
 */
 
-import afterPost from '../../hook/afterPost';
+import { updateItemData } from '../../hook/afterPost';
 import { DEPARTMENTS } from '../../model/model-mode';
 
 
@@ -21,8 +21,9 @@ export default function(state = [],action = {}){
   switch(action.type){
 
 
+    /* PROACTIVE : DATA */
     case 'GET-'+DEPARTMENTS:
-      
+
       return {
         ...state,
         list:action.list
@@ -41,8 +42,6 @@ export default function(state = [],action = {}){
 
     case 'PUT-'+DEPARTMENTS:
 
-
-
       return {
         ...state,
         list:action.list
@@ -58,6 +57,15 @@ export default function(state = [],action = {}){
         list:action.list
       }
 
+    break ;
+
+    /* PASSIVE DATA : realtime received on listenServer  */
+    case 'reset-'+DEPARTMENTS:
+    
+      return {
+        ...state,
+        list:action.list
+      }
     break ;
 
 
