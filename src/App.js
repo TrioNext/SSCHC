@@ -26,7 +26,8 @@ class App extends Component {
     //const users = client.service('users');
 
     /* listening error */
-    
+
+
     socket.client.authenticate().catch((err)=>{
       this.setState({login:false})
       console.log(err);
@@ -34,7 +35,10 @@ class App extends Component {
 
 
     socket.client.on('authenticated',login=>{
-      this.setState({login})
+      this.setState({login});
+
+      //console.log(login);
+
     });
 
 
