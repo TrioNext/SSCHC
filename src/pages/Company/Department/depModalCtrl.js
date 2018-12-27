@@ -31,7 +31,7 @@ class FormCtrl {
     const _this = this ;
     const onAction = this.state.onAction;
 
-
+    
     const data = onAction === 'post' ? this.form : this.data;
 
     if(hookBefore(['code','name'],data)===''){
@@ -41,7 +41,7 @@ class FormCtrl {
 
         })
     }
-    
+
 
   }
 
