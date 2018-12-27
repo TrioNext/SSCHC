@@ -23,6 +23,37 @@ const successMsg = {
   "delete":"Đã xoá thành công"
 }
 
+
+export const updateItemData = (newData,list) =>{
+
+  return list.map((item,index)=>{
+
+    if(parseInt(item.id) === parseInt(newData.id)){
+       list[index] = newData;
+    }
+  });
+
+}
+
+
+export const removeItemData = (id,list) =>{
+
+
+  return list.map((item,index)=>{
+      if(parseInt(item.id) === parseInt(id)){
+        delete list[index]
+      }
+
+  });
+  
+
+}
+
+export const setItemData = (newData,list)=>{
+  list.unshift(newData);
+  return list;
+}
+
 export const toastSuccess = (type)=>{
 
    const msg = successMsg[type]
