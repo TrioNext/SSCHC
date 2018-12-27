@@ -20,14 +20,16 @@ import server from '../config/server';
 import axios from 'axios';
 
 import store from '../redux/store';
-import LocalData from './localData'
+import LocalData from './localData';
 
+import { updateItemData, setItemData, removeItemData } from '../hook/afterPost';
 
 class Model {
 
 
   constructor(model){
 
+    this.creator = '';
     this.model = model; // string
 
     this.data = [];
@@ -47,8 +49,50 @@ class Model {
     this.setup();
 
 
+    this.startSocket()
   }
 
+  /* start listen to socket server -> save LocalData -> send to reducers
+    tren cung 1 may tinh se ko cap nhat socket realtime
+  */
+  startSocket(){
+
+    const _this = this ;
+    /*  START REALTIME  */
+    this.localData.listenServer((data)=>{
+
+       if(_this.localData.jwt !== data.token){
+         /* UPDATE LOCAL DATA */
+         let list = _this.localData.get();
+         switch(data.type){
+
+           case 'create':
+              setItemData(data.data,list) ;
+           break ;
+           case 'update':
+              updateItemData(data.data,list);
+
+           break;
+           case 'remove':
+              console.log('remove');
+              console.log(data.data.id);
+              console.log(list);
+              removeItemData(data.data.id,list);
+           break ;
+
+         }
+         _this.localData.set(list);
+
+         /* SEND TO REDUCER NEW LIST  */
+         store.dispatch({
+           type:'reset-'+data.model,
+           list:list
+         });
+
+       }
+
+     });
+  }
 
   setup(){
 
@@ -62,16 +106,6 @@ class Model {
 
     /* chuan bi localData */
     this.data = this.localData.list ;
-
-    this.localData.listenServer((data)=>{
-      _this.data = _this.localData.list;
-
-      console.log(_this.data);
-      
-      _this.setData(_this.model,_this.data);
-    })
-
-
 
 
   }
@@ -87,15 +121,15 @@ class Model {
 
 
   /* CONNECT REDUX  HERE */
-  setData(name,list){
-     this.data[name] = list;
+  setData(model,list){
+     this.data[model] = list;
 
      /* save localData */
      this.localData.set(list);
 
      /* SEND TO REDUCER*/
      store.dispatch({
-       type:this.type+'-'+name,
+       type:this.type+'-'+model,
        list:list
      });
 
@@ -127,6 +161,7 @@ class Model {
       return list;
 
     });
+
 
     this.setData(name,list); // update to REDUCER
 
@@ -163,8 +198,9 @@ class Model {
           this.post(data,onSuccess);
       break;
       case 'put':
+
           const id = data.id;
-          delete data.id ;
+
           this.put(id,data,onSuccess);
       break;
 
@@ -341,12 +377,9 @@ class Model {
 
         case 'PUT':
 
-            const {id} = idata.condition.where;
-            let json = this.status ;
-            Object.assign(json,{id:id});
+            const id = idata.data.id;
 
-
-            idata.name === 'success' ? this.updateItemData(this.model,id,json) : this.showErr(idata.message);
+            idata.name === 'success' ? this.updateItemData(this.model,id,idata.data) : this.showErr(idata.message);
 
 
 
@@ -404,6 +437,7 @@ class Model {
 
     const _this = this ;
     const {url, config} = this.setting ;
+
 
     if(this.data.length === 0){
 
