@@ -18,6 +18,7 @@ class LocalData {
     this.data = [] ;
     this.state = {}
 
+    this.jwt = localStorage.getItem('feathers-jwt');
 
     this.get();
 
@@ -28,7 +29,7 @@ class LocalData {
     const _this = this ;
 
     this.socket.clientListenServer((data)=>{
-        _this.get();
+        _this.get(); // CAP NHẬT DATA
         onStateChange(data);
     })
   }
@@ -44,13 +45,15 @@ class LocalData {
     return this.data;
   }
 
-  /* save localData*/
+  /* reset data */
   set(list=[]){
 
-    this.data = list ;
-    localStorage.setItem(this.model,JSON.stringify(this.data));
+    this.remove();
+    localStorage.setItem(this.model,JSON.stringify(list));
+    this.get(); // reset update current data
 
   }
+
 
   static clear(){
     localStorage.clear();
