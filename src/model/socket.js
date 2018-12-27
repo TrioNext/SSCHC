@@ -38,6 +38,8 @@ export default class Socket {
   /* RESONE TRUC TIẾP */
   onSuccess(onStatus,data){
 
+
+    //console.log(data);
     /*
      this.setState({
        status:onStatus,
@@ -62,6 +64,7 @@ export default class Socket {
       const _this = this ;
 
       this.service.on(CREATED,(data)=>{
+
         _this.onSuccess(CREATED,data);
 
         window.setTimeout(()=>{
@@ -78,6 +81,8 @@ export default class Socket {
       });
 
       this.service.on(REMOVED,(data)=>{
+
+        
         _this.onSuccess(REMOVED,data);
         window.setTimeout(()=>{
           onSuccess(data);
