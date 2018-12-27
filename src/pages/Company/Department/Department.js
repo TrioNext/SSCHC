@@ -48,6 +48,15 @@ class Department extends Component{
     }
 
     this.setup();
+
+    store.subscribe(()=>{
+
+      this.data.department = store.getState().department.list;
+      this.onStateChange({
+        onAction:'reducer-change',
+        status:'success'
+      })
+    })
   }
 
   setup(){
@@ -62,12 +71,6 @@ class Department extends Component{
     });
 
     this.modal = new depModalCtrl(this);
-
-
-    store.subscribe(()=>{
-
-      this.data.department = store.getState().department.list;
-    })
 
   }
 
@@ -131,12 +134,12 @@ class Department extends Component{
   }
 }
 
-function mapStateToProps(state){
+/*function mapStateToProps(state){
    return {
      departments:state.department
    }
 }
-/*
+
 function mapDispatchToPros(dispatch){
    return bindActionCreators({
      selectItem:selectItem,
