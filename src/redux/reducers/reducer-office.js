@@ -8,7 +8,7 @@ action = {
 }
 */
 
-import afterPost from '../../hook/afterPost';
+
 import { OFFICES } from '../../model/model-mode';
 
 const MODE = OFFICES;
@@ -43,6 +43,16 @@ export default function(state = [],action = {}){
       state = action.list ;
       return state ;
 
+    break ;
+
+    /* PASSIVE DATA : realtime received on listenServer  */
+    case 'reset-'+MODE:
+
+      alert('something change');
+      return {
+        ...state,
+        list:action.list
+      }
     break ;
 
 
