@@ -15,18 +15,18 @@ class DefaultFooter extends Component {
 
     return (
       <React.Fragment>
-        <span className="mr-10">Đang làm việc </span>
+
         <span>
           <div className="avatars-stack mt-2">
             <div className="avatar avatar-xs">
-              <img src={'assets/img/avatars/2.jpg'} title='tete' className="img-avatar" alt="admin@bootstrapmaster.com" />
+              <img src={'assets/img/avatars/2.jpg'} className="img-avatar" id="user-avatar" />
             </div>
-            <div className="avatar avatar-xs">
-              <img src={'assets/img/avatars/2.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-            </div>
-
           </div>
          </span>
+
+         <span className="ml-20" id="users-activities">  </span>
+
+
         <span className="ml-auto"> &copy; 2018   Code with <i className='fa fa-heart'> </i> </span>
       </React.Fragment>
     );
