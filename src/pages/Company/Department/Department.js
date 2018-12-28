@@ -51,7 +51,7 @@ class Department extends Component{
 
     store.subscribe(()=>{
 
-      this.data.department = store.getState().department.list;
+      this.data.department = store.getState().department.list || []  ;
       this.onStateChange({
         onAction:'reducer-change',
         status:'success'
@@ -101,6 +101,7 @@ class Department extends Component{
 
     let list = [];
 
+    
     this.data.department.map((item,index)=>{
 
       let active = false ; //parseInt(item.id) === this.data.id ? true  : false;
