@@ -22,19 +22,19 @@ import axios from 'axios';
 import store from '../redux/store';
 import LocalData from './localData';
 
-import { updateItemData, setItemData, removeItemData } from '../hook/afterPost';
 
 class Model {
 
 
   constructor(model){
 
-    this.creator = '';
+
     this.model = model; // string
 
     this.data = [];
     this.status = {}; /* keep context data on doing POST - PUT  */
     this.type = ''; /* type : http: method */
+    this.res = {};
 
     this.localData = new LocalData(this.model);
 
@@ -59,25 +59,43 @@ class Model {
 
     const _this = this ;
     /*  START REALTIME  */
-    this.localData.listenServer((data)=>{
+    this.localData.listenServer((res)=>{
 
-       if(_this.localData.jwt !== data.token){
+       if(_this.localData.jwt !== res.token){
          /* UPDATE LOCAL DATA */
+
+         const idata = res.data ;
+
          let list = _this.localData.get();
-         switch(data.type){
+
+         switch(res.type){
 
            case 'create':
-              setItemData(data.data,list) ;
+
+              list.unshift(res.data);
+
+
            break ;
            case 'update':
-              updateItemData(data.data,list);
+
+              list.map((item,index)=>{
+
+                if(parseInt(item.id) === parseInt(idata.id)){
+                   list[index] = idata;
+                }
+              });
+
 
            break;
            case 'remove':
-              console.log('remove');
-              console.log(data.data.id);
-              console.log(list);
-              removeItemData(data.data.id,list);
+
+              list.map((item,index)=>{
+                  if(parseInt(item.id) === parseInt(idata.id)){
+                    delete list[index]
+                  }
+
+              });
+
            break ;
 
          }
@@ -85,8 +103,9 @@ class Model {
 
          /* SEND TO REDUCER NEW LIST  */
          store.dispatch({
-           type:'reset-'+data.model,
-           list:list
+           type:'reset-'+res.model,
+           list:list,
+           res:res
          });
 
        }
@@ -118,8 +137,6 @@ class Model {
 
 
 
-
-
   /* CONNECT REDUX  HERE */
   setData(model,list){
      this.data[model] = list;
@@ -130,7 +147,8 @@ class Model {
      /* SEND TO REDUCER*/
      store.dispatch({
        type:this.type+'-'+model,
-       list:list
+       list:list,
+       res:this.res
      });
 
 
@@ -353,8 +371,7 @@ class Model {
   onSuccess(res){
 
 
-      //this.set('total',list.count);
-
+      this.res = res;
       const idata = res.data || {};
 
       switch(this.type){
