@@ -8,7 +8,7 @@ action = {
 }
 */
 
-import afterPost from '../../hook/afterPost';
+
 
 const MODE = 'regions';
 
@@ -38,6 +38,15 @@ export default function(state = [],action = {}){
       state = action.list ;
       return state ;
 
+    break ;
+
+    /* PASSIVE DATA : realtime received on listenServer  */
+    case 'reset-'+MODE:
+
+      return {
+        ...state,
+        list:action.list
+      }
     break ;
 
 
