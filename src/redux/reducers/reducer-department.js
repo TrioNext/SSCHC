@@ -8,21 +8,28 @@ action = {
 }
 */
 
-import { updateItemData } from '../../hook/afterPost';
+import { toast } from '../../hook/after';
+
 import { DEPARTMENTS } from '../../model/model-mode';
+import { DEPARTMENTS_NAME } from '../../model/model-name';
 
 
+const MODE = DEPARTMENTS;
+const NAME = DEPARTMENTS_NAME;
 
 const iniState = {
   list:[]
 }
 
 export default function(state = [],action = {}){
+
+
+
   switch(action.type){
 
 
     /* PROACTIVE : DATA */
-    case 'GET-'+DEPARTMENTS:
+    case 'GET-'+MODE:
 
       return {
         ...state,
@@ -31,7 +38,8 @@ export default function(state = [],action = {}){
 
     break ;
 
-    case 'POST-'+DEPARTMENTS:
+    case 'POST-'+MODE:
+
 
       return {
         ...state,
@@ -40,7 +48,14 @@ export default function(state = [],action = {}){
 
     break ;
 
-    case 'PUT-'+DEPARTMENTS:
+    case 'PUT-'+MODE:
+
+      const msg = NAME;
+
+      toast('put',msg);
+
+      //console.log(action.res);
+
 
       return {
         ...state,
@@ -49,7 +64,7 @@ export default function(state = [],action = {}){
 
     break ;
 
-    case 'DELETE-'+DEPARTMENTS:
+    case 'DELETE-'+MODE:
 
 
       return {
@@ -60,8 +75,9 @@ export default function(state = [],action = {}){
     break ;
 
     /* PASSIVE DATA : realtime received on listenServer  */
-    case 'reset-'+DEPARTMENTS:
-    
+    case 'reset-'+MODE:
+
+      console.log(action.res);
       return {
         ...state,
         list:action.list
@@ -70,6 +86,7 @@ export default function(state = [],action = {}){
 
 
     default:
+
       return state;
 
   }
