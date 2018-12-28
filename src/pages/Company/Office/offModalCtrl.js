@@ -6,7 +6,9 @@ OfficeModal :  it's a Controller for <BenModal/>
 
 import Model from '../../../model/model';
 
-import hookBefore from '../../../hook/beforePost';
+
+import { detectForm } from '../../../hook/before';
+
 
 
 class OfficeModal{
@@ -79,7 +81,7 @@ class OfficeModal{
       const _this = this ;
       const onAction = this.state.onAction;
 
-      if(hookBefore(['code','name','phone','address'],this.form)===''){
+      if(detectForm(['code','name','phone','address'],this.form)===''){
 
         this.app.model.axios(onAction,this.form,(res)=>{
               //_this.app.hook.success(onAction,res);
