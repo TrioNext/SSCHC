@@ -1,7 +1,8 @@
 
 
-import hookBefore from '../../../hook/beforePost';
-import { emptyForm,onSubmitAndCloseModal } from '../../../hook/afterPost'
+import { detectForm } from '../../../hook/before';
+
+
 
 class FormCtrl {
 
@@ -31,13 +32,17 @@ class FormCtrl {
     const _this = this ;
     const onAction = this.state.onAction;
 
-    
     const data = onAction === 'post' ? this.form : this.data;
 
-    if(hookBefore(['code','name'],data)===''){
+    if(detectForm(['code','name'],data)===''){
         this.app.model.axios(onAction,data,(res)=>{
 
-          onSubmitAndCloseModal(res,_this);
+          if(res.name==='success'){
+            _this.toggle();
+          }
+
+
+
 
         })
     }
@@ -109,7 +114,9 @@ class FormCtrl {
 
         this.parent.app.model.delete(id,(res)=>{
 
-            onSubmitAndCloseModal(res,_this.parent);
+            if(res.name==='success'){
+              _this.parent.toggle();
+            }
 
         })
 
