@@ -1,6 +1,5 @@
-## [CoreUI](https://coreui.io/) for [react](./REACT.md) changelog
 
-##### `v2.0.14` 
+##### `v2.0.14`
 - chore: update `@coreui/coreui` to `2.0.25`
 - chore: update `chart.js` to `2.7.3`
 - chore: update `flag-icon-css` to `3.2.1`
@@ -12,43 +11,43 @@
 - chore: update `react-scripts` to `2.1.1`
 
 
-##### `v2.0.13` 
-- refactor: migration to [Create React App 2.0](https://reactjs.org/blog/2018/10/01/create-react-app-v2.html) cleanup 
+##### `v2.0.13`
+- refactor: migration to [Create React App 2.0](https://reactjs.org/blog/2018/10/01/create-react-app-v2.html) cleanup
   - cleanup `package.json` scripts
   - remove `babel-jest` dependency
   - remove `node-sass-chokidar` dependency
   - remove `npm-run-all` dependency
-  - move `App.js` import styles to `App.scss` 
+  - move `App.js` import styles to `App.scss`
   - replace imports from `node_modules/` with `~` prefix
 - chore: remove unused `src/scss/vendors/charts.js/` directory
 - chore: update `@coreui/coreui` to `^2.0.15`
 - chore: update `@coreui/react` to `^2.0.9`
 
-##### `v2.0.12` 
+##### `v2.0.12`
 fixes some issues with `rtl`, `ie11`, `sidebar-minimized` behaviour and `aside` responsiveness
-- fix(DefaultAside): `ListGroup` with `tag="div"` works better with `rtl` 
-- fix(DefaultLayout): `AppAside` remove deprecated `hidden` prop 
+- fix(DefaultAside): `ListGroup` with `tag="div"` works better with `rtl`
+- fix(DefaultLayout): `AppAside` remove deprecated `hidden` prop
 - chore: update `@coreui/react` to `^2.0.8`
 - chore: update `reactsrtrap` to `^6.5.0`
 - chore: update `react-scripts` to `^2.0.4`
 - chore: `enzyme` to `3.7.0`
 - chore: `enzyme-adapter-react-16` to `1.6.0`
-  
+
 ##### `v2.0.11`
 - chore: update `@coreui/react` to `^2.0.7`
 - chore: migration to [Create React App 2.0](https://reactjs.org/blog/2018/10/01/create-react-app-v2.html)
   - chore: update `react-scripts` to `^2.0.3`
   - chore: update `node-sass-chokidar` to `^1.3.3`
   - chore: add `node-sass v4.9.3`
-  - chore: add `react-app-polyfill v0.1.3` 
-  - chore: add `eslintConfig` in `package.json` 
-  - chore: add `browserslist` in `package.json` 
+  - chore: add `react-app-polyfill v0.1.3`
+  - chore: add `eslintConfig` in `package.json`
+  - chore: add `browserslist` in `package.json`
   - chore: update `manifest.json`
   - refactor(index.js): add `react-app-polyfill` for `ie9-11` support
   - refactor(index.js): migration to `serviceWorker.js`
 
 ###### Migrating from CRA 1.x to 2.x:
-affected files: 
+affected files:
 - `package.json` -> dependencies update  
 - `src/index.js` -> move to `serviceWorker`, add `react-app-polyfill` for `ie9-11` support when needed
 
@@ -130,7 +129,7 @@ In most cases bumping the `react-scripts` version in `package.json` and running 
 - feat: new CoreUI Icons set
 
 ##### `v2.0.0-beta.2`
-- feat: CoreUI custom tooltips plugin for chart.js 
+- feat: CoreUI custom tooltips plugin for chart.js
 
 ##### `v2.0.0-beta.1`
 - refactor(Switches): move to AppSwitch component
@@ -147,7 +146,7 @@ In most cases bumping the `react-scripts` version in `package.json` and running 
 - refactor(Forms): `card-header-actions`
 - feat(Forms): `<Input type="date">`
 - feat(Forms): `FormFeedback`
-- feat(Collapses): Accordion, Custom Accordion 
+- feat(Collapses): Accordion, Custom Accordion
 - feat(ListGroup): with TabPanes
 - refactor(PaginationItem): `tag="button"`
 - refactor(BrandButtons): spacing
@@ -189,8 +188,8 @@ In most cases bumping the `react-scripts` version in `package.json` and running 
 - update: dependencies
 - feature: some Bootstrap4 components added
 - fix: rollback to webpack-dev-server `2.9.7`
-- temp tweaks(b4 beta3): `InputGroupAddon` and `InputGroupButton` 
-- refactor(checkboxes, radios): temp tweaks 
+- temp tweaks(b4 beta3): `InputGroupAddon` and `InputGroupButton`
+- refactor(checkboxes, radios): temp tweaks
 - feat: mobile sidebar link click closes the sidebar
 - fix: .nav-tabs .nav-link `cursor: pointer`
 
@@ -250,7 +249,7 @@ In most cases bumping the `react-scripts` version in `package.json` and running 
 	- sparkline chart for callout
 
 ###### `2017.08.01`
-- Sidebar component: 
+- Sidebar component:
 	- title item with optional wrapper and class (_nav.js)
 	- nav link item with optional badge
 	- code refactoring
