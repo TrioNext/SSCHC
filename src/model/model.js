@@ -440,15 +440,6 @@ class Model {
   }
 
 
-  getLocalData(){
-
-    const storeData = store.getState();
-    const mo = this.model.substring(0,this.model.length - 1);
-    return storeData[mo];
-
-
-  }
-
   load(){
     this.type = 'GET';
 
