@@ -49,9 +49,23 @@ class Model {
     this.setup();
 
 
-    this.startSocket()
+    this.startSocket();
+    this.listenDataChange();
   }
 
+  listenDataChange(){
+    const _this = this ;
+    this.localData.listenDataChange((res)=>{
+
+
+      store.dispatch({
+        type:this.localData.db.type+'-'+_this.model,
+        list:res.list,
+        res:res.res
+      });
+
+    })
+  }
   /* start listen to socket server -> save LocalData -> send to reducers
     tren cung 1 may tinh se ko cap nhat socket realtime
   */
@@ -266,12 +280,20 @@ class Model {
 
   put(id,data,onSuccess){
 
-      this.type = 'PUT';
-      this.status = data ;
 
-      const url = server.base() + '/' + this.model + '?id='+id;
 
-      axios.put(url,data,this.setting.config)
+      //this.type = 'PUT';
+      //this.status = data ;
+
+
+      const _this = this ;
+      this.localData.put(id,data,(res)=>{
+          _this.listenDataChange()
+          onSuccess(res);
+
+      })
+
+      /*axios.put(url,data,this.setting.config)
             .then((res)=>{
               this.onSuccess(res);
               onSuccess(res.data)
@@ -279,7 +301,7 @@ class Model {
 
               this.onError(error)
 
-      })
+      })*/
 
   }
 
@@ -303,65 +325,22 @@ class Model {
 
     });
   }
+
   pre(onSuccess){
 
-    const {url, config, paginate,total} = this.setting ;
-    let next = paginate.p - 1;
-
-    next = next < 0 ? 0 : next ;
-
-    let offset = 0 ;
-    let page = next ;
-    let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
-
-    offset = parseInt(paginate.max) * (page);
-
-
-    this.set('paginate',Object.assign(paginate,{
-      offset:offset,
-      p:next
-    }));
-
-    this.get((res)=>{
-
+    this.localData.pre((res)=>{
       this.onSuccess(res);
       onSuccess(res);
-    },(err)=>{
-
-      this.onError(err);
-
-    });
+    })
 
   }
   next(onSuccess){
 
-      const {url, config, paginate, total } = this.setting ;
-      let next = paginate.p + 1;
-
-
-      let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
-      next = next < pages ? next : pages - 1 ;
-
-      let offset = 0 ;
-      let page = next ;
-
-      offset = parseInt(paginate.max) * (page);
-
-
-      this.set('paginate',Object.assign(paginate,{
-        offset:offset,
-        p:next
-      }));
-
-
-      this.get((res)=>{
+      this.localData.next((res)=>{
 
         this.onSuccess(res);
         onSuccess(res);
-      },(err)=>{
-        this.onError(err);
-
-      });
+      })
 
 
   }
@@ -443,29 +422,12 @@ class Model {
   load(){
     this.type = 'GET';
 
-    const _this = this ;
-    const {url, config} = this.setting ;
-
-
     if(this.data.length === 0){
-
-
-      axios.get(url,config)
-          .then((res) => {
-
-            this.onSuccess(res.data);
-
-          },
-          (error) => {
-              var status = error.response.status;
-              this.onError(error)
-
-            }
-          );
+      this.localData.fetch((res)=>{
+         this.onSuccess(res.data);
+      })
     }else{
 
-
-      this.set('total',this.data.length);
       this.setData(this.model,this.data);
 
     }
@@ -477,25 +439,13 @@ class Model {
       this.type = 'GET';
 
       const _this = this ;
-      const {url, config} = this.setting ;
+
+      this.localData.fetch((res)=>{
+        this.onSuccess(res.data);
+        onSuccess(res.data)
+      })
 
 
-
-      axios.get(url,config)
-            .then((res) => {
-
-
-              this.onSuccess(res.data);
-              onSuccess(res.data)
-
-
-            },
-            (error) => {
-                var status = error.response.status;
-                this.onError(error)
-
-              }
-            );
   }
 
 }
