@@ -77,7 +77,7 @@ export default function(state = [],action = {}){
     /* PASSIVE DATA : realtime received on listenServer  */
     case 'reset-'+MODE:
 
-      console.log(action.res);
+      
       return {
         ...state,
         list:action.list
