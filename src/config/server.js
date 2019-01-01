@@ -9,7 +9,7 @@ const server = {
   paginate:{
     p:0,
     offset:0,
-    max:10,
+    max:2,
     is_deleted:0
   },
 
