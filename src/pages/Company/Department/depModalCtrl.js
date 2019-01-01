@@ -37,6 +37,7 @@ class FormCtrl {
     if(detectForm(['code','name'],data)===''){
         this.app.model.axios(onAction,data,(res)=>{
 
+          
           if(res.name==='success'){
             _this.toggle();
           }
