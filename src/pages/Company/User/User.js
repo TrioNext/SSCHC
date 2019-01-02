@@ -152,7 +152,7 @@ class User extends Component{
       this.data.list = this.model.getData() || [] ;
 
 
-      const { paginate } = this.model.setting;
+      const { paginate } = this.model.localData.db;
       this.data.p = paginate.p ;
 
       this.resetGrid();
@@ -169,14 +169,13 @@ class User extends Component{
       const _this = this ;
 
 
-      this.model[type]((res)=>{
+      /*this.model[type]((res)=>{
 
         if(typeof res.count !== 'undefined'){
           _this.onStateChange({status:'success'});
         }
 
-
-      })
+      })*/
 
     }
 
