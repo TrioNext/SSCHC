@@ -5,6 +5,7 @@ import { Button } from 'reactstrap';
 import store from '../../../redux/store';
 import Model from '../../../model/model';
 import { DEPARTMENTS } from '../../../model/model-mode';
+import { DEPARTMENTS_NAME } from '../../../model/model-name';
 
 /* Modal */
 import DepModalComp from './DepModalComp';
@@ -35,8 +36,7 @@ class Department extends Component{
   constructor(props){
     super(props);
 
-    this.name = 'Bộ phận';
-
+    
     this.data = {
       department:[]
     }
@@ -89,19 +89,17 @@ class Department extends Component{
   componentDidMount(){
       const _this = this ;
 
-
       this.model.load();
-
 
   }
 
   render(){
 
-    const modalTitle = this.state.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
+    const modalTitle = this.state.onAction ==='post' ? 'Tạo '+DEPARTMENTS_NAME : 'Cập nhật '+DEPARTMENTS_NAME;
 
     let list = [];
 
-    
+
     this.data.department.map((item,index)=>{
 
       let active = false ; //parseInt(item.id) === this.data.id ? true  : false;
