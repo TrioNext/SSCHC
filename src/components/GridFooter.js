@@ -93,7 +93,7 @@ class GridFooter extends Component{
 
   render(){
 
-    const { paginate, total } =  this.model.setting;
+    const { paginate, total } =  this.model.localData.db;
     const count =  Math.ceil(total /  paginate.max);
 
 
