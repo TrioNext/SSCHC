@@ -37,7 +37,7 @@ class FormCtrl {
     if(detectForm(['code','name'],data)===''){
         this.app.model.axios(onAction,data,(res)=>{
 
-          
+
           if(res.name==='success'){
             _this.toggle();
           }
@@ -114,6 +114,7 @@ class FormCtrl {
         const id = this.parent.data.id;
 
         this.parent.app.model.delete(id,(res)=>{
+
 
             if(res.name==='success'){
               _this.parent.toggle();
