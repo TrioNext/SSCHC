@@ -9,12 +9,15 @@ import Model from '../../../model/model';
 
 import { detectForm } from '../../../hook/before';
 
+const REGION_CODE = '79'; // HCM
+const SUBREGION_CODE = '760'; // quan 1
 
 
 class OfficeModal{
 
     constructor(app){
-      this.active = false;
+
+      this.active = false ; /* FOR OPEN MODAL */
       this.app = app ;
 
       this.state = {
@@ -22,29 +25,23 @@ class OfficeModal{
         status:''
       }
 
-      this.currentRegionCode = '79';
+      this.data = {}
 
-      this.defaultValue = {
-        region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
-        subregion_code:'760', // MAC DINH LÀ QUẬN 1
-        working_begin:'08:00:00',
-        working_end:'17:30:00',
-      }
+
+      this.currentRegionCode = REGION_CODE; // mac dinh là HCM
+
 
       this.form = {
         code:'',
         name:'',
         phone:'',
-        region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
-        subregion_code:'760', // MAC DINH LÀ QUẬN 1
+        region_code:REGION_CODE, 
+        subregion_code:SUBREGION_CODE,
         address:'',
         ip_chamcong:'',
         working_begin:'08:00:00',
         working_end:'17:30:00',
       }
-
-      this.listCity = [];
-      this.listDistrict = [];
 
       this.subregions = [] ;
 
@@ -78,13 +75,34 @@ class OfficeModal{
 
     onSubmit(){
 
+
+      const _this = this ;
+      const onAction = this.state.onAction;
+
+      const data = onAction === 'post' ? this.form : this.data;
+
+      if(detectForm(['code','name'],data)===''){
+          this.app.model.axios(onAction,data,(res)=>{
+
+
+            if(res.name==='success'){
+              _this.toggle();
+            }
+
+
+
+
+          })
+      }
+
+      /*
       const _this = this ;
       const onAction = this.state.onAction;
 
       if(detectForm(['code','name','phone','address'],this.form)===''){
 
         this.app.model.axios(onAction,this.form,(res)=>{
-              //_this.app.hook.success(onAction,res);
+
               if(typeof res.name  !== 'undefined'){
                 const status = res.name ;
                 if(status==='success'){
@@ -96,7 +114,7 @@ class OfficeModal{
         });
 
       }
-
+      */
 
 
     }
@@ -142,22 +160,29 @@ class OfficeModal{
 
     }
 
-    getCity(id){
 
-      let ret = {}
-      this.listCity.map((item)=>{
-        if(id===item.id){
-          ret = item
-        }
-      })
 
-      return ret ;
+    onChange(name, e){
+
+      if(this.state.onAction==='post'){
+          this.form[name] = e.target.value;
+      }else{  this.data[name] = e.target.value;  }
+
     }
 
-    setState(name,value){
+    setState(newState={}){
 
-      this.state[name] = value ;
+      /* update state*/
+      Object.assign(this.state,newState);
+
+      /* RE-RENDER COMPONENT*/
+      this.app.onStateChange(this.state);
+
+
     }
+
+
+
     open(type, info){
 
       this.form = info || this.form;
@@ -184,18 +209,17 @@ class OfficeModal{
 
     toggle(){
 
-        this.active = !this.active;
+      this.active = !this.active;
 
-        this.form = this.defaultValue;
+      this.setState({
+        onAction:'',
+        status:'close modal'
+      })
 
-        this.app.onStateChange({
-          onAction:'',
-          status:'close modal'
-        });
-
-        this.popover.active = false;
+      this.popover.active = false;
 
     }
+
 
     popover = {
         active:false,
@@ -204,21 +228,14 @@ class OfficeModal{
         btnYes(){
 
           const _this = this ;
-          const id = this.parent.form.id;
-
-          this.parent.app.onStateChange({
-            onAction:'delete',
-            status:'on comfirm delete..'
-          });
+          const id = this.parent.data.id;
 
           this.parent.app.model.delete(id,(res)=>{
 
-            if(typeof res.name !== 'undefined'){
+
               if(res.name==='success'){
-                _this.parent.app.onStateChange(res.name);
                 _this.parent.toggle();
               }
-            }
 
           })
 
@@ -228,12 +245,15 @@ class OfficeModal{
 
            this.active = !this.active;
 
+
+
            this.parent.app.onStateChange({
              status:'toggle popover'
            });
 
         }
     }
+
 
 }
 
