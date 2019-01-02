@@ -238,12 +238,12 @@ class UserForm extends Component{
   componentDidMount(){
 
       if(!this.state.isLoadData){
-        this.office.get((res)=>{
+        /*this.office.get((res)=>{
           if(typeof res.count !== 'undefined'){
              this.onStateChange({status:'success'});
              this.state.isLoadData = true ;
           }
-        })
+        })*/
       }
 
   }
