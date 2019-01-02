@@ -10,6 +10,7 @@ action = {
 
 import { toast } from '../../hook/after';
 
+
 import { DEPARTMENTS } from '../../model/model-mode';
 import { DEPARTMENTS_NAME } from '../../model/model-name';
 
@@ -22,8 +23,6 @@ const iniState = {
 }
 
 export default function(state = [],action = {}){
-
-
 
   switch(action.type){
 
@@ -40,6 +39,7 @@ export default function(state = [],action = {}){
 
     case 'POST-'+MODE:
 
+      toast('post',msg);
 
       return {
         ...state,
@@ -66,6 +66,7 @@ export default function(state = [],action = {}){
 
     case 'DELETE-'+MODE:
 
+      toast('delete',msg);
 
       return {
         ...state,
@@ -77,7 +78,8 @@ export default function(state = [],action = {}){
     /* PASSIVE DATA : realtime received on listenServer  */
     case 'reset-'+MODE:
 
-      
+      console.log(action.list);
+
       return {
         ...state,
         list:action.list
