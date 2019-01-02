@@ -13,8 +13,10 @@ import offModalCtrl from './offModalCtrl';
 import moment from 'moment';
 import 'moment/locale/vi';
 
-const OFFICES = 'offices';
-const REGIONS = 'regions';
+import {OFFICES, REGIONS} from '../../../model/model-mode' ;
+import { OFFICES_NAME } from '../../../model/model-name';
+
+
 
 /* actions after done some thing */
 class Office extends Component{
@@ -23,15 +25,13 @@ class Office extends Component{
       super(props);
 
 
-      this.name = 'office';
-      this.title = 'Văn phòng'
-
       this.data = {
-        offices:store.getState().office,
-        regions:store.getState().region
+        offices:[],
+        regions:[]
       }
 
       this.state = {
+        name: OFFICES.replace('s',''),
         onAction:'',
         status:'',
 
@@ -40,7 +40,21 @@ class Office extends Component{
       }
 
 
-      this.setup()
+      /* initial model - controller */
+      this.setup();
+
+      /* AUTO CONNECT REDUX STORE -> COMPONENT DATA -> REFESH THEM  */
+      store.subscribe(()=>{
+
+        this.data.offices = store.getState().office.list || []  ;
+        this.data.regions = store.getState().region.list || []  ;
+
+        this.onStateChange({
+          onAction:'reducer-change',
+          status:'success'
+        })
+      })
+
     }
 
     setup(){
@@ -63,8 +77,6 @@ class Office extends Component{
         sort_type:'asc'
       });
 
-
-
       /* modal form controller  */
       this.modalOffice = new offModalCtrl(this);
     }
@@ -73,45 +85,14 @@ class Office extends Component{
     onStateChange(newState){
 
       /* KEEP PRIVATE DATA*/
-      this.data.offices =  store.getState().office ; //  this.model.getData(OFFICES) || [] ;
-
-      this.data.regions = store.getState().region;
-
-
       this.setState(Object.assign(this.state,newState));
-
-
-    }
-
-    loadRegion(){
-
-      const _this = this ;
-      this.moRegion.get((res)=>{
-        if(typeof res.count !== 'undefined'){
-            _this.onStateChange({status:'success'})
-        }
-
-      });
-
-    }
-    loadOffice(){
-      const _this = this ;
-      this.model.get((res)=>{
-
-        if(typeof res.count !== 'undefined'){
-            _this.onStateChange({status:'success'})
-        }
-
-      });
 
     }
 
     initData(){
-      this.loadOffice();
-      this.loadRegion();
 
-      //this.modalOffice.loadCityList();
-      //this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
+      this.model.load();
+      this.moRegion.load();
 
       this.state.isIniData = true ;
 
@@ -120,9 +101,9 @@ class Office extends Component{
     componentDidMount(){
 
 
-      //this.loadOffice();
-      //this.modal.loadCityList();
-      //this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh
+      /*this.loadOffice();
+      this.modal.loadCityList();
+      this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh*/
 
 
 
@@ -133,7 +114,7 @@ class Office extends Component{
 
 
       /* nhận lện có liên quan đến tab : office */
-      if(newProps.onTab===this.name){
+      if(newProps.onTab===this.state.name){
 
         Object.assign(this.state,newProps);
 
@@ -208,8 +189,10 @@ class Office extends Component{
 
     render(){
 
-        const list = this.data.offices ;
-        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.title : 'Cập nhật '+this.title;
+
+
+        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+ OFFICES_NAME  : 'Cập nhật '+ OFFICES_NAME;
+
 
         return(
             <div hidden={  this.props.onTab === 'office' ? false : true } >
@@ -220,7 +203,7 @@ class Office extends Component{
                  <Row>
 
                     {
-                      list.map((item)=>{
+                      this.data.offices.map((item)=>{
 
 
                         return this.BlockItem({key:item.id, data:item});
@@ -232,11 +215,6 @@ class Office extends Component{
             </div>
         )
     }
-
-
-
-
-
 
 
 }
