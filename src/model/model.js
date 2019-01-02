@@ -16,9 +16,6 @@ MODEL : MAKE RESFUL API
 */
 
 
-import server from '../config/server';
-import axios from 'axios';
-
 import store from '../redux/store';
 import LocalData from './localData';
 
@@ -38,28 +35,24 @@ class Model {
 
     this.localData = new LocalData(this.model);
 
-    this.setting = {
-      url:'',
-      base:server.base() + '/'+ this.model+'?',
-      config:'',
-      paginate:server.paginate,
-      total:0
-    };
+    this.initData();
 
-    this.setup();
-
-
-    this.startSocket();
-    this.listenDataChange();
   }
 
+  initData(){
+    this.startSocket();
+    this.listenDataChange();
+
+    this.data = this.localData.list;
+  }
+
+  /* LISTENING DATACHANGE FROM LOCALDATA RESFUL*/
   listenDataChange(){
-    const _this = this ;
+
     this.localData.listenDataChange((res)=>{
 
-
       store.dispatch({
-        type:this.localData.db.type+'-'+_this.model,
+        type:this.localData.db.type+'-'+this.model,
         list:res.list,
         res:res.res
       });
@@ -103,11 +96,8 @@ class Model {
            break;
            case 'remove':
 
-              list.map((item,index)=>{
-                  if(parseInt(item.id) === parseInt(idata.id)){
-                    delete list[index]
-                  }
-
+              list = list.filter((item) => {
+                return parseInt(item.id) !== parseInt(idata.id)
               });
 
            break ;
@@ -127,101 +117,17 @@ class Model {
      });
   }
 
-  setup(){
-
-    const _this = this ;
-    let  url = this.setting.base +   Object.keys(this.setting.paginate).map((key)=>{
-        return key +'='+ this.setting.paginate[key]
-    }).join('&');
-
-    this.setting.url = url;
-    this.setting.config = server.setHeader();
-
-    /* chuan bi localData */
-    this.data = this.localData.list ;
-
-
-  }
-
   set(name,value){
-    this.setting[name] = value;
-
-    this.setup();
+    this.localData.resetConfigDB(name,value);
   }
 
 
-
-  /* CONNECT REDUX  HERE */
-  setData(model,list){
-     this.data[model] = list;
-
-     /* save localData */
-     this.localData.set(list);
-
-     /* SEND TO REDUCER*/
-     store.dispatch({
-       type:this.type+'-'+model,
-       list:list,
-       res:this.res
-     });
-
-
-  }
   getData(name){
     name = name || this.model;
     return this.data[name];
   }
 
-  setItemData(name,json){
 
-    const list = this.getData();
-    list.unshift(json);
-    this.setData(name,list); //  ADD REDUCER TOO
-
-  }
-
-  updateItemData(name,id,json){
-
-    const list = this.data[name];
-
-    list.map((item,index)=>{
-
-      if(parseInt(item.id) === parseInt(id)){
-         list[index] = json;
-      }
-
-      return list;
-
-    });
-
-
-    this.setData(name,list); // update to REDUCER
-
-
-
-  }
-
-  getItemData(name,id){
-    let info = {};
-    this.data[name].map((item)=>{
-      if(item.id===id){
-        info = item;
-      }
-    })
-
-    return info ;
-  }
-
-  delItemData(name,id){
-
-    let list = this.data[name].filter((item)=>{
-      return parseInt(item.id) !== parseInt(id);
-    });
-
-    this.setData(name,list); // UPDATE TO REDUCER
-
-
-  }
 
   axios(method,data={},onSuccess){
 
@@ -232,10 +138,8 @@ class Model {
       case 'put':
 
           const id = data.id;
-
           this.put(id,data,onSuccess);
       break;
-
 
     }
 
@@ -243,93 +147,48 @@ class Model {
 
   delete(id,onSuccess){
 
-      this.type = 'DELETE';
-      const url = server.base() + '/' + this.model+'/'+id ;
-
-      axios.delete(url,this.setting.config)
-            .then((res)=>{
-              this.onSuccess(res);
-              onSuccess(res.data)
-            },(error)=>{
-              this.onError(error)
-
-            })
-
+      this.localData.delete(id,(res)=>{
+        this.listenDataChange();
+        onSuccess(res)
+      });
 
   }
 
   post(data,onSuccess){
 
-    this.type = 'POST';
-    this.status = data ;
-
-
-    const url = server.base()+ '/' + this.model;
-
-    axios.post(url,data,this.setting.config)
-          .then((res)=>{
-            this.onSuccess(res);
-            onSuccess(res.data)
-          },(error)=>{
-
-            this.onError(error);
-
-          });
+    this.localData.post(data,(res)=>{
+      this.listenDataChange()
+      onSuccess(res.data);
+    })
 
   }
 
   put(id,data,onSuccess){
 
 
-
-      //this.type = 'PUT';
-      //this.status = data ;
-
-
       const _this = this ;
       this.localData.put(id,data,(res)=>{
-          _this.listenDataChange()
+          _this.listenDataChange();
           onSuccess(res);
 
       })
-
-      /*axios.put(url,data,this.setting.config)
-            .then((res)=>{
-              this.onSuccess(res);
-              onSuccess(res.data)
-            },(error)=>{
-
-              this.onError(error)
-
-      })*/
 
   }
 
 
   goto(p=0,onSuccess){
-    const {url, config, paginate, total } = this.setting ;
 
-    let offset = 0 ;
-    offset = parseInt(paginate.max) * (p);
-
-    this.set('paginate',Object.assign(paginate,{
-      offset:offset,
-      p:p
-    }));
-
-    this.get((res)=>{
-      this.onSuccess(res);
+    this.localData.goto(p,(res)=>{
+      this.listenDataChange();
       onSuccess(res);
-    },(err)=>{
-      this.onError(err);
+    })
 
-    });
   }
 
   pre(onSuccess){
 
     this.localData.pre((res)=>{
-      this.onSuccess(res);
+      this.listenDataChange();
       onSuccess(res);
     })
 
@@ -338,100 +197,16 @@ class Model {
 
       this.localData.next((res)=>{
 
-        this.onSuccess(res);
+        this.listenDataChange();
         onSuccess(res);
       })
 
-
-  }
-
-
-  /* SET TOTAL - SAVE MOBX PERSIST*/
-  onSuccess(res){
-
-
-      this.res = res;
-      const idata = res.data || {};
-
-      switch(this.type){
-
-        case 'GET':
-
-          this.set('total',res.count);
-          this.setData(this.model,res.rows);
-
-
-        break;
-
-        case 'POST':
-
-
-          idata.name === 'success' ?   this.setItemData(this.model,idata.data) :  this.showErr(idata.message);
-
-
-        break;
-
-        case 'PUT':
-
-            const id = idata.data.id;
-
-            idata.name === 'success' ? this.updateItemData(this.model,id,idata.data) : this.showErr(idata.message);
-
-
-
-        break;
-
-        case 'DELETE':
-            idata.name === 'success' ? this.delItemData(this.model,idata.id) : this.showErr(idata.message);
-
-
-
-        break;
-      }
-
-
-  }
-
-  /* write log error*/
-  onError(err){
-    const data = err.response.data ;
-    const msg = data.errors[0];
-
-    this.showErr(msg);
-  }
-
-  showErr(msg){
-    if(typeof msg === 'object'){
-      msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
-    }
-
-    let el = document.getElementById('form-err');
-
-    if(el !== null){
-      el.innerHTML = msg;
-      setTimeout(()=>{
-        el.innerHTML = 'status';
-      },2000)
-    }else{
-
-      console.log(msg);
-    }
   }
 
 
   load(){
-    this.type = 'GET';
 
-    if(this.data.length === 0){
-      this.localData.fetch((res)=>{
-         this.onSuccess(res.data);
-      })
-    }else{
-
-      this.setData(this.model,this.data);
-
-    }
-
+    this.localData.data.length === 0 ? this.localData.fetch((res)=>{ this.listenDataChange(); }) : this.listenDataChange();;
 
   }
   get(onSuccess){
@@ -441,7 +216,7 @@ class Model {
       const _this = this ;
 
       this.localData.fetch((res)=>{
-        this.onSuccess(res.data);
+        this.listenDataChange();
         onSuccess(res.data)
       })
 
