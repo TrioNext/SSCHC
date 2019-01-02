@@ -95,19 +95,18 @@ class LocalData {
 
     this.onStateChange(list); // update to REDUCER
 
-
-
   }
 
   delItemData(id){
 
-    this.get();
 
-    this.data.filter((item)=>{
-      return parseInt(item.id) !== parseInt(id);
-    });
+    let list =  this.get();
 
-    this.onStateChange(this.data); // UPDATE TO REDUCER
+    list = list.filter((item) => {
+      return parseInt(item.id) !== parseInt(id)  ;
+    })
+
+    this.onStateChange(list); // UPDATE TO REDUCER
 
 
   }
@@ -115,6 +114,7 @@ class LocalData {
 
     this.res = res;
     const idata = res.data || {};
+
 
     switch(this.db.type){
 
@@ -139,15 +139,20 @@ class LocalData {
 
           const id = idata.data.id;
 
-          idata.name === 'success' ? this.updateItemData(id,idata.data) : this.showErr(idata.message);
+
+          try{
+            idata.name === 'success' ? this.updateItemData(id,idata.data) : this.showErr(idata.message);
+          }catch(err){ console.log(err); }
+
 
 
 
       break;
 
       case 'DELETE':
-          idata.name === 'success' ? this.delItemData(this.model,idata.id) : this.showErr(idata.message);
 
+
+          idata.name === 'success' ? this.delItemData(idata.id) : this.showErr(idata.message);
 
 
       break;
@@ -180,6 +185,43 @@ class LocalData {
     }
   }
 
+
+  delete(id,onSuccess){
+
+      this.db.type = 'DELETE';
+      const url = server.base() + '/' + this.model+'/'+id ;
+
+      axios.delete(url,this.db.config)
+            .then((res)=>{
+              this.onDBchange(res);
+              onSuccess(res.data)
+            },(error)=>{
+              this.onError(error)
+
+            })
+
+
+  }
+  post(data,onSuccess){
+
+    this.db.type = 'POST';
+    this.status = data ;
+
+
+    const url = server.base()+ '/' + this.model;
+
+    axios.post(url,data,this.db.config)
+          .then((res)=>{
+            this.onDBchange(res);
+            onSuccess(res)
+          },(error)=>{
+
+            this.onError(error);
+
+          });
+
+  }
+
   put(id,data,onSuccess){
 
       this.db.type = 'PUT';
@@ -187,7 +229,7 @@ class LocalData {
 
       const url = server.base() + '/' + this.model + '?id='+id;
 
-      
+
 
       axios.put(url,data,this.db.config)
             .then((res)=>{
@@ -241,6 +283,8 @@ class LocalData {
 
     this.fetch((res)=>{
 
+
+
       this.onDBchange(res);
       onSuccess(res);
     },(err)=>{
@@ -288,7 +332,7 @@ class LocalData {
       const _this = this ;
       const {url, config} = this.db ;
 
-
+      alert('fetch '+this.model);
 
       axios.get(url,config)
             .then((res) => {
