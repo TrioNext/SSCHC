@@ -59,7 +59,7 @@ function FrmR2(props){
         <FormGroup>
           <Label> Quận/Huyện </Label>
 
-            <SelectDist modal={ modal } selected={ form.subregion_code } />
+            <SelectDist modal={ modal }  selected={ form.subregion_code } />
         </FormGroup>
       </Col>
     </Row>
