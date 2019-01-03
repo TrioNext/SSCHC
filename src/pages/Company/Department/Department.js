@@ -36,7 +36,8 @@ class Department extends Component{
   constructor(props){
     super(props);
 
-    
+
+    /* WHAT  */
     this.data = {
       department:[]
     }
@@ -47,22 +48,18 @@ class Department extends Component{
       status:'',
     }
 
+    // --> initial WHO
     this.setup();
 
-    store.subscribe(()=>{
 
-      this.data.department = store.getState().department.list || []  ;
-      this.onStateChange({
-        onAction:'reducer-change',
-        status:'success'
-      })
-    })
+
   }
 
+
+  /* START WHO */
   setup(){
 
-
-    this.model = new Model('departments');
+    this.model = new Model(DEPARTMENTS);
     this.model.set('paginate',{
       offset:0,
       p:0,
@@ -72,24 +69,41 @@ class Department extends Component{
 
     this.modal = new depModalCtrl(this);
 
-  }
-
-
-  onStateChange(newState){
-    /* KEEP PRIVATE DATA*/
-
-    /* REDUX ACTIONS */
-
-    this.setState(Object.assign(this.state,newState));
-
+    /* AUTO DATA CONNECT : WHEN STORE DATA CHANGE */
+    this.connectStore();
 
   }
+  /* END WHO  */
 
-
+  /* START WHEN */
   componentDidMount(){
       const _this = this ;
 
       this.model.load();
+
+  }
+  connectStore(){
+    store.subscribe(()=>{
+      this.data.department = store.getState().department.list || []  ;
+
+      this.onStateChange({
+        onAction:'reducer-change',
+        status:'success'
+      })
+
+    })
+  }
+  /* END WHEN */
+
+  /*  START HOW METHOD FUNCTION */
+
+  /* END HOW METHOD  */
+
+
+  /* WHERE */
+  onStateChange(newState){
+    /* KEEP PRIVATE DATA*/
+    this.setState(Object.assign(this.state,newState));
 
   }
 
@@ -107,8 +121,6 @@ class Department extends Component{
 
 
     });
-
-
 
     return(
 
@@ -131,6 +143,8 @@ class Department extends Component{
       </div>
     )
   }
+
+  /* END WHERE */
 }
 
 /*function mapStateToProps(state){
