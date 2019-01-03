@@ -4,9 +4,6 @@ OfficeModal :  it's a Controller for <BenModal/>
 
 */
 
-import Model from '../../../model/model';
-
-
 import { detectForm } from '../../../hook/before';
 
 const REGION_CODE = '79'; // HCM
@@ -17,18 +14,16 @@ class OfficeModal{
 
     constructor(app){
 
+      // -->
       this.active = false ; /* FOR OPEN MODAL */
-      this.app = app ;
 
       this.state = {
+        type:'',
         onAction:'',
         status:''
       }
 
       this.data = {}
-
-
-      this.currentRegionCode = REGION_CODE; // mac dinh là HCM
 
 
       this.form = {
@@ -43,79 +38,40 @@ class OfficeModal{
         working_end:'17:30:00',
       }
 
-      this.subregions = [] ;
+
+      // -->
+      this.app = app ;
+
 
     }
 
-    loadDistrictList(parent_code,onSuccess){
 
 
-        const _this = this;
-        this.moSubRegion = new Model('subregions');
-
-        this.moSubRegion.set('paginate',{
-          offset:0,
-          p:0,
-          max:'all',
-          sort_by:'name',
-          sort_type:'asc',
-          parent_code:parent_code
-        })
-
-        this.moSubRegion.get((res)=>{
-
-          _this.subregions = this.moSubRegion.getData('subregions');
-
-
-          _this.app.onStateChange({status:'success'})
-
-        })
-    }
-
-
+    /* START : WHEN */
     onSubmit(){
 
 
       const _this = this ;
-      const onAction = this.state.onAction;
+      const type = this.state.type;
 
-      const data = onAction === 'post' ? this.form : this.data;
+      const data = this.form ;  //onAction === 'post' ? this.form : this.data;
 
+
+      /* HOOKED detectForm before save data*/
+
+      // -->
       if(detectForm(['code','name'],data)===''){
-          this.app.model.axios(onAction,data,(res)=>{
 
+          this.app.model.axios(type,data,(res)=>{
 
-            if(res.name==='success'){
-              _this.toggle();
-            }
-
-
-
+            // -->
+            _this.whereStateChange({
+              onAction:type+'ed',
+              status:res.name
+            });
 
           })
       }
-
-      /*
-      const _this = this ;
-      const onAction = this.state.onAction;
-
-      if(detectForm(['code','name','phone','address'],this.form)===''){
-
-        this.app.model.axios(onAction,this.form,(res)=>{
-
-              if(typeof res.name  !== 'undefined'){
-                const status = res.name ;
-                if(status==='success'){
-                  _this.app.onStateChange({status:status});
-                  _this.toggle();
-                }
-              }
-
-        });
-
-      }
-      */
-
 
     }
 
@@ -124,31 +80,40 @@ class OfficeModal{
         let hour = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
         let minute = this.form[name] ? this.form[name].split(':') : '';
 
-        minute = minute === '' ? '' : minute[1];
+        minute = minute === '' ? '00' : minute[1];
 
         this.form[name] = hour + ':'+minute;
 
-
+        // -->
+        this.processForm(name,e)
     }
 
     onMinuteChange(name, e){
         let minute = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
         let hour = this.form[name] ? this.form[name].split(':') : '';
 
+
+
         hour = hour === '' ? '00' : hour[0];
         this.form[name] = hour+':'+minute;
 
+        // --> HOW -> WHERE
+        this.processForm(name,e);
     }
 
     onChangeDist(e){
       const code = e.target.value;
       this.form['subregion_code'] = code ;
+
+      // --> HOW -> WHERE
+      this.processForm('subregion_code',e);
     }
 
     onChangeCity(e){
        const code = e.target.value;
        this.form['region_code'] = code ;
 
+       // --> HOW -> WHERE
        this.loadDistrictList(code);
 
 
@@ -157,65 +122,103 @@ class OfficeModal{
 
     onChange(name, e){
 
-      if(this.state.onAction==='post'){
-          this.form[name] = e.target.value;
-      }else{  this.data[name] = e.target.value;  }
+      this.form[name] = e.target.value;
 
-    }
-
-    setState(newState={}){
-
-      /* update state*/
-      Object.assign(this.state,newState);
-
-      /* RE-RENDER COMPONENT*/
-      this.app.onStateChange(this.state);
-
+      // --> initial HOW -> WHERE
+      this.processForm(name,e);
 
     }
 
 
 
-    open(type, info){
+    /* END WHEN  */
 
-
-      const temp = info || {} ;
-      this.data = temp ;
-      this.active = true ;
-
-      /* RE-RENDER COMPONENT */
-      this.setState({
-        onAction:type,
-        status:'success'
-      });
-
-      /*
-      this.currentRegionCode = typeof info !=='undefined' ? info.region_code : this.currentRegionCode;
-      this.loadDistrictList(this.currentRegionCode,()=>{
-
-        _this.app.onStateChange({
-          onAction:type,
-          status:'modal opening'
-        });
-
-      });*/
-
-
-
+    /* START : HOW */
+    processForm(name,e){
+       //-->
+       this.whereStateChange({
+         onAction:'processForm'
+       })
     }
 
     toggle(){
 
       this.active = !this.active;
-
-      this.setState({
-        onAction:'',
-        status:'close modal'
-      })
-
       this.popover.active = false;
 
+      // -->
+      this.whereStateChange({
+        onAction:'toggle_modal',
+        status:'success'
+      })
+
+
     }
+
+    loadDistrictList(parent_code,onSuccess){
+
+        const _this = this;
+
+        this.app.loadSubRegion(parent_code,(res)=>{
+
+          _this.whereStateChange({
+            onAction:'loadDistrictList',
+            status:'success'
+          })
+
+        })
+
+    }
+
+
+    open(type, info){
+
+
+      const temp = info || this.form ;
+      this.form = temp ;
+      this.active = true ;
+
+      /* RE-RENDER COMPONENT */
+      // -->
+      this.whereStateChange({
+        type:type,
+        onAction:type,
+        status:'start'
+      });
+
+
+    }
+
+    /* END HOW */
+
+
+    /* START : WHERE */
+    whereStateChange(newState={}){
+      /* update state*/
+      Object.assign(this.state,newState);
+
+      switch(newState.onAction){
+        case 'puted':
+           newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
+        break;
+        case 'posted':
+           newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
+        break;
+
+        case 'deleteed':
+           newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
+        break;
+
+        default :
+          /* RE-RENDER COMPONENT*/
+          this.app.whereStateChange(this.state);
+        break ;
+      }
+    }
+
+
+
+    /* END WHERE */
 
 
     popover = {
@@ -242,10 +245,9 @@ class OfficeModal{
 
            this.active = !this.active;
 
-
-
-           this.parent.app.onStateChange({
-             status:'toggle popover'
+           this.parent.app.whereStateChange({
+             onAction:'toggle_popover',
+             status:'success'
            });
 
         }
