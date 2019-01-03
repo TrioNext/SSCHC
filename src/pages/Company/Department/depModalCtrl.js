@@ -9,7 +9,6 @@ class FormCtrl {
   constructor(app){
 
     this.active = false ; /* FOR OPEN MODAL */
-    this.app = app ;
 
     this.state = {
       onAction:'',
@@ -21,11 +20,14 @@ class FormCtrl {
     this.form = {
       code:'',
       name:''
-
     }
+
+    // initial WHO
+    this.app = app ;
 
   }
 
+  /* START WHEN */
   onSubmit(){
 
 
@@ -55,25 +57,12 @@ class FormCtrl {
         this.form[name] = e.target.value;
     }else{  this.data[name] = e.target.value;  }
 
-
-
-
   }
 
-  setState(newState={}){
+  /* END WHEN  */
 
-    /* update state*/
-    Object.assign(this.state,newState);
-
-    /* RE-RENDER COMPONENT*/
-    this.app.onStateChange(this.state);
-
-
-  }
-
+  /* START HOW */
   open(type, info){
-
-    //this.form = info || this.form;
 
     const temp = info || {} ;
     this.data = temp ;
@@ -101,7 +90,24 @@ class FormCtrl {
       this.popover.active = false;
 
   }
+  /* END HOW  */
 
+  /* START WHERE  */
+  setState(newState={}){
+
+    /* update state*/
+    Object.assign(this.state,newState);
+
+    /* RE-RENDER COMPONENT*/
+    this.app.onStateChange(this.state);
+
+
+  }
+  /* END WHERE  */
+
+
+
+  /* SMAIL OBJECT */
   popover = {
       active:false,
 
@@ -125,9 +131,7 @@ class FormCtrl {
       toggle(){
 
          this.active = !this.active;
-
-
-
+         
          this.parent.app.onStateChange({
            status:'toggle popover'
          });
