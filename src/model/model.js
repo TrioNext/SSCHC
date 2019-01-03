@@ -206,15 +206,13 @@ class Model {
 
   load(){
 
+
     this.localData.data.length === 0 ? this.localData.fetch((res)=>{ this.listenDataChange(); }) : this.listenDataChange();;
 
   }
   get(onSuccess){
 
-      this.type = 'GET';
-
-      const _this = this ;
-
+      
       this.localData.fetch((res)=>{
         this.listenDataChange();
         onSuccess(res.data)
