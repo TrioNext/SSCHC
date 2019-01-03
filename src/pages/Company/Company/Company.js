@@ -17,7 +17,7 @@ class Company extends Component {
 
     this.state = {
 
-      onTab:'office',
+      onTab:'user',
       onAction:'',
       status:'',
 
