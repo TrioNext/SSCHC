@@ -13,9 +13,11 @@ import offModalCtrl from './offModalCtrl';
 import moment from 'moment';
 import 'moment/locale/vi';
 
-import {OFFICES, REGIONS} from '../../../model/model-mode' ;
+import {OFFICES, REGIONS, SUBREGIONS} from '../../../model/model-mode' ;
 import { OFFICES_NAME } from '../../../model/model-name';
 
+const REGION_CODE = '79'; // HCM
+const SUBREGION_CODE = '760'; // quan 1
 
 
 /* actions after done some thing */
@@ -26,8 +28,12 @@ class Office extends Component{
 
 
       this.data = {
+
+
         offices:[],
-        regions:[]
+        regions:[],
+        subregions:[]
+
       }
 
       this.state = {
@@ -48,6 +54,9 @@ class Office extends Component{
 
         this.data.offices = store.getState().office.list || []  ;
         this.data.regions = store.getState().region.list || []  ;
+        this.data.subregions = store.getState().subregion.list || []  ;
+
+
 
         this.onStateChange({
           onAction:'reducer-change',
@@ -77,6 +86,9 @@ class Office extends Component{
         sort_type:'asc'
       });
 
+      this.moSubRegion = new Model(SUBREGIONS);
+
+
       /* modal form controller  */
       this.modalOffice = new offModalCtrl(this);
     }
@@ -89,10 +101,27 @@ class Office extends Component{
 
     }
 
+    loadSubRegion(region_code,onSuccess){
+
+      this.moSubRegion.set('paginate',{
+        offset:0,
+        p:0,
+        max:'all',
+        sort_by:'name',
+        sort_type:'asc',
+        parent_code:region_code
+      });
+
+      this.moSubRegion.get((res)=>{
+        onSuccess(res)
+      })
+    }
+
     initData(){
 
       this.model.load();
       this.moRegion.load();
+
 
       this.state.isIniData = true ;
 
@@ -124,7 +153,8 @@ class Office extends Component{
 
 
         if(newProps.onAction==='post'){
-            this.modalOffice.open('post');
+            //this.modalOffice.open('post');
+            this.openModalPost()
         }
       }
 
@@ -151,6 +181,21 @@ class Office extends Component{
       alert('componentWillUnmount happen');
     }
 
+    openModalPost(){
+
+      this.loadSubRegion(REGION_CODE,(res)=>{
+        this.modalOffice.open('post');
+      });
+    }
+    openModalUpdate(data){
+      //alert('sss');
+      //this.data.currentRegionCode = data.region_code;
+
+      this.loadSubRegion(data.region_code,(res)=>{
+        this.modalOffice.open('put',data);
+      });
+
+    }
     /* STUPID COMPONENT*/
     BlockItem(props){
       const data = props.data;
@@ -169,7 +214,7 @@ class Office extends Component{
                     <div>
                        <span><i className="fa fa-map-pin mr-5"></i> {data.name}</span>
                        <span className="pull-right">
-                         <a className='pointer' onClick={ ()=>{ this.modalOffice.open('put',data) } }> <i className="fa fa-gear"></i> </a>
+                         <a className='pointer' onClick={ ()=>{ this.openModalUpdate(data) } }> <i className="fa fa-gear"></i> </a>
                        </span>
                     </div>
                     <i className="fa fa-phone mr-5"></i> { data.phone === null ? 'n/a' : data.phone } <br/>
@@ -198,7 +243,7 @@ class Office extends Component{
             <div hidden={  this.props.onTab === 'office' ? false : true } >
 
 
-                 <OffModalComp  name={ modalTitle  } regions={ this.data.regions } onAction={ this.props.onAction} modal={ this.modalOffice } />
+                 <OffModalComp  name={ modalTitle  } regions={ this.data.regions } subregions={ this.data.subregions } onAction={ this.props.onAction} modal={ this.modalOffice } />
 
                  <Row>
 
