@@ -35,7 +35,7 @@ class OfficeModal{
         code:'',
         name:'',
         phone:'',
-        region_code:REGION_CODE, 
+        region_code:REGION_CODE,
         subregion_code:SUBREGION_CODE,
         address:'',
         ip_chamcong:'',
@@ -154,13 +154,6 @@ class OfficeModal{
 
     }
 
-    onChange(name, e){
-
-      this.form[name] = e.target.value;
-
-    }
-
-
 
     onChange(name, e){
 
@@ -185,23 +178,27 @@ class OfficeModal{
 
     open(type, info){
 
-      this.form = info || this.form;
+
+      const temp = info || {} ;
+      this.data = temp ;
       this.active = true ;
 
-      const _this = this ;
-      this.setState('onAction',type);
+      /* RE-RENDER COMPONENT */
+      this.setState({
+        onAction:type,
+        status:'success'
+      });
 
+      /*
       this.currentRegionCode = typeof info !=='undefined' ? info.region_code : this.currentRegionCode;
-
       this.loadDistrictList(this.currentRegionCode,()=>{
 
-        /* SET STATE CHANGE */
         _this.app.onStateChange({
           onAction:type,
           status:'modal opening'
         });
 
-      });
+      });*/
 
 
 
