@@ -29,7 +29,6 @@ class Office extends Component{
 
       this.data = {
 
-
         offices:[],
         regions:[],
         subregions:[]
@@ -46,23 +45,8 @@ class Office extends Component{
       }
 
 
-      /* initial model - controller */
+      /* initial WHO */
       this.setup();
-
-      /* AUTO CONNECT REDUX STORE -> COMPONENT DATA -> REFESH THEM  */
-      store.subscribe(()=>{
-
-        this.data.offices = store.getState().office.list || []  ;
-        this.data.regions = store.getState().region.list || []  ;
-        this.data.subregions = store.getState().subregion.list || []  ;
-
-
-
-        this.onStateChange({
-          onAction:'reducer-change',
-          status:'success'
-        })
-      })
 
     }
 
@@ -91,51 +75,17 @@ class Office extends Component{
 
       /* modal form controller  */
       this.modalOffice = new offModalCtrl(this);
-    }
 
-
-    onStateChange(newState){
-
-      /* KEEP PRIVATE DATA*/
-      this.setState(Object.assign(this.state,newState));
+      /* initial WHEN : AUTO DATA CONNECT : WHEN STORE DATA CHANGE */
+      this.connectStore();
 
     }
 
-    loadSubRegion(region_code,onSuccess){
-
-      this.moSubRegion.set('paginate',{
-        offset:0,
-        p:0,
-        max:'all',
-        sort_by:'name',
-        sort_type:'asc',
-        parent_code:region_code
-      });
-
-      this.moSubRegion.get((res)=>{
-        onSuccess(res)
-      })
-    }
-
-    initData(){
-
-      this.model.load();
-      this.moRegion.load();
-
-
-      this.state.isIniData = true ;
-
-
-    }
+/* START : WHEN */
     componentDidMount(){
-
-
       /*this.loadOffice();
       this.modal.loadCityList();
       this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh*/
-
-
-
     }
 
     /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
@@ -162,17 +112,8 @@ class Office extends Component{
 
     }
 
-
-
     /* TRIGGER AFFTER SOMETHING*/
     componentDidUpdate(prevProps, prevState){
-
-      //alert(JSON.stringifyr);
-      //alert('componentDidUpdate: '+ JSON.stringify(prevProps));
-      //alert('componentDidUpdate');
-      /*alert('ok man : componentDidUpdate');
-      alert(JSON.stringify(prevProps));
-      alert(JSON.stringify(prevState));*/
 
     }
 
@@ -181,6 +122,23 @@ class Office extends Component{
       alert('componentWillUnmount happen');
     }
 
+    connectStore(){
+      /* AUTO CONNECT REDUX STORE -> COMPONENT DATA -> REFESH THEM  */
+      store.subscribe(()=>{
+
+        this.data.offices = store.getState().office.list || []  ;
+        this.data.regions = store.getState().region.list || []  ;
+        this.data.subregions = store.getState().subregion.list || []  ;
+
+        this.whereStateChange({
+          onAction:'reducer-change',
+          status:'success'
+        })
+      })
+    }
+    /* END : WHEN */
+
+    /* START : HOW */
     openModalPost(){
 
       this.loadSubRegion(REGION_CODE,(res)=>{
@@ -196,15 +154,40 @@ class Office extends Component{
       });
 
     }
-    /* STUPID COMPONENT*/
+    loadSubRegion(region_code,onSuccess){
+
+      this.moSubRegion.set('paginate',{
+        offset:0,
+        p:0,
+        max:'all',
+        sort_by:'name',
+        sort_type:'asc',
+        parent_code:region_code
+      });
+
+      this.moSubRegion.get((res)=>{
+        onSuccess(res)
+      })
+    }
+
+    initData(){
+
+      this.model.load();
+      this.moRegion.load();
+
+      this.state.isIniData = true ;
+
+    }
+    /* END : HOW */
+
+
+    /* START : WHERE HERE */
     BlockItem(props){
       const data = props.data;
 
       const date = moment(data.date_created).format('YYYY-MM-DD HH:mm:ss');
       const begin = moment('2018-11-20 '+data.working_begin).format('HH:mm');
       const end = moment('2018-11-20 '+data.working_end).format('HH:mm');
-
-
 
       return(
         <Col md="3" key={ Math.random() } className="file-box">
@@ -232,6 +215,12 @@ class Office extends Component{
       )
     }
 
+    whereStateChange(newState){
+
+      /* KEEP PRIVATE DATA*/
+      this.setState(Object.assign(this.state,newState));
+
+    }
     render(){
 
 
@@ -260,6 +249,8 @@ class Office extends Component{
             </div>
         )
     }
+
+    /* END WHERE */
 
 
 }
