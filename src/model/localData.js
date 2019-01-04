@@ -21,8 +21,13 @@ class LocalData {
     this.model = model;
 
     this.data = [] ;
-    this.state = {};
-    this.res = {};
+    this.state = {
+      onAction:'',
+      status:'',
+      res:{}
+    };
+    //this.res = {};
+
 
     /* initial : WHO */
     this.setup(model);
@@ -48,12 +53,21 @@ class LocalData {
     this.initData();
 
 
+
+
   }
 
 
   /********WHEN *********** */
+  onError(err){
+    const data = err.response.data ;
+    const msg = data.errors[0];
+
+    this.showErr(msg);
+  }
+
   /* SOCKET*/
-  onSocketTick(onStateChange){
+  listenOnSocketTick(onDataChange){
     const _this = this ;
 
     this.socket.clientListenServer((res)=>{
@@ -61,9 +75,178 @@ class LocalData {
         this.socketResp(res);
 
         // --> callback()
-        onStateChange(res,this.list);
+        onDataChange(res,this.list);
 
     })
+  }
+
+  listenDataChange(onDataChange){
+
+    const data = {
+      res:this.state.res,
+      list:this.data
+    }
+    onDataChange(data);
+  }
+
+  delete(id,onSuccess){
+
+      this.db.type = 'DELETE';
+      const url = server.base() + '/' + this.model+'/'+id ;
+
+      axios.delete(url,this.db.config)
+            .then((res)=>{
+              this.restResp(res);
+              onSuccess(res.data)
+            },(error)=>{
+              this.onError(error)
+
+            })
+
+
+  }
+  post(data,onSuccess){
+
+    this.db.type = 'POST';
+    this.status = data ;
+
+    const url = server.base()+ '/' + this.model;
+
+    axios.post(url,data,this.db.config)
+          .then((res)=>{
+            this.restResp(res);
+            onSuccess(res)
+          },(error)=>{
+
+            this.onError(error);
+
+          });
+
+  }
+
+  put(id,data,onSuccess){
+
+      this.db.type = 'PUT';
+      this.status = data ;
+
+      const url = server.base() + '/' + this.model + '?id='+id;
+
+
+
+      axios.put(url,data,this.db.config)
+            .then((res)=>{
+              this.restResp(res);
+              onSuccess(res.data)
+            },(error)=>{
+
+              this.onError(error)
+
+      })
+
+  }
+
+  goto(p=0,onSuccess){
+    const {url, config, paginate, total } = this.db ;
+
+    let offset = 0 ;
+    offset = parseInt(paginate.max) * (p);
+
+    this.set('paginate',Object.assign(paginate,{
+      offset:offset,
+      p:p
+    }));
+
+    this.get((res)=>{
+      this.restResp(res);
+      onSuccess(res);
+    },(err)=>{
+      this.onError(err);
+
+    });
+  }
+  pre(onSuccess){
+
+    const {url, config, paginate,total} = this.db ;
+    let next = paginate.p - 1;
+
+    next = next < 0 ? 0 : next ;
+
+    let offset = 0 ;
+    let page = next ;
+    let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
+
+    offset = parseInt(paginate.max) * (page);
+
+    this.set('paginate',Object.assign(paginate,{
+      offset:offset,
+      p:page
+    }));
+
+
+    this.fetch((res)=>{
+
+      this.restResp(res);
+      onSuccess(res);
+    },(err)=>{
+
+      this.onError(err);
+
+    });
+
+  }
+  next(onSuccess){
+
+    const {url, config, paginate, total } = this.db ;
+    let next = paginate.p + 1;
+
+    let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
+    next = next < pages ? next : pages - 1 ;
+
+    let offset = 0 ;
+    let page = next ;
+
+    offset = parseInt(paginate.max) * (page);
+
+    this.set('paginate',Object.assign(paginate,{
+      offset:offset,
+      p:page
+    }));
+
+
+
+    this.fetch((res)=>{
+
+      this.restResp(res);
+      onSuccess(res);
+    },(err)=>{
+      this.onError(err);
+
+    });
+
+  }
+
+  fetch(onSuccess){
+
+      this.db.type = 'GET';
+
+      const _this = this ;
+      const {url, config} = this.db ;
+
+      alert('fetch '+this.model);
+
+      axios.get(url,config)
+            .then((res) => {
+
+              this.restResp(res);
+              onSuccess(res)
+
+            },
+            (error) => {
+                var status = error.response.status;
+                this.onError(error)
+
+              }
+            );
   }
   /********END WHEN *********** */
 
@@ -72,6 +255,64 @@ class LocalData {
   localStorage = {
     _this:this,
 
+    /* for rest*/
+    GET(res){
+
+      const idata = res.data ;
+
+      this._this.resetConfigDB("total",idata.count);
+      this._this.set(idata.rows);
+
+
+
+    },
+    POST(res){
+
+      const idata = res.data ;
+      //this._this.setItemData(idata.data)
+
+      let list = this._this.get();
+      list.unshift(idata.data);
+      this._this.set(list);
+
+
+    },
+    PUT(res){
+
+      const idata = res.data ;
+      const id = idata.data.id;
+
+      //////////
+      const list = this._this.get();
+
+      list.map((item,index)=>{
+
+        if(parseInt(item.id) === parseInt(id)){
+           list[index] = idata.data;
+        }
+
+        return list;
+
+      });
+      this._this.set(list);
+
+
+    },
+    DELETE(res){
+
+        const idata = res.data ;
+
+        let list =  this._this.get();
+
+        list = list.filter((item) => {
+          return parseInt(item.id) !== parseInt(idata.id)  ;
+        });
+
+        this._this.set(list);
+
+    },
+
+    /* for socket*/
     create(res){
       let list = this._this.get(); // CAP NHẬT DATA
 
@@ -121,9 +362,24 @@ class LocalData {
     this.localStorage[res.type](res);
 
     this.whereStateChange({
-      status:'socketResp',
+      onAction:'socketResp',
+      status:res.type,
       res:res
     });
+
+  }
+  restResp(res){
+
+    const idata = res.data || {};
+
+    idata.name === 'success' ?  this.localStorage[this.db.type](res) : this.showErr(idata.message);
+
+    this.whereStateChange({
+      onAction:'restResp',
+      status:this.db.type,
+      res:res
+    })
+
 
   }
 
@@ -137,19 +393,10 @@ class LocalData {
     this.db.config = server.setHeader();
 
     this.whereStateChange({
-      status:'configDB'
+      onAction:'configDB'
     });
 
   }
-
-  /***********END HOW************************/
-
-  /**********WHERE*****************/
-  whereStateChange(newState){
-     Object(this.state,newState);
-
-  }
-  /* END WHERE */
 
   resetConfigDB(name,value){
     this.db[name] = value;
@@ -171,107 +418,19 @@ class LocalData {
 
   }
 
-  onStateChange(list){
-
-    /* save localData localStorage*/
-    this.data = list ;
-    this.set(list);
-
-  }
-
-  setItemData(json){
-    const list = this.get();
-    list.unshift(json);
-    this.onStateChange(list); //  ADD REDUCER TOO
-  }
-  updateItemData(id,json){
-
-    const list = this.get();
-
-    list.map((item,index)=>{
-
-      if(parseInt(item.id) === parseInt(id)){
-         list[index] = json;
-      }
-
-      return list;
-
-    });
 
 
-    this.onStateChange(list); // update to REDUCER
+  /***********END HOW************************/
+
+  /**********WHERE*****************/
+  whereStateChange(newState){
+     Object(this.state,newState);
 
   }
-
-  delItemData(id){
-
-
-    let list =  this.get();
-
-    list = list.filter((item) => {
-      return parseInt(item.id) !== parseInt(id)  ;
-    })
-
-    this.onStateChange(list); // UPDATE TO REDUCER
-
-
-  }
-  onDBchange(res){
-
-    this.res = res;
-    const idata = res.data || {};
-
-
-    switch(this.db.type){
-
-      case 'GET':
-
-
-        this.resetConfigDB("total",idata.count);
-        this.onStateChange(idata.rows);
-
-
-      break;
-
-      case 'POST':
-
-
-        idata.name === 'success' ?   this.setItemData(idata.data) :  this.showErr(idata.message);
-
-
-      break;
-
-      case 'PUT':
-
-          const id = idata.data.id;
-
-
-          try{
-            idata.name === 'success' ? this.updateItemData(id,idata.data) : this.showErr(idata.message);
-          }catch(err){ console.log(err); }
+  /* END WHERE */
 
 
 
-
-      break;
-
-      case 'DELETE':
-
-
-          idata.name === 'success' ? this.delItemData(idata.id) : this.showErr(idata.message);
-
-
-      break;
-    }
-
-  }
-
-  onError(err){
-    const data = err.response.data ;
-    const msg = data.errors[0];
-
-    this.showErr(msg);
-  }
 
   showErr(msg){
     if(typeof msg === 'object'){
@@ -289,181 +448,12 @@ class LocalData {
 
       console.log(msg);
     }
+
+    this.whereStateChange({
+      onAction:'showErr',
+      status:msg
+    })
   }
-
-
-  delete(id,onSuccess){
-
-      this.db.type = 'DELETE';
-      const url = server.base() + '/' + this.model+'/'+id ;
-
-      axios.delete(url,this.db.config)
-            .then((res)=>{
-              this.onDBchange(res);
-              onSuccess(res.data)
-            },(error)=>{
-              this.onError(error)
-
-            })
-
-
-  }
-  post(data,onSuccess){
-
-    this.db.type = 'POST';
-    this.status = data ;
-
-    const url = server.base()+ '/' + this.model;
-
-    axios.post(url,data,this.db.config)
-          .then((res)=>{
-            this.onDBchange(res);
-            onSuccess(res)
-          },(error)=>{
-
-            this.onError(error);
-
-          });
-
-  }
-
-  put(id,data,onSuccess){
-
-      this.db.type = 'PUT';
-      this.status = data ;
-
-      const url = server.base() + '/' + this.model + '?id='+id;
-
-
-
-      axios.put(url,data,this.db.config)
-            .then((res)=>{
-              this.onDBchange(res);
-              onSuccess(res.data)
-            },(error)=>{
-
-              this.onError(error)
-
-      })
-
-  }
-
-  goto(p=0,onSuccess){
-    const {url, config, paginate, total } = this.db ;
-
-    let offset = 0 ;
-    offset = parseInt(paginate.max) * (p);
-
-    this.set('paginate',Object.assign(paginate,{
-      offset:offset,
-      p:p
-    }));
-
-    this.get((res)=>{
-      this.onDBchange(res);
-      onSuccess(res);
-    },(err)=>{
-      this.onError(err);
-
-    });
-  }
-  pre(onSuccess){
-
-    const {url, config, paginate,total} = this.db ;
-    let next = paginate.p - 1;
-
-    next = next < 0 ? 0 : next ;
-
-    let offset = 0 ;
-    let page = next ;
-    let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
-
-    offset = parseInt(paginate.max) * (page);
-
-    this.set('paginate',Object.assign(paginate,{
-      offset:offset,
-      p:page
-    }));
-
-
-    this.fetch((res)=>{
-
-
-
-      this.onDBchange(res);
-      onSuccess(res);
-    },(err)=>{
-
-      this.onError(err);
-
-    });
-
-  }
-  next(onSuccess){
-
-    const {url, config, paginate, total } = this.db ;
-    let next = paginate.p + 1;
-
-    let pages = Math.ceil( parseInt(total) / parseInt(paginate.max));
-    next = next < pages ? next : pages - 1 ;
-
-    let offset = 0 ;
-    let page = next ;
-
-    offset = parseInt(paginate.max) * (page);
-
-    this.set('paginate',Object.assign(paginate,{
-      offset:offset,
-      p:page
-    }));
-
-
-
-    this.fetch((res)=>{
-
-      this.onDBchange(res);
-      onSuccess(res);
-    },(err)=>{
-      this.onError(err);
-
-    });
-
-  }
-
-  fetch(onSuccess){
-
-      this.db.type = 'GET';
-
-      const _this = this ;
-      const {url, config} = this.db ;
-
-      alert('fetch '+this.model);
-
-      axios.get(url,config)
-            .then((res) => {
-
-              this.onDBchange(res);
-              onSuccess(res)
-
-            },
-            (error) => {
-                var status = error.response.status;
-                this.onError(error)
-
-              }
-            );
-  }
-
-
-  listenDataChange(onStateChange){
-
-    const data = {
-      res:this.res,
-      list:this.data
-    }
-    onStateChange(data);
-  }
-
 
 
 
