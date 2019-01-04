@@ -29,105 +29,33 @@ class Model {
     this.model = model; // string
 
     this.data = [];
-    this.status = {}; /* keep context data on doing POST - PUT  */
-    this.type = ''; /* type : http: method */
-    this.res = {};
+    this.state = {}
 
-    this.localData = new LocalData(this.model);
+    //this.status = {}; /* keep context data on doing POST - PUT  */
+    //this.type = ''; /* type : http: method */
+    //this.res = {};
 
-    this.initData();
+    /* initial WHO */
+    this.setup();
+
 
   }
 
-  initData(){
-    this.startSocket();
-    this.listenDataChange();
+  setup(){
+    this.localData = new LocalData(this.model,this);
+
+
+    this.onSocketTick();
+    this.onDataChange();
 
     this.data = this.localData.list;
   }
 
-  /* LISTENING DATACHANGE FROM LOCALDATA RESFUL*/
-  listenDataChange(){
 
-    this.localData.listenDataChange((res)=>{
-
-      store.dispatch({
-        type:this.localData.db.type+'-'+this.model,
-        list:res.list,
-        res:res.res
-      });
-
-    })
-  }
+  /* WHEN */
   /* start listen to socket server -> save LocalData -> send to reducers
     tren cung 1 may tinh se ko cap nhat socket realtime
   */
-  startSocket(){
-
-    const _this = this ;
-    /*  START REALTIME  */
-    this.localData.listenServer((res)=>{
-
-       if(_this.localData.jwt !== res.token){
-         /* UPDATE LOCAL DATA */
-
-         const idata = res.data ;
-
-         let list = _this.localData.get();
-
-         switch(res.type){
-
-           case 'create':
-
-              list.unshift(res.data);
-
-
-           break ;
-           case 'update':
-
-              list.map((item,index)=>{
-
-                if(parseInt(item.id) === parseInt(idata.id)){
-                   list[index] = idata;
-                }
-              });
-
-
-           break;
-           case 'remove':
-
-              list = list.filter((item) => {
-                return parseInt(item.id) !== parseInt(idata.id)
-              });
-
-           break ;
-
-         }
-         _this.localData.set(list);
-
-         /* SEND TO REDUCER NEW LIST  */
-         store.dispatch({
-           type:'reset-'+res.model,
-           list:list,
-           res:res
-         });
-
-       }
-
-     });
-  }
-
-  set(name,value){
-    this.localData.resetConfigDB(name,value);
-  }
-
-
-  getData(name){
-    name = name || this.model;
-    return this.data[name];
-  }
-
-
 
   axios(method,data={},onSuccess){
 
@@ -148,7 +76,7 @@ class Model {
   delete(id,onSuccess){
 
       this.localData.delete(id,(res)=>{
-        this.listenDataChange();
+        this.onDataChange()
         onSuccess(res)
       });
 
@@ -157,7 +85,7 @@ class Model {
   post(data,onSuccess){
 
     this.localData.post(data,(res)=>{
-      this.listenDataChange()
+      this.onDataChange()
       onSuccess(res.data);
     })
 
@@ -168,7 +96,7 @@ class Model {
 
       const _this = this ;
       this.localData.put(id,data,(res)=>{
-          _this.listenDataChange();
+          _this.onDataChange();
           onSuccess(res);
 
       })
@@ -179,7 +107,7 @@ class Model {
   goto(p=0,onSuccess){
 
     this.localData.goto(p,(res)=>{
-      this.listenDataChange();
+      this.onDataChange();
       onSuccess(res);
     })
 
@@ -188,7 +116,7 @@ class Model {
   pre(onSuccess){
 
     this.localData.pre((res)=>{
-      this.listenDataChange();
+      this.onDataChange();
       onSuccess(res);
     })
 
@@ -197,7 +125,7 @@ class Model {
 
       this.localData.next((res)=>{
 
-        this.listenDataChange();
+        this.onDataChange();
         onSuccess(res);
       })
 
@@ -207,18 +135,76 @@ class Model {
   load(){
 
 
-    this.localData.data.length === 0 ? this.localData.fetch((res)=>{ this.listenDataChange(); }) : this.listenDataChange();;
+    this.localData.data.length === 0 ? this.localData.fetch((res)=>{ this.onDataChange(); }) : this.onDataChange();;
 
   }
   get(onSuccess){
 
-      
+
       this.localData.fetch((res)=>{
-        this.listenDataChange();
+        this.onDataChange();
         onSuccess(res.data)
       })
 
 
+  }
+
+  onSocketTick(){
+
+    const _this = this ;
+    /*  START REALTIME  */
+    this.localData.onSocketTick((res,list)=>{
+
+       this.socketResp(res,list)
+
+     });
+  }
+  onDataChange(){
+    this.localData.listenDataChange((res)=>{
+       this.restResp(res);
+    })
+  }
+  /* END WHEN*/
+
+  /**** HOW ***/
+  restResp(res){
+
+    this.whereStateChange({
+      type:this.localData.db.type+'-'+this.model,
+      list:res.list,
+      res:res.res
+    })
+
+  }
+  socketResp(res,list){
+    if(this.localData.jwt !== res.token){
+
+      this.whereStateChange({
+        type:'reset-'+res.model,
+        list:list,
+        res:res
+      })
+
+    }
+  }
+  /**** END HOW *****/
+
+  /******WHERE*******/
+  whereStateChange(newState){
+
+    Object.assign(this.state,newState);
+    store.dispatch(newState);
+  }
+  /*********END WHERE*************/
+
+  set(name,value){
+    this.localData.resetConfigDB(name,value);
+  }
+
+
+  getData(name){
+    name = name || this.model;
+    return this.data[name];
   }
 
 }
