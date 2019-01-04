@@ -36,6 +36,7 @@ class Office extends Component{
       }
 
       this.state = {
+        form:{},
         name: OFFICES.replace('s',''),
         onAction:'',
         status:'',
@@ -131,8 +132,8 @@ class Office extends Component{
         this.data.subregions = store.getState().subregion.list || []  ;
 
         this.whereStateChange({
-          onAction:'reducer-change',
-          status:'success'
+          onAction:'connectStore',
+          status:'realtime'
         })
       })
     }
@@ -143,6 +144,11 @@ class Office extends Component{
 
       this.loadSubRegion(REGION_CODE,(res)=>{
         this.modalOffice.open('post');
+        this.whereStateChange({
+          form:this.model.form,
+          onAction:'post',
+          status:'open_modal'
+        })
       });
     }
     openModalUpdate(data){
@@ -151,6 +157,11 @@ class Office extends Component{
 
       this.loadSubRegion(data.region_code,(res)=>{
         this.modalOffice.open('put',data);
+        this.whereStateChange({
+          form:data,
+          onAction:'put',
+          status:'open_modal'
+        })
       });
 
     }
@@ -175,7 +186,9 @@ class Office extends Component{
       this.model.load();
       this.moRegion.load();
 
-      this.state.isIniData = true ;
+      this.whereStateChange({
+        isIniData:true
+      })
 
     }
     /* END : HOW */
@@ -232,7 +245,7 @@ class Office extends Component{
             <div hidden={  this.props.onTab === 'office' ? false : true } >
 
 
-                 <OffModalComp  name={ modalTitle  } regions={ this.data.regions } subregions={ this.data.subregions } onAction={ this.props.onAction} modal={ this.modalOffice } />
+                 <OffModalComp data={ this.state.form } name={ modalTitle  } regions={ this.data.regions } subregions={ this.data.subregions } onAction={ this.state.onAction} modal={ this.modalOffice } />
 
                  <Row>
 
