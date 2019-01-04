@@ -18,7 +18,6 @@ class OfficeModal{
       this.active = false ; /* FOR OPEN MODAL */
 
       this.state = {
-        type:'',
         onAction:'',
         status:''
       }
@@ -26,7 +25,15 @@ class OfficeModal{
       this.data = {}
 
 
-      this.form = {
+      // -->
+      this.app = app ;
+
+
+    }
+
+
+    getTemp(){
+      return {
         code:'',
         name:'',
         phone:'',
@@ -37,36 +44,24 @@ class OfficeModal{
         working_begin:'08:00:00',
         working_end:'17:30:00',
       }
-
-
-      // -->
-      this.app = app ;
-
-
     }
-
-
 
     /* START : WHEN */
     onSubmit(){
 
 
       const _this = this ;
-      const type = this.state.type;
+      const onAction = this.state.onAction; /* PUT - POST */
 
-      const data = this.form ;  //onAction === 'post' ? this.form : this.data;
-
+      const data = this.data;
 
       /* HOOKED detectForm before save data*/
-
       // -->
-      if(detectForm(['code','name'],data)===''){
+      if(detectForm(['code','name','phone','address'],this.data)===''){
 
-          this.app.model.axios(type,data,(res)=>{
-
+          this.app.model.axios(onAction,data,(res)=>{
             // -->
             _this.whereStateChange({
-              onAction:type+'ed',
               status:res.name
             });
 
@@ -78,11 +73,12 @@ class OfficeModal{
     onHourChange(name, e){
 
         let hour = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
-        let minute = this.form[name] ? this.form[name].split(':') : '';
+        let minute = this.data[name] ? this.data[name].split(':') : '';
 
         minute = minute === '' ? '00' : minute[1];
 
-        this.form[name] = hour + ':'+minute;
+        this.data[name] = hour + ':'+minute;
+
 
         // -->
         this.processForm(name,e)
@@ -90,12 +86,12 @@ class OfficeModal{
 
     onMinuteChange(name, e){
         let minute = parseInt(e.target.value) >= 10 ? e.target.value : '0'+ parseInt(e.target.value) ;
-        let hour = this.form[name] ? this.form[name].split(':') : '';
-
-
+        let hour = this.data[name] ? this.data[name].split(':') : '';
 
         hour = hour === '' ? '00' : hour[0];
-        this.form[name] = hour+':'+minute;
+
+        this.data[name] = hour+':'+minute;
+
 
         // --> HOW -> WHERE
         this.processForm(name,e);
@@ -103,7 +99,9 @@ class OfficeModal{
 
     onChangeDist(e){
       const code = e.target.value;
-      this.form['subregion_code'] = code ;
+
+      this.data['subregion_code'] = code ;
+
 
       // --> HOW -> WHERE
       this.processForm('subregion_code',e);
@@ -111,7 +109,9 @@ class OfficeModal{
 
     onChangeCity(e){
        const code = e.target.value;
-       this.form['region_code'] = code ;
+
+       this.data['region_code'] = code ;
+
 
        // --> HOW -> WHERE
        this.loadDistrictList(code);
@@ -122,7 +122,9 @@ class OfficeModal{
 
     onChange(name, e){
 
-      this.form[name] = e.target.value;
+
+      Object.assign(this.data,{ [name]:e.target.value});
+      //this.data[name] = e.target.value;
 
       // --> initial HOW -> WHERE
       this.processForm(name,e);
@@ -137,7 +139,7 @@ class OfficeModal{
     processForm(name,e){
        //-->
        this.whereStateChange({
-         onAction:'processForm'
+         status:'processForm'
        })
     }
 
@@ -148,8 +150,7 @@ class OfficeModal{
 
       // -->
       this.whereStateChange({
-        onAction:'toggle_modal',
-        status:'success'
+        status:'toggle_modal'
       })
 
 
@@ -162,8 +163,7 @@ class OfficeModal{
         this.app.loadSubRegion(parent_code,(res)=>{
 
           _this.whereStateChange({
-            onAction:'loadDistrictList',
-            status:'success'
+            status:'loadDistrictList'
           })
 
         })
@@ -171,20 +171,22 @@ class OfficeModal{
     }
 
 
-    open(type, info){
+    open(onAction, info){
 
 
-      const temp = info || this.form ;
-      this.form = temp ;
+      //const {temp} = info || FORM_TEMP ;
+      this.data = info || this.getTemp() ;
+
       this.active = true ;
 
       /* RE-RENDER COMPONENT */
       // -->
+      
       this.whereStateChange({
-        type:type,
-        onAction:type,
-        status:'start'
+        onAction:onAction,
+        status:'open_modal'
       });
+
 
 
     }
@@ -197,15 +199,20 @@ class OfficeModal{
       /* update state*/
       Object.assign(this.state,newState);
 
-      switch(newState.onAction){
-        case 'puted':
+
+      switch(this.state.onAction){
+        case 'put':
            newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
         break;
-        case 'posted':
+        case 'post':
+
            newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
+
+
+
         break;
 
-        case 'deleteed':
+        case 'delete':
            newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
         break;
 
