@@ -25,7 +25,6 @@ export default class Socket {
       time_respone:2000
     }
 
-
   }
 
   set(newSetting){
