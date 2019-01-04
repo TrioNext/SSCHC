@@ -232,7 +232,7 @@ class LocalData {
       const _this = this ;
       const {url, config} = this.db ;
 
-      alert('fetch '+this.model);
+      
 
       axios.get(url,config)
             .then((res) => {
