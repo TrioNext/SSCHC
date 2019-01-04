@@ -45,8 +45,8 @@ class Model {
     this.localData = new LocalData(this.model,this);
 
 
-    this.onSocketTick();
-    this.onDataChange();
+    this.listenOnSocketTick();
+    this.listenDataChange();
 
     this.data = this.localData.list;
   }
@@ -76,7 +76,7 @@ class Model {
   delete(id,onSuccess){
 
       this.localData.delete(id,(res)=>{
-        this.onDataChange()
+        this.listenDataChange()
         onSuccess(res)
       });
 
@@ -85,7 +85,7 @@ class Model {
   post(data,onSuccess){
 
     this.localData.post(data,(res)=>{
-      this.onDataChange()
+      this.listenDataChange()
       onSuccess(res.data);
     })
 
@@ -96,7 +96,7 @@ class Model {
 
       const _this = this ;
       this.localData.put(id,data,(res)=>{
-          _this.onDataChange();
+          _this.listenDataChange();
           onSuccess(res);
 
       })
@@ -107,7 +107,7 @@ class Model {
   goto(p=0,onSuccess){
 
     this.localData.goto(p,(res)=>{
-      this.onDataChange();
+      this.listenDataChange();
       onSuccess(res);
     })
 
@@ -116,7 +116,7 @@ class Model {
   pre(onSuccess){
 
     this.localData.pre((res)=>{
-      this.onDataChange();
+      this.listenDataChange();
       onSuccess(res);
     })
 
@@ -125,7 +125,7 @@ class Model {
 
       this.localData.next((res)=>{
 
-        this.onDataChange();
+        this.listenDataChange();
         onSuccess(res);
       })
 
@@ -135,31 +135,31 @@ class Model {
   load(){
 
 
-    this.localData.data.length === 0 ? this.localData.fetch((res)=>{ this.onDataChange(); }) : this.onDataChange();;
+    this.localData.data.length === 0 ? this.localData.fetch((res)=>{ this.listenDataChange(); }) : this.listenDataChange();;
 
   }
   get(onSuccess){
 
 
       this.localData.fetch((res)=>{
-        this.onDataChange();
+        this.listenDataChange();
         onSuccess(res.data)
       })
 
 
   }
 
-  onSocketTick(){
+  listenOnSocketTick(){
 
     const _this = this ;
     /*  START REALTIME  */
-    this.localData.onSocketTick((res,list)=>{
+    this.localData.listenOnSocketTick((res,list)=>{
 
        this.socketResp(res,list)
 
      });
   }
-  onDataChange(){
+  listenDataChange(){
     this.localData.listenDataChange((res)=>{
        this.restResp(res);
     })
