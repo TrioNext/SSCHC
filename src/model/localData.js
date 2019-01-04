@@ -11,6 +11,7 @@ import Socket from './socket';
 import server from '../config/server';
 import axios from 'axios';
 
+import isExisted from '../hook/before';
 
 
 class LocalData {
@@ -18,14 +19,21 @@ class LocalData {
   constructor(model){
 
     this.model = model;
-    this.socket = new Socket(model);
 
     this.data = [] ;
     this.state = {};
     this.res = {};
 
-    this.initData();
+    /* initial : WHO */
+    this.setup(model);
 
+  }
+
+  setup(model){
+    /*socket*/
+    this.socket = new Socket(model);
+
+    /*database*/
     this.db = {
       type:'GET',
       url:'',
@@ -36,9 +44,88 @@ class LocalData {
     };
     this.configDB();
 
+    /* init default data : token info*/
+    this.initData();
+
+
   }
 
 
+  /********WHEN *********** */
+  /* SOCKET*/
+  onSocketTick(onStateChange){
+    const _this = this ;
+
+    this.socket.clientListenServer((res)=>{
+
+        this.socketResp(res);
+
+        // --> callback()
+        onStateChange(res,this.list);
+
+    })
+  }
+  /********END WHEN *********** */
+
+  /***********HOW**********************/
+
+  localStorage = {
+    _this:this,
+
+    create(res){
+      let list = this._this.get(); // CAP NHẬT DATA
+
+      let isExisted = false ;
+      list.map((item)=>{
+        if(parseInt(item.id)===parseInt(res.data.id)){
+          isExisted = true ;
+        }
+      })
+
+      if(!isExisted){
+        list.unshift(res.data);
+      }
+
+      this._this.set(list);
+
+    },
+    update(res){
+      let list = this._this.get(); // CAP NHẬT DATA
+      const idata = res.data ;
+
+      list.map((item,index)=>{
+
+        if(parseInt(item.id) === parseInt(idata.id)){
+           list[index] = idata;
+        }
+      });
+
+      this._this.set(list);
+
+    },
+    remove(res){
+      let list = this._this.get(); // CAP NHẬT DATA
+      const idata = res.data ;
+
+      list = list.filter((item) => {
+        return parseInt(item.id) !== parseInt(idata.id)
+      });
+
+      this._this.set(list);
+
+    }
+  }
+
+  socketResp(res){
+
+    this.localStorage[res.type](res);
+
+    this.whereStateChange({
+      status:'socketResp',
+      res:res
+    });
+
+  }
 
   configDB(){
     const _this = this ;
@@ -48,20 +135,39 @@ class LocalData {
 
     this.db.url = url;
     this.db.config = server.setHeader();
+
+    this.whereStateChange({
+      status:'configDB'
+    });
+
   }
 
+  /***********END HOW************************/
+
+  /**********WHERE*****************/
+  whereStateChange(newState){
+     Object(this.state,newState);
+
+  }
+  /* END WHERE */
+
   resetConfigDB(name,value){
-
     this.db[name] = value;
-
-
-
     this.configDB();
+
+    this.whereStateChange({
+      status:'resetConfigDB'
+    })
+
   }
 
   initData(){
     this.jwt = localStorage.getItem('feathers-jwt');
     this.get();
+
+    this.whereStateChange({
+      status:'initData'
+    })
 
   }
 
@@ -206,7 +312,6 @@ class LocalData {
 
     this.db.type = 'POST';
     this.status = data ;
-
 
     const url = server.base()+ '/' + this.model;
 
@@ -358,15 +463,9 @@ class LocalData {
     }
     onStateChange(data);
   }
-  /* SOCKET*/
-  listenServer(onStateChange){
-    const _this = this ;
 
-    this.socket.clientListenServer((data)=>{
-        _this.get(); // CAP NHẬT DATA
-        onStateChange(data);
-    })
-  }
+
+
 
   get list(){
     return this.data ;
