@@ -131,7 +131,7 @@ class FormCtrl {
       toggle(){
 
          this.active = !this.active;
-         
+
          this.parent.app.onStateChange({
            status:'toggle popover'
          });
