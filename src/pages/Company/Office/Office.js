@@ -15,6 +15,7 @@ import 'moment/locale/vi';
 
 import {OFFICES, REGIONS, SUBREGIONS} from '../../../model/model-mode' ;
 import { OFFICES_NAME } from '../../../model/model-name';
+import { POST } from '../../../model/action-mode';
 
 const REGION_CODE = '79'; // HCM
 const SUBREGION_CODE = '760'; // quan 1
@@ -24,8 +25,19 @@ const SUBREGION_CODE = '760'; // quan 1
 class Office extends Component{
 
     constructor(props){
+
       super(props);
 
+
+      this.state = {
+        form:{},
+        tab: OFFICES.replace('s',''),
+        onAction:'',
+        status:'',
+
+        onTab:props.onTab,
+        isIniData:false
+      }
 
       this.data = {
 
@@ -35,35 +47,27 @@ class Office extends Component{
 
       }
 
-      this.state = {
-        form:{},
-        name: OFFICES.replace('s',''),
-        onAction:'',
-        status:'',
 
-        onTab:props.onTab,
-        isIniData:false
-      }
 
 
       /* initial WHO */
-      this.setup();
+      this._doSetup();
 
     }
 
-    setup(){
+    _doSetup(){
 
-      this.model = new Model(OFFICES);
+      this.Model = new Model(OFFICES);
 
-      this.model.set('paginate',{
+      this.Model.set('paginate',{
         offset:0,
         p:0,
         max:'all',
         is_deleted:0
       });
 
-      this.moRegion = new Model(REGIONS);
-      this.moRegion.set('paginate',{
+      this._Regions = new Model(REGIONS);
+      this._Regions.set('paginate',{
         offset:0,
         p:0,
         max:'all',
@@ -71,59 +75,52 @@ class Office extends Component{
         sort_type:'asc'
       });
 
-      this.moSubRegion = new Model(SUBREGIONS);
+      this._SubRegions = new Model(SUBREGIONS);
 
 
       /* modal form controller  */
-      this.modalOffice = new offModalCtrl(this);
+      this._ModalOffice = new offModalCtrl(this);
 
       /* initial WHEN : AUTO DATA CONNECT : WHEN STORE DATA CHANGE */
-      this.connectStore();
+      this._listenStore();
 
     }
 
-/* START : WHEN */
-    componentDidMount(){
-      /*this.loadOffice();
-      this.modal.loadCityList();
-      this.modal.loadDistrictList(this.modal.form.region_code,()=>{}); // code : tp ho chi minh*/
-    }
+    /* START : WHEN */
+    /*componentDidMount(){}*/
 
     /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
     componentWillReceiveProps(newProps){
 
-
       /* nhận lện có liên quan đến tab : office */
-      if(newProps.onTab===this.state.name){
+      if(newProps.onTab===this.state.tab){
 
-        Object.assign(this.state,newProps);
+        this._doInitData();
 
-        if(!this.state.isIniData){
-          this.initData()
-        }
-
-
-        if(newProps.onAction==='post'){
+        if(newProps.onAction===POST){
             //this.modalOffice.open('post');
-            this.openModalPost()
+            this._doOpenModalPost();
         }
+
+
+
       }
 
 
 
     }
 
-    /* TRIGGER AFFTER SOMETHING*/
-    componentDidUpdate(prevProps, prevState){
 
-    }
+    /* TRIGGER AFFTER SOMETHING*/
+    /*componentDidUpdate(prevProps, prevState){}*/
+
 
     /* DESTROY - REMOVE SOMETHING*/
     componentWillUnmount(){
       alert('componentWillUnmount happen');
     }
 
-    connectStore(){
+    _listenStore(){
       /* AUTO CONNECT REDUX STORE -> COMPONENT DATA -> REFESH THEM  */
       store.subscribe(()=>{
 
@@ -140,23 +137,23 @@ class Office extends Component{
     /* END : WHEN */
 
     /* START : HOW */
-    openModalPost(){
+    _doOpenModalPost(){
 
-      this.loadSubRegion(REGION_CODE,(res)=>{
-        this.modalOffice.open('post');
+      this.doLoadSubRegion(REGION_CODE,(res)=>{
+        this._ModalOffice.open('post');
         this.whereStateChange({
-          form:this.model.form,
+          form:this.Model.form,
           onAction:'post',
           status:'open_modal'
         })
       });
     }
-    openModalUpdate(data){
+    _doOpenModalUpdate(data){
       //alert('sss');
       //this.data.currentRegionCode = data.region_code;
 
-      this.loadSubRegion(data.region_code,(res)=>{
-        this.modalOffice.open('put',data);
+      this.doLoadSubRegion(data.region_code,(res)=>{
+        this._ModalOffice.open('put',data);
         this.whereStateChange({
           form:data,
           onAction:'put',
@@ -165,9 +162,9 @@ class Office extends Component{
       });
 
     }
-    loadSubRegion(region_code,onSuccess){
+    doLoadSubRegion(region_code,onSuccess){
 
-      this.moSubRegion.set('paginate',{
+      this._SubRegions.set('paginate',{
         offset:0,
         p:0,
         max:'all',
@@ -176,15 +173,15 @@ class Office extends Component{
         parent_code:region_code
       });
 
-      this.moSubRegion.get((res)=>{
+      this._SubRegions.get((res)=>{
         onSuccess(res)
       })
     }
 
-    initData(){
+    _doInitData(){
 
-      this.model.load();
-      this.moRegion.load();
+      this.Model.load();
+      this._Regions.load();
 
       this.whereStateChange({
         isIniData:true
@@ -210,7 +207,7 @@ class Office extends Component{
                     <div>
                        <span><i className="fa fa-map-pin mr-5"></i> {data.name}</span>
                        <span className="pull-right">
-                         <a className='pointer' onClick={ ()=>{ this.openModalUpdate(data) } }> <i className="fa fa-gear"></i> </a>
+                         <a className='pointer' onClick={ ()=>{ this._doOpenModalUpdate(data) } }> <i className="fa fa-gear"></i> </a>
                        </span>
                     </div>
                     <i className="fa fa-phone mr-5"></i> { data.phone === null ? 'n/a' : data.phone } <br/>
@@ -242,10 +239,17 @@ class Office extends Component{
 
 
         return(
-            <div hidden={  this.props.onTab === 'office' ? false : true } >
+            <div hidden={  this.props.onTab === this.state.tab ? false : true } >
 
 
-                 <OffModalComp data={ this.state.form } name={ modalTitle  } regions={ this.data.regions } subregions={ this.data.subregions } onAction={ this.state.onAction} modal={ this.modalOffice } />
+                 <OffModalComp
+                   data={ this.state.form }
+                   name={ modalTitle  }
+                   regions={ this.data.regions }
+                   subregions={ this.data.subregions } 
+                   onAction={ this.state.onAction}
+                   modal={ this._ModalOffice }
+                  />
 
                  <Row>
 
