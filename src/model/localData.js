@@ -30,11 +30,11 @@ class LocalData {
 
 
     /* initial : WHO */
-    this.setup(model);
+    this._setup(model);
 
   }
 
-  setup(model){
+  _setup(model){
     /*socket*/
     this.socket = new Socket(model);
 
@@ -232,7 +232,7 @@ class LocalData {
       const _this = this ;
       const {url, config} = this.db ;
 
-      
+
 
       axios.get(url,config)
             .then((res) => {
