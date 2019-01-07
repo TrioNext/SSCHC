@@ -19,8 +19,20 @@ class BenModal extends Component{
 
   constructor(props){
 
-    super(props)
+    super(props);
 
+    this.state = {
+
+    }
+
+  }
+
+  componentWillReceiveProps(newState){
+
+      console.log('BEN MODAL');
+      console.log(newState);
+
+      this.setState(newState);
   }
 
   render(){
