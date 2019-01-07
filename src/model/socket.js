@@ -13,82 +13,115 @@ export default class Socket {
 
   constructor(service){
 
-    this.service = service;
-    this.state = {};
-    this.type = '';
 
-    this.service = feathers.service(service) ;
-    this.service.timeout = 5000 ;
-    this.time_respone = 2000 ;
+    /* WHAT : DATA */
+    this.model = service;
+    this.state = {
+      onAction:'',
+      status : '',
+      timeout:5000,
+      time_resp:2000,
+      res:{}
+    };
 
-    this.setting = {
-      time_respone:2000
-    }
+
+    /*  initial WHO */
+    this._setup()
+
 
   }
 
-  set(newSetting){
-    Object.assign(this.setting,newSetting)
-  }
-
-
-
-
-  /* RESONE TRUC TIẾP */
-  onSuccess(onStatus,data){
-
-    console.log('SOCKET ');
-    console.log(data);
-    //console.log(data);
-    /*
-     this.setState({
-       status:onStatus,
-       data:data
-     });
-
-    store.dispatch({
-      type:onStatus+'-'+this.service,
-      socData:data
-    });*/
-
-  }
-
-
-
-  create(data={}){ this.socket.create(data)}
-  update(id=null,data={}){ this.socket.update(id,data,{}) }
-  remove(id=null){ this.socket.remove(id,{ query:{ cascade:true} })  }
-
-
+  /* WHEN */
   clientListenServer(onSuccess){
       const _this = this ;
 
-      this.service.on(CREATED,(data)=>{
+      this.service.on(CREATED,(res)=>{
 
-        _this.onSuccess(CREATED,data);
+        this._socketResp(res);
 
         window.setTimeout(()=>{
-          onSuccess(data);
-        },this.setting.time_respone)
+          onSuccess(res);
+        },this.state.time_resp)
 
       });
 
-      this.service.on(UPDATED,(data)=>{
-        _this.onSuccess(UPDATED,data);
+      this.service.on(UPDATED,(res)=>{
+
+        this._socketResp(res);
+
         window.setTimeout(()=>{
-          onSuccess(data);
-        },this.setting.time_respone)
+          onSuccess(res);
+        },this.state.time_resp)
       });
 
-      this.service.on(REMOVED,(data)=>{
+      this.service.on(REMOVED,(res)=>{
 
+        this._socketResp(res);
 
-        _this.onSuccess(REMOVED,data);
         window.setTimeout(()=>{
-          onSuccess(data);
-        },this.setting.time_respone)
+          onSuccess(res);
+        },this.state.time_resp)
       });
 
   }
+  /* END WHEN */
+
+
+  /* HOW */
+  _setup(){
+    this.service = feathers.service(this.model) ;
+    this.service.timeout = this.state.timeout ;
+
+    this._whereStateChange({
+      onAction:'setup',
+    })
+  }
+
+  _reset(status){
+    this.service = feathers.service(this.model) ;
+    this.service.timeout = this.state.timeout ;
+
+    this._whereStateChange({
+      onAction:'reset',
+      status:status
+    })
+  }
+  
+  setTimeDelay(num){
+      this.state['time_resp'] = num;
+      this._reset('setTimeout');
+
+  }
+  setTimeout(num){
+    this.state['timeout'] = num ;
+    this._reset('setTimeout');
+  }
+
+  _socketResp(res){
+
+    this._whereStateChange({
+      onAction:'socketResp',
+      res:res
+    });
+  }
+  /* END HOW  */
+
+
+  /* WHERE */
+  _whereStateChange(newState){
+    Object.assign(this.state,newState);
+
+    /* write socket log here */
+  }
+
+  /* RESONE TRUC TIẾP */
+
+
+
+  /*create(data={}){ this.socket.create(data)}
+  update(id=null,data={}){ this.socket.update(id,data,{}) }
+  remove(id=null){ this.socket.remove(id,{ query:{ cascade:true} })  }*/
+
+
 
 }
