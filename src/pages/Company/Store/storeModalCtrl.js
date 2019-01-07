@@ -54,7 +54,7 @@ class StoreModal{
           sort_type:'asc'
         })
 
-        let list = City.getData('regions');
+        let list = [] ;//City.getData('regions');
         if(list.length===0){
 
           City.get((res)=>{
