@@ -59,7 +59,7 @@ class OfficeModal{
       // -->
       if(detectForm(['code','name','phone','address'],this.data)===''){
 
-          this.app.model.axios(onAction,data,(res)=>{
+          this.app.Model.axios(onAction,data,(res)=>{
             // -->
             _this.whereStateChange({
               status:res.name
@@ -145,8 +145,11 @@ class OfficeModal{
 
     toggle(){
 
-      this.active = !this.active;
+
+      this.active = false ;
       this.popover.active = false;
+
+      
 
       // -->
       this.whereStateChange({
@@ -160,7 +163,7 @@ class OfficeModal{
 
         const _this = this;
 
-        this.app.loadSubRegion(parent_code,(res)=>{
+        this.app.doLoadSubRegion(parent_code,(res)=>{
 
           _this.whereStateChange({
             status:'loadDistrictList'
@@ -181,11 +184,7 @@ class OfficeModal{
 
       /* RE-RENDER COMPONENT */
       // -->
-      
-      this.whereStateChange({
-        onAction:onAction,
-        status:'open_modal'
-      });
+
 
 
 
@@ -197,30 +196,18 @@ class OfficeModal{
     /* START : WHERE */
     whereStateChange(newState={}){
       /* update state*/
+
+
       Object.assign(this.state,newState);
 
+      const { onAction } = this.state ;
 
-      switch(this.state.onAction){
-        case 'put':
-           newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
-        break;
-        case 'post':
-
-           newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
-
-
-
-        break;
-
-        case 'delete':
-           newState.status === 'success' ? this.toggle() : this.app.whereStateChange(this.state);
-        break;
-
-        default :
-          /* RE-RENDER COMPONENT*/
-          this.app.whereStateChange(this.state);
-        break ;
+      if(onAction==='put' || onAction === 'post' || onAction==='delete'){
+        if(newState.status === 'success'){
+          this.toggle();
+        }
       }
+
     }
 
 
@@ -237,7 +224,7 @@ class OfficeModal{
           const _this = this ;
           const id = this.parent.data.id;
 
-          this.parent.app.model.delete(id,(res)=>{
+          this.parent.app.Model.delete(id,(res)=>{
 
 
               if(res.name==='success'){
