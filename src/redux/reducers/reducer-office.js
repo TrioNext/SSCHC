@@ -8,7 +8,7 @@ action = {
 }
 */
 
-import { toast } from '../../hook/after';
+import { toast,myToast } from '../../hook/after';
 
 import { OFFICES } from '../../model/model-mode';
 import { OFFICES_NAME } from '../../model/model-name';
@@ -17,6 +17,9 @@ const MODE = OFFICES;
 const NAME = OFFICES_NAME;
 
 const iniState = {
+  mode:MODE,
+  name:NAME,
+  onAction:'',
   list:[]
 }
 
@@ -24,6 +27,13 @@ const iniState = {
 export default function(state = iniState ,action = {}){
   switch(action.type){
 
+     case 'FORM-offices':
+       return {
+         ...state,
+         onAction:action.onAction
+
+       }
+     break;
 
     /* PROACTIVE : DATA */
     case 'GET-'+MODE:
@@ -37,7 +47,9 @@ export default function(state = iniState ,action = {}){
 
     case 'POST-'+MODE:
 
-      toast('post',msg);
+      myToast('post',state)
+
+      
 
       return {
         ...state,
@@ -48,11 +60,7 @@ export default function(state = iniState ,action = {}){
 
     case 'PUT-'+MODE:
 
-      const msg = NAME;
-
-      toast('put',msg);
-
-      //console.log(action.res);
+      myToast('put',state);
 
 
       return {
@@ -64,7 +72,9 @@ export default function(state = iniState ,action = {}){
 
     case 'DELETE-'+MODE:
 
-      toast('delete',msg);
+
+      myToast('delete',state);
+
 
       return {
         ...state,
@@ -75,8 +85,6 @@ export default function(state = iniState ,action = {}){
 
     /* PASSIVE DATA : realtime received on listenServer  */
     case 'reset-'+MODE:
-
-      console.log(action.list);
 
       return {
         ...state,
