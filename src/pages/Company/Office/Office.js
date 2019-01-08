@@ -6,6 +6,10 @@ import { Row, Col } from 'reactstrap';
 import store from '../../../redux/store';
 import Model from '../../../model/model';
 
+// HOOK
+import { doLoadSubRegion, doLoadRegion } from '../../../hook/ultil';
+
+
 /* FORM MODAL POPUP */
 import OffModalComp from './offModalComp';
 import offModalCtrl from './offModalCtrl';
@@ -13,12 +17,12 @@ import offModalCtrl from './offModalCtrl';
 import moment from 'moment';
 import 'moment/locale/vi';
 
-import {OFFICES, REGIONS, SUBREGIONS} from '../../../model/model-mode' ;
+import {OFFICES} from '../../../model/model-mode' ;
 import { OFFICES_NAME } from '../../../model/model-name';
 import { POST } from '../../../model/action-mode';
 
 const REGION_CODE = '79'; // HCM
-const SUBREGION_CODE = '760'; // quan 1
+
 
 
 /* actions after done some thing */
@@ -48,8 +52,6 @@ class Office extends Component{
       }
 
 
-
-
       /* initial WHO */
       this._doSetup();
 
@@ -66,16 +68,7 @@ class Office extends Component{
         is_deleted:0
       });
 
-      this._Regions = new Model(REGIONS);
-      this._Regions.set('paginate',{
-        offset:0,
-        p:0,
-        max:'all',
-        sort_by:'name',
-        sort_type:'asc'
-      });
 
-      this._SubRegions = new Model(SUBREGIONS);
 
 
       /* modal form controller  */
@@ -139,7 +132,7 @@ class Office extends Component{
     /* START : HOW */
     _doOpenModalPost(){
 
-      this.doLoadSubRegion(REGION_CODE,(res)=>{
+      doLoadSubRegion(REGION_CODE,(res)=>{
         this._ModalOffice.open('post');
         this.whereStateChange({
           form:this.Model.form,
@@ -153,7 +146,7 @@ class Office extends Component{
       //alert('sss');
       //this.data.currentRegionCode = data.region_code;
 
-      this.doLoadSubRegion(data.region_code,(res)=>{
+      doLoadSubRegion(data.region_code,(res)=>{
         this._ModalOffice.open('put',data);
         this.whereStateChange({
           form:data,
@@ -163,26 +156,12 @@ class Office extends Component{
       });
 
     }
-    doLoadSubRegion(region_code,onSuccess){
 
-      this._SubRegions.set('paginate',{
-        offset:0,
-        p:0,
-        max:'all',
-        sort_by:'name',
-        sort_type:'asc',
-        parent_code:region_code
-      });
-
-      this._SubRegions.get((res)=>{
-        onSuccess(res)
-      })
-    }
 
     _doInitData(){
 
       this.Model.load();
-      this._Regions.load();
+      doLoadRegion();
 
       this.whereStateChange({
         isIniData:true
