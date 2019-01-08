@@ -1,5 +1,7 @@
-import toast from './toast'
+import toast from './toast';
+import myToast from './myToast';
 
 export  {
-  toast
+  toast,
+  myToast
 }
