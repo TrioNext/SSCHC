@@ -14,6 +14,12 @@ class GridFooter extends Component{
       status:''
     }
 
+    this.first = this.first.bind(this);
+    this.next = this.next.bind(this);
+    this.last = this.last.bind(this);
+    this.pre = this.pre.bind(this);
+
+
   }
 
 
@@ -111,8 +117,8 @@ class GridFooter extends Component{
       <div className="ag-footer">
          <div className="text-center">
              <ButtonGroup>
-               <Button size="xs" onClick={ ()=>{ this.first() } } className="btn-datagrid" > <i className="fa fa-step-backward"></i> </Button>
-               <Button size="xs" onClick={ ()=>{ this.pre() } } className="btn-datagrid" > <i className="fa fa-chevron-left"></i> </Button>
+               <Button size="xs" onClick={ this.first } className="btn-datagrid" > <i className="fa fa-step-backward"></i> </Button>
+               <Button size="xs" onClick={ this.pre } className="btn-datagrid" > <i className="fa fa-chevron-left"></i> </Button>
                <Input className="btn-datagrid"  onChange={ (e)=>{ this.onChange(e) } } type="select" style={{
                  borderRadius:0,
                  borderLeft:0,
