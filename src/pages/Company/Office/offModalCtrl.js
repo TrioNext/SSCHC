@@ -4,7 +4,10 @@ OfficeModal :  it's a Controller for <BenModal/>
 
 */
 
+import store from '../../../redux/store';
+
 import { detectForm } from '../../../hook/before';
+import { doLoadSubRegion } from '../../../hook/ultil';
 
 const REGION_CODE = '79'; // HCM
 const SUBREGION_CODE = '760'; // quan 1
@@ -12,21 +15,20 @@ const SUBREGION_CODE = '760'; // quan 1
 
 class OfficeModal{
 
-    constructor(app){
+    constructor(model){
 
       // -->
       this.active = false ; /* FOR OPEN MODAL */
 
       this.state = {
+        type:'',
         onAction:'',
         status:''
       }
 
       this.data = {}
-
-
       // -->
-      this.app = app ;
+      this.model = model ;
 
 
     }
@@ -53,17 +55,21 @@ class OfficeModal{
       const _this = this ;
       const onAction = this.state.onAction; /* PUT - POST */
 
+
       const data = this.data;
 
       /* HOOKED detectForm before save data*/
       // -->
       if(detectForm(['code','name','phone','address'],this.data)===''){
 
-          this.app.Model.axios(onAction,data,(res)=>{
+          this.model.axios(onAction,data,(res)=>{
             // -->
+
             _this.whereStateChange({
               status:res.name
             });
+
+
 
           })
       }
@@ -138,22 +144,19 @@ class OfficeModal{
     /* START : HOW */
     processForm(name,e){
        //-->
-       this.whereStateChange({
+       /*this.whereStateChange({
          status:'processForm'
-       })
+       })*/
     }
 
     toggle(){
 
-
-      this.active = false ;
-      this.popover.active = false;
-
-      
+      this.active = !this.active;
+      this.popover.active =  false;
 
       // -->
       this.whereStateChange({
-        status:'toggle_modal'
+        onAction:'toggle_modal'
       })
 
 
@@ -162,14 +165,17 @@ class OfficeModal{
     loadDistrictList(parent_code,onSuccess){
 
         const _this = this;
-
-        this.app.doLoadSubRegion(parent_code,(res)=>{
-
-          _this.whereStateChange({
+        doLoadSubRegion(parent_code,(res)=>{
+          this.whereStateChange({
             status:'loadDistrictList'
           })
-
         })
+
+        /*this.app.doLoadSubRegion(parent_code,(res)=>{
+
+
+
+        })*/
 
     }
 
@@ -179,12 +185,14 @@ class OfficeModal{
 
       //const {temp} = info || FORM_TEMP ;
       this.data = info || this.getTemp() ;
-
       this.active = true ;
 
-      /* RE-RENDER COMPONENT */
-      // -->
 
+
+      this.whereStateChange({
+        onAction:onAction,
+        status:'open_modal'
+      });
 
 
 
@@ -195,17 +203,19 @@ class OfficeModal{
 
     /* START : WHERE */
     whereStateChange(newState={}){
-      /* update state*/
-
 
       Object.assign(this.state,newState);
 
-      const { onAction } = this.state ;
+      if(newState.status ==='success'){
+        this.toggle()
+      }else{
 
-      if(onAction==='put' || onAction === 'post' || onAction==='delete'){
-        if(newState.status === 'success'){
-          this.toggle();
-        }
+        //alert('FORM-'+this.model.model);
+
+        store.dispatch({
+          type:'FORM-'+this.model.model,
+          onAction:newState.onAction
+        })
       }
 
     }
@@ -221,15 +231,14 @@ class OfficeModal{
         parent:this,
         btnYes(){
 
-          const _this = this ;
+
           const id = this.parent.data.id;
 
-          this.parent.app.Model.delete(id,(res)=>{
+          this.parent.model.delete(id,(res)=>{
 
-
-              if(res.name==='success'){
-                _this.parent.toggle();
-              }
+              this.parent.whereStateChange({
+                status:res.name
+              });
 
           })
 
@@ -238,11 +247,9 @@ class OfficeModal{
         toggle(){
 
            this.active = !this.active;
-
-           this.parent.app.whereStateChange({
-             onAction:'toggle_popover',
-             status:'success'
-           });
+           this.parent.whereStateChange({
+             onAction:'toggle_popover'
+           })
 
         }
     }
