@@ -19,20 +19,28 @@ class BenModal extends Component{
 
   constructor(props){
 
-    super(props);
+    super(props)
 
-    this.state = {
-
-    }
-
+    this.toggle = this.toggle.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.popoverToggle = this.popoverToggle.bind(this);
+    this.btnYes = this.btnYes.bind(this);
   }
 
-  componentWillReceiveProps(newState){
+  toggle(){
+    
+    this.props.modal.toggle()
+  }
 
-      console.log('BEN MODAL');
-      console.log(newState);
+  popoverToggle(){
+    this.props.modal.popover.toggle()
+  }
 
-      this.setState(newState);
+  btnYes(){
+    this.props.modal.popover.btnYes()
+  }
+  onSubmit(){
+    this.props.modal.onSubmit()
   }
 
   render(){
@@ -40,8 +48,8 @@ class BenModal extends Component{
 
 
     return(
-      <Modal  size="lg" isOpen={ this.props.modal.active } fade={false}   toggle={ ()=>{  this.props.modal.toggle() } } >
-        <ModalHeader toggle={ ()=>{ this.props.modal.toggle() } }> <i className="fa fa-plus"></i> { this.props.name }  </ModalHeader>
+      <Modal  size="lg" isOpen={ this.props.modal.active } fade={false}   toggle={ this.toggle } >
+        <ModalHeader toggle={ this.toggle }> <i className="fa fa-plus"></i> { this.props.name }  </ModalHeader>
 
         <ModalBody style={{
             padding:30
@@ -54,8 +62,8 @@ class BenModal extends Component{
         <div className="my-modal-footer">
            <div className="float-right">
                <div role="group" className="btn-group">
-                     <Button className="btn-ubuntu" onClick={ ()=>{ this.props.modal.toggle() } }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
-                     <Button className="btn-ubuntu-ok" onClick={ ()=>{ this.props.modal.onSubmit() } }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
+                     <Button className="btn-ubuntu" onClick={ this.toggle }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
+                     <Button className="btn-ubuntu-ok" onClick={  this.onSubmit }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
                </div>
 
            </div>
@@ -67,15 +75,15 @@ class BenModal extends Component{
                status
            </div>
            <div className="float-right">
-             <a id="btnDel" hidden={ this.props.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ ()=>{ this.props.modal.popover.toggle() } }>
+             <a id="btnDel" hidden={ this.props.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ this.popoverToggle }>
                <i className="fa fa-trash"></i> Xoá
              </a>
-             <Popover placement="bottom" isOpen={this.props.modal.popover.active } target="btnDel"  toggle={ ()=>{ this.props.modal.popover.toggle() } }>
+             <Popover placement="bottom" isOpen={this.props.modal.popover.active } target="btnDel"  toggle={ this.popoverToggle }>
                <PopoverHeader>Bạn có chắc chắn không?</PopoverHeader>
                <PopoverBody className="text-center pa-15">
-                 <button onClick={ ()=>{  this.props.modal.popover.btnYes() } } className="btn btn-sm btn-success mr-20">Có</button>
+                 <button onClick={ this.btnYes } className="btn btn-sm btn-success mr-20">Có</button>
 
-                 <button onClick={ ()=>{  this.props.modal.popover.toggle() } } className="btn btn-sm btn-secondary">Không</button>
+                 <button onClick={ this.popoverToggle } className="btn btn-sm btn-secondary">Không</button>
                </PopoverBody>
              </Popover>
            </div>
