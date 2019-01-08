@@ -79,7 +79,7 @@ class Office extends Component{
 
 
       /* modal form controller  */
-      this._ModalOffice = new offModalCtrl(this);
+      this._ModalOffice = new offModalCtrl(this.Model);
 
       /* initial WHEN : AUTO DATA CONNECT : WHEN STORE DATA CHANGE */
       this._listenStore();
@@ -146,6 +146,7 @@ class Office extends Component{
           onAction:'post',
           status:'open_modal'
         })
+
       });
     }
     _doOpenModalUpdate(data){
@@ -246,7 +247,7 @@ class Office extends Component{
                    data={ this.state.form }
                    name={ modalTitle  }
                    regions={ this.data.regions }
-                   subregions={ this.data.subregions } 
+                   subregions={ this.data.subregions }
                    onAction={ this.state.onAction}
                    modal={ this._ModalOffice }
                   />
