@@ -169,6 +169,8 @@ class Model {
   /**** HOW ***/
   restResp(res){
 
+
+
     this.whereStateChange({
       type:this.localData.db.type+'-'+this.model,
       list:res.list,
@@ -192,8 +194,13 @@ class Model {
   /******WHERE*******/
   whereStateChange(newState){
 
+
     Object.assign(this.state,newState);
+
+
     store.dispatch(newState);
+
+
   }
   /*********END WHERE*************/
 
