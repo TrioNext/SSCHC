@@ -82,6 +82,7 @@ class LocalData {
 
   listenDataChange(onDataChange){
 
+
     const data = {
       res:this.state.res,
       list:this.data
@@ -269,7 +270,7 @@ class LocalData {
     POST(res){
 
       const idata = res.data ;
-      //this._this.setItemData(idata.data)
+
 
       let list = this._this.get();
       list.unshift(idata.data);
@@ -424,6 +425,7 @@ class LocalData {
 
   /**********WHERE*****************/
   whereStateChange(newState){
+
      Object(this.state,newState);
 
   }
