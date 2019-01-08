@@ -6,8 +6,10 @@ OfficeModal :  it's a Controller for <BenModal/>
 
 import store from '../../../redux/store';
 
+
 import { detectForm } from '../../../hook/before';
 import { doLoadSubRegion } from '../../../hook/ultil';
+
 
 const REGION_CODE = '79'; // HCM
 const SUBREGION_CODE = '760'; // quan 1
@@ -144,9 +146,9 @@ class OfficeModal{
     /* START : HOW */
     processForm(name,e){
        //-->
-       /*this.whereStateChange({
+       this.whereStateChange({
          status:'processForm'
-       })*/
+       })
     }
 
     toggle(){
@@ -170,12 +172,6 @@ class OfficeModal{
             status:'loadDistrictList'
           })
         })
-
-        /*this.app.doLoadSubRegion(parent_code,(res)=>{
-
-
-
-        })*/
 
     }
 
