@@ -42,7 +42,7 @@ class Model {
   }
 
   setup(){
-    this.localData = new LocalData(this.model,this);
+    this.localData = new LocalData(this.model);
 
 
     this.listenOnSocketTick();
@@ -197,7 +197,7 @@ class Model {
 
     Object.assign(this.state,newState);
 
-
+    
     store.dispatch(newState);
 
 
