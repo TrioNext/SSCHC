@@ -15,17 +15,29 @@ import { DEPARTMENTS } from '../../model/model-mode';
 import { DEPARTMENTS_NAME } from '../../model/model-name';
 
 
+
 const MODE = DEPARTMENTS;
 const NAME = DEPARTMENTS_NAME;
 
 const iniState = {
+  mode:MODE,
+  name:NAME,
+  state:{},
   list:[]
 }
 
-export default function(state = [],action = {}){
+export default function(state = iniState ,action = {}){
 
   switch(action.type){
 
+
+    case 'STATE-'+MODE:
+      return {
+        ...state,
+        state:action.state
+
+      }
+    break;
 
     /* PROACTIVE : DATA */
     case 'GET-'+MODE:
