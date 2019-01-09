@@ -6,15 +6,19 @@ npm install --save ag-grid-enterprise
 */
 
 import React, {Component} from 'react';
-
 import {   Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
 
 import moment from 'moment';
 
 
+import store from '../../../redux/store';
 import userConf from '../../../config/user.conf';
-
 import Model from '../../../model/model';
+
+import { USERS } from '../../../model/model-mode';
+import { USERS_NAME } from '../../../model/model-name'
+
+
 
 
 import userModalCtrl from './userModalCtrl';
@@ -34,28 +38,22 @@ class User extends Component{
     constructor(props){
       super(props);
 
-      this.name = 'Thành viên';
-      this.base = 'users';
 
-      this.data = {
-        name:'user',
-        id:0,
-        p:0,
-        list:[],
-        department:{
-          id:0,
-          list:[]
-        },
-        job_type:userConf.job_type,
-        job_level: userConf.job_level
-      }
 
       this.state = {
+        tab: USERS.substring(0, USERS.length - 1),
+        typeAction:'',
         onAction:'',
         status:'',
 
         onTab:props.onTab,
         isIniData:false
+      }
+
+      this.data = {
+
+        users:[],
+
       }
 
       this.table = {
@@ -95,13 +93,11 @@ class User extends Component{
             rowData: []
       }
 
-      this.setup();
+      this._setup();
     }
 
-    setup(){
-      this.model = new Model(this.base);
-      this.office = new Model('offices');
-
+    _setup(){
+      this.model = new Model(USERS);
       this.model.set('paginate',{
         offset:0,
         p:0,
@@ -109,21 +105,14 @@ class User extends Component{
         is_deleted:0
       });
 
-      this.office.set('paginate',{
-        offset:0,
-        p:0,
-        max:'all',
-        is_deleted:0
-      });
-
-      this.modal = new userModalCtrl(this);
+      this.modal = new userModalCtrl(this.model);
 
 
     }
 
 
     resetGrid(){
-        const list = this.data.list ;
+        const list = this.data.users ;
 
 
         list.filter((item)=>{
@@ -148,8 +137,8 @@ class User extends Component{
     }
     onStateChange(newState){
 
-      /* KEEP PRIVATE DATA : refesh inside compoents */
-      this.data.list = this.model.getData() || [] ;
+      /* KEEP PRIVATE DATA : refesh inside compoents
+      this.data.users = this.model.getData() || [] ;
 
 
       const { paginate } = this.model.localData.db;
@@ -157,7 +146,7 @@ class User extends Component{
 
       this.resetGrid();
 
-      this.setState(Object.assign(this.state,newState));
+      this.setState(Object.assign(this.state,newState));*/
 
     }
 
@@ -193,7 +182,7 @@ class User extends Component{
 
         /* nhận lện có liên quan đến tab : office */
 
-        if(newProps.onTab===this.data.name){
+        if(newProps.onTab===this.state.tab){
 
           Object.assign(this.state,newProps);
 
@@ -254,22 +243,22 @@ class User extends Component{
 
         /* list : users */
         const list = this.state.data ;
-        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+this.name : 'Cập nhật '+this.name;
+        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+ USERS_NAME  : 'Cập nhật '+ USERS_NAME;
 
 
 
 
         return(
-            <div hidden={  this.props.onTab === this.data.name ? false : true } >
+            <div hidden={  this.props.onTab === this.state.tab ? false : true } >
 
 
-              <UserModalComp
+              {/*<UserModalComp
                   moOffice={ this.office }
-                  departments={ this.props.department }
+                  departments={ [] }
                   name={ modalTitle }
                   onStateChange={(newState)=>{ this.onStateChange(newState) }}
                   onAction={ this.props.onAction} modal={ this.modal }
-              />
+              />*/}
 
               <div className="ubuntu-app mb-4">
 
