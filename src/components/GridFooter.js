@@ -7,12 +7,16 @@ class GridFooter extends Component{
   constructor(props){
 
     super(props);
-    this.model = props.model ;
+
 
     this.state = {
-      onAction:'',
-      status:''
+      pages:0,
+      p:0,
     }
+
+
+    this.model = props.model ;
+
 
     this.first = this.first.bind(this);
     this.next = this.next.bind(this);
@@ -23,88 +27,41 @@ class GridFooter extends Component{
   }
 
 
-
-  onStateChange(){
-
-    /* TRẢ GIÁ TRỊ VỀ CHO PARENT COMPONENT SỬ DỤNG*/
-    this.props.onStateChange({status:'success'});
-
-  }
-
-
   onChange(e){
     const p = e.target.value ;
-    this.model.goto(p,(res)=>{
+    this.model.goto(p,(res)=>{})
 
-        if(typeof res.count !== 'undefined'){
-          this.props.onStateChange({status:'success'});
-        }
-
-    },(err)=>{
-
-    })
   }
 
   first(){
-    this.model.goto(0,(res)=>{
-
-      if(typeof res.count !== 'undefined'){
-        this.props.onStateChange({status:'success'});
-      }
-
-    },(err)=>{
-
-    })
+    this.model.goto(0,(res)=>{})
   }
   last(){
-    const { paginate, total } =  this.model.setting;
-    const count =  Math.ceil(total /  paginate.max);
 
-    const p = count - 1;
-
-    this.model.goto(p,(res)=>{
-      if(typeof res.count !== 'undefined'){
-        this.props.onStateChange({status:'success'});
-      }
-    },(err)=>{
-
-    })
-
+    const p = this.state.pages - 1;
+    this.model.goto(p,(res)=>{})
 
   }
 
   next(){
-    this.model.next((res)=>{
 
-      if(typeof res.count !== 'undefined'){
-        this.props.onStateChange({status:'success'});
-      }
+    this.model.next((res)=>{});
 
-    },(err)=>{
-
-    })
   }
   pre(){
-    this.model.pre((res)=>{
-
-      if(typeof res.count !== 'undefined'){
-        this.props.onStateChange({status:'success'});
-      }
-
-    },(err)=>{
-
-    })
+    this.model.pre((res)=>{});
   }
 
 
   render(){
 
     const { paginate, total } =  this.model.localData.db;
-    const count =  Math.ceil(total /  paginate.max);
+
+    this.state.pages =  Math.ceil(total /  paginate.max);
 
 
     let list = [] ;
-    for(let a = 0; a < count ; a++){
+    for(let a = 0; a < this.state.pages ; a++){
 
       const stt = a + 1 ;
       list.push(<option value={a} key={a} > { stt } </option>)
@@ -125,11 +82,11 @@ class GridFooter extends Component{
                  borderRight:0,
                  fontWeight:500
 
-               }} value={ this.props.p } >
+               }} value={ paginate.p } >
                 { list }
                </Input>
-               <Button className="btn-datagrid" onClick={ ()=>{ this.next() } } size="xs" > <i className="fa fa-chevron-right"></i> </Button>
-               <Button size="xs" onClick={ ()=>{ this.last() } } className="btn-datagrid" > <i className="fa fa-step-forward"></i> </Button>
+               <Button className="btn-datagrid" onClick={ this.next } size="xs" > <i className="fa fa-chevron-right"></i> </Button>
+               <Button size="xs" onClick={ this.last } className="btn-datagrid" > <i className="fa fa-step-forward"></i> </Button>
 
              </ButtonGroup>
              <span className="info">
