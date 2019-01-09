@@ -12,12 +12,13 @@ import moment from 'moment';
 
 
 import store from '../../../redux/store';
-import userConf from '../../../config/user.conf';
 import Model from '../../../model/model';
+import userConf from '../../../config/user.conf';
+
 
 import { USERS } from '../../../model/model-mode';
 import { USERS_NAME } from '../../../model/model-name'
-
+import { POST } from '../../../model/action-mode';
 
 
 
@@ -101,23 +102,22 @@ class User extends Component{
       this.model.set('paginate',{
         offset:0,
         p:0,
-        max:20,
+        max:2,
         is_deleted:0
       });
 
       this.modal = new userModalCtrl(this.model);
 
-
+      this._listenStore();
     }
 
 
     resetGrid(){
-        const list = this.data.users ;
-
+        let list = this.data.users || []  ;
 
         list.filter((item)=>{
-          item['job_level'] = this.data.job_level[item['job_level']];
-          item['job_type'] = this.data.job_level[item['job_type']];
+          item['job_level'] = userConf.job_level[item['job_level']];
+          item['job_type'] = userConf.job_level[item['job_type']];
           item['phone'] = item['phone'] === null ? 'n/a' : item['phone'];
           item['date_created'] = moment(item['date_created']).format('YYYY-MM-DD');
         });
@@ -127,80 +127,43 @@ class User extends Component{
 
     }
 
+    _listenStore(){
+      store.subscribe(()=>{
+        this.data.users = store.getState().user.list || []  ;
+        this.resetGrid();
 
-    onDepartmentChange(moDep){
+        this._whereStateChange({
+          onAction:'_listenStore'
+        });
 
-       const list = moDep.getData('departments');
-       this.data.department.list = list ;
-
-
-    }
-    onStateChange(newState){
-
-      /* KEEP PRIVATE DATA : refesh inside compoents
-      this.data.users = this.model.getData() || [] ;
-
-
-      const { paginate } = this.model.localData.db;
-      this.data.p = paginate.p ;
-
-      this.resetGrid();
-
-      this.setState(Object.assign(this.state,newState));*/
-
+      })
     }
 
-
-    /*
-    type : get - pre - next
-    */
-    loadUser(type){
-      const _this = this ;
-
-
-      /*this.model[type]((res)=>{
-
-        if(typeof res.count !== 'undefined'){
-          _this.onStateChange({status:'success'});
-        }
-
-      })*/
-
-    }
-
-    initData(){
-      this.loadUser('get');
-      this.state.isIniData = true ;
-    }
 
     componentDidMount(){
-      if(!this.state.isIniData){
-        this.initData()
-      }
+
+      //load user here
+      this.model.get((res)=>{})
+      //this.model.load();
+
     }
+
     componentWillReceiveProps(newProps){
 
-        /* nhận lện có liên quan đến tab : office */
+      /* nhận lện có liên quan đến tab : office */
+      if(newProps.onTab===this.state.tab){
 
-        if(newProps.onTab===this.state.tab){
-
-          Object.assign(this.state,newProps);
-
-
-          if(newProps.onAction==='post'){
-              this.modal.open('post');
-          }
+        if(newProps.onAction===POST){
+            //this.modalOffice.open('post');
+            //this._doOpenModalPost();
         }
 
-    }
-
-
-    componentDidUpdate(prevProps, prevState){
-      /*alert('ok man : componentDidUpdate');
-      alert(JSON.stringify(prevProps));
-      alert(JSON.stringify(prevState));*/
+      }
 
     }
+
+    /*componentDidUpdate(prevProps, prevState){}*/
+
 
     onGridReady(params){
 
@@ -239,13 +202,17 @@ class User extends Component{
 
 
     }
+
+    /* WHERE */
+    _whereStateChange(newState){
+      /* KEEP PRIVATE DATA*/
+      this.setState(Object.assign(this.state,newState));
+    }
     render(){
 
         /* list : users */
         const list = this.state.data ;
-        const modalTitle = this.props.onAction ==='post' ? 'Tạo '+ USERS_NAME  : 'Cập nhật '+ USERS_NAME;
-
-
+        const modalTitle = this.props.onAction === POST ? 'Tạo '+ USERS_NAME  : 'Cập nhật '+ USERS_NAME;
 
 
         return(
@@ -297,7 +264,10 @@ class User extends Component{
 
                           </AgGridReact>
 
-                          <GridFooter p={ this.data.p} onStateChange={(newState)=>{  this.onStateChange(newState)  }}  model={ this.model } />
+                          {/*<GridFooter p={ this.data.p} onStateChange={(newState)=>{  this.onStateChange(newState)  }}  model={ this.model } /> */}
+                          <GridFooter model={ this.model } />
+
+
 
 
                      </div>
