@@ -12,18 +12,20 @@ import SelectDist from '../../../components/SelectDist';
 function FrmR1(props){
 
   const modal = props.modal;
+  const data = modal.data ;
+
   return (
     <Row form>
       <Col md={4}>
         <FormGroup>
           <Label> Mã <span className="text-danger">*</span></Label>
-          <Input type="text" onChange={ (e)=>{ modal.onChange('code', e);  } } defaultValue={ modal.form.code }  placeholder="Tạo mã" />
+          <Input type="text" id="code" onChange={ (e)=>{ modal.onChange('code', e);  } } defaultValue={ data.code }  placeholder="Tạo mã" />
         </FormGroup>
       </Col>
       <Col md={8}>
         <FormGroup>
           <Label> Tên <span className="text-danger">*</span></Label>
-          <Input type="text" onChange={ (e)=>{ modal.onChange('name', e);  } } defaultValue={ modal.form.name }  placeholder="Nhập tên" />
+          <Input type="text" id="name" onChange={ (e)=>{ modal.onChange('name', e);  } } defaultValue={ data.name }  placeholder="Nhập tên" />
         </FormGroup>
       </Col>
     </Row>
@@ -36,27 +38,27 @@ function FrmR2(props){
 
 
   const modal = props.modal ;
-  const form = props.modal.form;
+  const data = modal.data ;
 
   return(
     <Row form>
       <Col md={4}>
         <FormGroup>
           <Label> Số ĐT <span className="text-danger">*</span></Label>
-          <Input type="text" onChange={ (e)=>{ modal.onChange('phone', e);  } } defaultValue={ modal.form.phone }  placeholder="nhập số ĐT" />
+          <Input type="text" id="phone"  onChange={ (e)=>{ modal.onChange('phone', e);  } } defaultValue={ data.phone }  placeholder="nhập số ĐT" />
         </FormGroup>
       </Col>
       <Col md={4}>
         <FormGroup>
           <Label> Tỉnh / Thành </Label>
-            <SelectCity modal={ modal } selected={ form.region_code} />
+            <SelectCity  regions={ props.regions }  modal={ modal } selected={ data.region_code} />
         </FormGroup>
       </Col>
       <Col md={4}>
         <FormGroup>
           <Label> Quận/Huyện </Label>
 
-            <SelectDist modal={ modal } selected={ form.subregion_code } />
+            <SelectDist subregions={ props.subregions } modal={ modal } selected={ data.subregion_code } />
         </FormGroup>
       </Col>
     </Row>
@@ -66,17 +68,17 @@ function FrmR2(props){
 function FrmR3(props){
 
   const modal = props.modal;
-  const { form } = props.modal ;
+  const data = modal.data ;
   return (
     <div>
       <FormGroup>
         <Label>Địa chỉ <span className="text-danger">*</span></Label>
-          <Input type="text" onChange={ (e)=>{ modal.onChange('address', e);  } } defaultValue = { form.address } placeholder="Nhập địa chỉ"/>
+          <Input type="text" id="address" onChange={ (e)=>{ modal.onChange('address', e);  } } defaultValue = { data.address } placeholder="Nhập địa chỉ"/>
       </FormGroup>
 
       <FormGroup>
         <Label>IP được chấm công</Label>
-          <Input type="text" onChange={ (e)=>{ modal.onChange('ip_chamcong', e);  } } defaultValue = { form.ip_chamcong }  placeholder="Nhập địa chỉ IP"/>
+          <Input type="text" id="ip_chamcong" onChange={ (e)=>{ modal.onChange('ip_chamcong', e);  } } defaultValue = { data.ip_chamcong }  placeholder="Nhập địa chỉ IP"/>
       </FormGroup>
     </div>
   )
@@ -89,10 +91,6 @@ class StoreForm extends Component{
   constructor(props){
     super(props);
 
-    this.state = {
-      onAction:this.props.onAction
-    }
-
   }
 
 
@@ -100,10 +98,10 @@ class StoreForm extends Component{
 
     return (
 
-      <BenModal name={ this.props.name } onAction={ this.props.onAction } modal={ this.props.modal }  >
+      <BenModal name={ this.props.name } typeAction={ this.props.typeAction } modal={ this.props.modal }  >
 
         <FrmR1 modal={ this.props.modal }  />
-        <FrmR2 modal={ this.props.modal }  />
+        <FrmR2 regions={ this.props.regions } subregions={ this.props.subregions } modal={ this.props.modal }  />
         <FrmR3 modal={ this.props.modal }  />
 
 
