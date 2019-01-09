@@ -54,6 +54,8 @@ class User extends Component{
       this.data = {
 
         users:[],
+        offices:[],
+        departments:[]
 
       }
 
@@ -219,13 +221,14 @@ class User extends Component{
             <div hidden={  this.props.onTab === this.state.tab ? false : true } >
 
 
-              {/*<UserModalComp
-                  moOffice={ this.office }
-                  departments={ [] }
+              <UserModalComp
+                  offices={ this.data.offices }
+                  departments={ this.data.departments }
                   name={ modalTitle }
                   onStateChange={(newState)=>{ this.onStateChange(newState) }}
-                  onAction={ this.props.onAction} modal={ this.modal }
-              />*/}
+                  typeAction={ this.state.typeAction }
+                  modal={ this.modal }
+              />
 
               <div className="ubuntu-app mb-4">
 
@@ -264,7 +267,6 @@ class User extends Component{
 
                           </AgGridReact>
 
-                          {/*<GridFooter p={ this.data.p} onStateChange={(newState)=>{  this.onStateChange(newState)  }}  model={ this.model } /> */}
                           <GridFooter model={ this.model } />
 
 
