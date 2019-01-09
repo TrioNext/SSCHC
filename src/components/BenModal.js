@@ -28,7 +28,7 @@ class BenModal extends Component{
   }
 
   toggle(){
-    
+
     this.props.modal.toggle()
   }
 
@@ -75,7 +75,7 @@ class BenModal extends Component{
                status
            </div>
            <div className="float-right">
-             <a id="btnDel" hidden={ this.props.onAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ this.popoverToggle }>
+             <a id="btnDel" hidden={ this.props.typeAction === 'post' ? true : false  } className={'text-muted btn-delete ' } onClick={ this.popoverToggle }>
                <i className="fa fa-trash"></i> Xoá
              </a>
              <Popover placement="bottom" isOpen={this.props.modal.popover.active } target="btnDel"  toggle={ this.popoverToggle }>
