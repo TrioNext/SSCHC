@@ -19,7 +19,7 @@ const NAME = OFFICES_NAME;
 const iniState = {
   mode:MODE,
   name:NAME,
-  onAction:'',
+  state:{},
   list:[]
 }
 
@@ -27,10 +27,10 @@ const iniState = {
 export default function(state = iniState ,action = {}){
   switch(action.type){
 
-     case 'FORM-offices':
+     case 'STATE-'+MODE:
        return {
          ...state,
-         onAction:action.onAction
+         state:action.state
 
        }
      break;
@@ -49,7 +49,7 @@ export default function(state = iniState ,action = {}){
 
       myToast('post',state)
 
-      
+
 
       return {
         ...state,
