@@ -11,8 +11,8 @@ let state ;
 
 export default (type,reduxState)=>{
 
-
-   if(reduxState.onAction !== 'toggle_modal'){
+   
+   if(reduxState.state.onAction !== 'toggle_modal'){
 
      const msg = successMsg[type] + ' '+ reduxState.name + ' thành công' ;
      toast.info(msg);
