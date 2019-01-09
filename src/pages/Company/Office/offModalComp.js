@@ -15,7 +15,6 @@ import SelectMinute from '../../../components/SelectMinute';
 function FrmR1(props){
 
   const modal = props.modal;
-  const form = modal.form ;
   const data = modal.data ;
 
 
@@ -44,7 +43,7 @@ function FrmR2(props){
 
   const modal = props.modal ;
   const data = modal.data ;
-  const form = modal.form ;
+
 
   return(
     <Row form>
@@ -75,7 +74,7 @@ function FrmR3(props){
 
   const modal = props.modal;
   const data = modal.data ;
-  const form = modal.form ;
+
 
   return (
     <div>
@@ -97,7 +96,7 @@ function FrmR4(props){
 
   const modal = props.modal ;
   const data = modal.data ;
-  const form = modal.form ;
+
 
 
   const begin = moment('2018-11-20 '+data.working_begin).format('HH:mm').split(':');
@@ -105,7 +104,7 @@ function FrmR4(props){
 
 
   return (
-    <Row form>
+    <Row>
       <Col md={6}>
         <FormGroup>
           <Label> Giờ làm việc </Label>
@@ -127,7 +126,7 @@ function FrmR5(props){
 
   const modal = props.modal ;
   const data = modal.data ;
-  const form = modal.form ;
+  
 
   const end = moment('2018-11-20 '+data.working_end).format('HH:mm').split(':');
 
@@ -159,15 +158,17 @@ class OffModalComp extends Component{
   constructor(props){
     super(props);
 
+    this.state = {}
 
   }
 
   render(){
 
+    this.state = this.props;
 
     return (
 
-      <BenModal name={this.props.name} onAction={ this.props.onAction } modal={ this.props.modal }  >
+      <BenModal name={this.props.name} typeAction={ this.props.typeAction } modal={ this.props.modal }  >
 
           <FrmR1  modal={ this.props.modal } />
 
