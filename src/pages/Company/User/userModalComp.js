@@ -12,12 +12,14 @@ import BenModal from '../../../components/BenModal';
 function FrmR1(props){
 
   const modal = props.modal;
+  const data = modal.data ;
+
   return (
     <Row form>
       <Col md={8}>
         <FormGroup>
           <Label for="name"> Họ tên <span className="text-danger">*</span></Label>
-          <Input type="text" id="name" onChange={ (e)=>{ modal.onChange('name', e);  } } defaultValue={ modal.form.name }  placeholder="nhập tên đầy đủ" />
+          <Input type="text" id="name" onChange={ (e)=>{ modal.onChange('name', e);  } } defaultValue={ data.name }  placeholder="nhập tên đầy đủ" />
         </FormGroup>
       </Col>
       <Col md={4}>
@@ -39,7 +41,7 @@ function FrmR2(props){
 
 
   const modal = props.modal ;
-  const form = props.modal.form;
+  const data = modal.data ;
 
   return(
     <Row form>
@@ -47,14 +49,14 @@ function FrmR2(props){
       <Col md={6}>
         <FormGroup>
           <Label> E-mail </Label>
-          <Input id="email" type="text" onChange={ (e)=>{ modal.onChange('email', e);  } } defaultValue={ modal.form.email }  placeholder="nhập e-mail" />
+          <Input id="email" type="text" onChange={ (e)=>{ modal.onChange('email', e);  } } defaultValue={ data.email }  placeholder="nhập e-mail" />
 
         </FormGroup>
       </Col>
       <Col md={6}>
         <FormGroup>
           <Label> Số ĐT <span className="text-danger">*</span></Label>
-          <Input id="phone" type="text" onChange={ (e)=>{ modal.onChange('phone', e);  } } defaultValue={ modal.form.phone }  placeholder="nhập số ĐT" />
+          <Input id="phone" type="text" onChange={ (e)=>{ modal.onChange('phone', e);  } } defaultValue={ data.phone }  placeholder="nhập số ĐT" />
         </FormGroup>
       </Col>
 
@@ -68,8 +70,7 @@ class FrmR3 extends Component{
   render(){
 
     const modal = this.props.modal;
-    const { form } = this.props.modal ;
-
+    const data = modal.data ;
     let list = [];
 
     this.props.jobtype.map((item,index)=>{
@@ -256,11 +257,11 @@ class UserForm extends Component{
 
     return (
 
-      <BenModal name={ this.props.name } onAction={ this.props.onAction } modal={ this.props.modal }  >
+      <BenModal name={ this.props.name } typeAction={ this.props.typeAction } modal={ this.props.modal }  >
 
         <FrmR1 modal={ this.props.modal }  />
         <FrmR2 modal={ this.props.modal }  />
-        <FrmR3 modal={ this.props.modal } offices={ this.data.office.list } jobtype={ this.job_type }  />
+        <FrmR3 modal={ this.props.modal } offices={ this.props.offices } jobtype={ this.job_type }  />
         <FrmR4 modal={ this.props.modal } departments={ this.props.departments }  joblevel={ this.job_level }  />
         <FrmR5 modal={ this.props.modal }  />
 
