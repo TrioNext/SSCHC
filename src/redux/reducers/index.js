@@ -1,9 +1,13 @@
 import { combineReducers } from 'redux';
-import reducerDepartment from './reducer-department';
-import reducerUser from './reducer-user';
-import reducerOffice from './reducer-office';
+
 import reducerRegion from './reducer-region';
 import reducerSubregion from './reducer-subregion';
+import reducerDepartment from './reducer-department';
+import reducerOffice from './reducer-office';
+import reducerStore from './reducer-store';
+
+
+import reducerUser from './reducer-user';
 
 
 
@@ -14,7 +18,8 @@ const allReducers = combineReducers({
   user:reducerUser,
   office:reducerOffice,
   region:reducerRegion,
-  subregion:reducerSubregion
+  subregion:reducerSubregion,
+  store:reducerStore
 
 });
 
