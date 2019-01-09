@@ -1,30 +1,33 @@
 
-
+import store from '../../../redux/store';
 import { detectForm } from '../../../hook/before';
 
 
 
 class FormCtrl {
 
-  constructor(app){
+  constructor(model){
 
     this.active = false ; /* FOR OPEN MODAL */
 
     this.state = {
+      typeAction:'',
       onAction:'',
       status:''
     }
 
     this.data = {}
 
-    this.form = {
+    // initial WHO
+    this.model = model ;
+
+  }
+
+  _stateDataTemp(){
+    return {
       code:'',
       name:''
     }
-
-    // initial WHO
-    this.app = app ;
-
   }
 
   /* START WHEN */
@@ -32,19 +35,16 @@ class FormCtrl {
 
 
     const _this = this ;
-    const onAction = this.state.onAction;
-
-    const data = onAction === 'post' ? this.form : this.data;
-
-    if(detectForm(['code','name'],data)===''){
-        this.app.model.axios(onAction,data,(res)=>{
+    const typeAction = this.state.typeAction;
 
 
-          if(res.name==='success'){
-            _this.toggle();
-          }
-
-
+    if(detectForm(['code','name'],this.data)===''){
+        this.model.axios(typeAction,this.data,(res)=>{
+          // -->
+          this._whereStateChange({
+            onAction:'onSubmit',
+            status:res.name
+          });
         })
     }
 
@@ -53,10 +53,15 @@ class FormCtrl {
 
   onChange(name, e){
 
-    if(this.state.onAction==='post'){
-        this.form[name] = e.target.value;
-    }else{  this.data[name] = e.target.value;  }
+    Object.assign(this.data,{ [name]:e.target.value});
+    this.processForm(name,e);
 
+  }
+
+  processForm(name,e){
+    this._whereStateChange({
+      onAction:'processForm'
+    })
   }
 
   /* END WHEN  */
@@ -64,16 +69,18 @@ class FormCtrl {
   /* START HOW */
   open(type, info){
 
-    const temp = info || {} ;
-    this.data = temp ;
+    //const {temp} = info || FORM_TEMP ;
+    this.data = info || this._stateDataTemp() ;
     this.active = true ;
+
+    this._whereStateChange({
+      typeAction:type,
+      onAction:'open',
+      status:'opened'
+    });
 
 
     /* RE-RENDER COMPONENT */
-    this.setState({
-      onAction:type,
-      status:'success'
-    });
 
 
   }
@@ -81,28 +88,34 @@ class FormCtrl {
   toggle(){
 
       this.active = !this.active;
-
-      this.setState({
-        onAction:'',
-        status:'close modal'
+      this.popover.active =  false;
+      // -->
+      this._whereStateChange({
+        onAction:'toggle_modal'
       })
-
-      this.popover.active = false;
 
   }
   /* END HOW  */
 
   /* START WHERE  */
-  setState(newState={}){
+  _whereStateChange(newState={}){
 
-    /* update state*/
     Object.assign(this.state,newState);
 
-    /* RE-RENDER COMPONENT*/
-    this.app.onStateChange(this.state);
+    if(newState.status ==='success'){
+      this.toggle()
+    }else{
 
+      //alert('FORM-'+this.model.model);
+
+      store.dispatch({
+        type:'STATE-'+this.model.model,
+        state:this.state
+      })
+    }
 
   }
+
   /* END WHERE  */
 
 
@@ -114,15 +127,16 @@ class FormCtrl {
       parent:this,
       btnYes(){
 
-        const _this = this ;
+
         const id = this.parent.data.id;
 
-        this.parent.app.model.delete(id,(res)=>{
+        this.parent.model.delete(id,(res)=>{
 
-
-            if(res.name==='success'){
-              _this.parent.toggle();
-            }
+            this.parent._whereStateChange({
+              onAction:'btnYes',
+              typeAction:'delete',
+              status:res.name
+            });
 
         })
 
@@ -131,13 +145,13 @@ class FormCtrl {
       toggle(){
 
          this.active = !this.active;
-
-         this.parent.app.onStateChange({
-           status:'toggle popover'
-         });
+         this.parent._whereStateChange({
+           onAction:'toggle_popover'
+         })
 
       }
   }
+
 }
 
 export default FormCtrl
