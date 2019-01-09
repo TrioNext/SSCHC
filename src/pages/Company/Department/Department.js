@@ -38,57 +38,58 @@ class Department extends Component{
 
 
     /* WHAT  */
-    this.data = {
-      department:[]
-    }
-
     this.state = {
-      name:'department',
+      tab:DEPARTMENTS.substring(0, DEPARTMENTS.length - 1),
+      typeAction:'',
       onAction:'',
       status:'',
     }
 
+    this.data = {
+      departments:[]
+    }
+
     // --> initial WHO
-    this.setup();
-
-
+    this._setup();
 
   }
 
 
   /* START WHO */
-  setup(){
+  _setup(){
 
-    this.model = new Model(DEPARTMENTS);
-    this.model.set('paginate',{
+    this.Model = new Model(DEPARTMENTS);
+    this.Model.set('paginate',{
       offset:0,
       p:0,
       max:'all',
       is_deleted:0
     });
 
-    this.modal = new depModalCtrl(this);
+    this.Modal = new depModalCtrl(this.Model);
 
     /* AUTO DATA CONNECT : WHEN STORE DATA CHANGE */
-    this.connectStore();
+    this._listenStore();
+
+    
 
   }
   /* END WHO  */
 
   /* START WHEN */
   componentDidMount(){
-      const _this = this ;
+      this.Model.load();
 
-      this.model.load();
-
+      this._whereStateChange({
+        onAction:'componentDidMount'
+      })
   }
-  connectStore(){
+  _listenStore(){
     store.subscribe(()=>{
-      this.data.department = store.getState().department.list || []  ;
+      this.data.departments = store.getState().department.list || []  ;
 
-      this.onStateChange({
-        onAction:'reducer-change',
-        status:'success'
+      this._whereStateChange({
+        onAction:'_listenStore'
       })
 
     })
@@ -98,14 +99,31 @@ class Department extends Component{
   /*  START HOW METHOD FUNCTION */
 
   /* END HOW METHOD  */
+  _doOpenModalPost(){
+    this.Modal.open('post');
+    this._whereStateChange({
+      typeAction:'post',
+      onAction:'_doOpenModalPost',
+    })
+  }
+  _doOpenModalUpdate(data){
 
+      this.Modal.open('put',data);
+      this._whereStateChange({
+        typeAction:'put',
+        onAction:'_doOpenModalUpdate',
+
+      })
+  }
+
+  /* END HOW*/
 
   /* WHERE */
-  onStateChange(newState){
+  _whereStateChange(newState){
     /* KEEP PRIVATE DATA*/
     this.setState(Object.assign(this.state,newState));
-
   }
+
 
   render(){
 
@@ -114,10 +132,10 @@ class Department extends Component{
     let list = [];
 
 
-    this.data.department.map((item,index)=>{
+    this.data.departments.map((item,index)=>{
 
       let active = false ; //parseInt(item.id) === this.data.id ? true  : false;
-      list.push(<ItemList onClick={()=>{ console.log(item);  }} active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this.modal.open('put',item ) } }   name={ item.name}    />)
+      list.push(<ItemList onClick={()=>{ console.log(item);  }} active={ active} key={index} id={item.id} onOptionClick={ ()=>{ this._doOpenModalUpdate(item) } }   name={ item.name}    />)
 
 
     });
@@ -125,11 +143,17 @@ class Department extends Component{
     return(
 
       <div>
-          <DepModalComp  onAction={ this.state.onAction } name={ modalTitle  } modal={ this.modal } />
+          <DepModalComp
+
+              typeAction={ this.state.typeAction }
+
+              name={ modalTitle  }
+              modal={ this.Modal }
+          />
 
           <nav style={{background:'#DEDEDE'}}>
 
-              <Button onClick={ ()=>{  this.modal.open('post') } } color="primary" style={{ width:'100%', color:'#fff',background:"#617B88", border:0 }}> Tạo bộ phận </Button>
+              <Button onClick={ ()=>{  this.Modal.open('post') } } color="primary" style={{ width:'100%', color:'#fff',background:"#617B88", border:0 }}> Tạo bộ phận </Button>
 
               <div style={{marginTop:20}}>
                 <ul className="nav">
