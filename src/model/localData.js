@@ -147,23 +147,28 @@ class LocalData {
   }
 
   goto(p=0,onSuccess){
+
+
     const {url, config, paginate, total } = this.db ;
 
     let offset = 0 ;
     offset = parseInt(paginate.max) * (p);
 
-    this.set('paginate',Object.assign(paginate,{
+    this.resetConfigDB('paginate',Object.assign(paginate,{
       offset:offset,
       p:p
     }));
 
-    this.get((res)=>{
+    this.fetch((res)=>{
+
       this.restResp(res);
       onSuccess(res);
     },(err)=>{
+
       this.onError(err);
 
     });
+
   }
   pre(onSuccess){
 
@@ -178,7 +183,7 @@ class LocalData {
 
     offset = parseInt(paginate.max) * (page);
 
-    this.set('paginate',Object.assign(paginate,{
+    this.resetConfigDB('paginate',Object.assign(paginate,{
       offset:offset,
       p:page
     }));
@@ -208,7 +213,7 @@ class LocalData {
 
     offset = parseInt(paginate.max) * (page);
 
-    this.set('paginate',Object.assign(paginate,{
+    this.resetConfigDB('paginate',Object.assign(paginate,{
       offset:offset,
       p:page
     }));
@@ -234,9 +239,9 @@ class LocalData {
       const {url, config} = this.db ;
 
 
-
       axios.get(url,config)
             .then((res) => {
+
 
               this.restResp(res);
               onSuccess(res)
@@ -263,7 +268,6 @@ class LocalData {
 
       this._this.resetConfigDB("total",idata.count);
       this._this.set(idata.rows);
-
 
 
     },
