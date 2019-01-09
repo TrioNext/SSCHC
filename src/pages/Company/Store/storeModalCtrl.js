@@ -4,28 +4,32 @@ OfficeModal :  it's a Controller for <BenModal/>
 
 */
 
-import Model from '../../../model/model';
+import store from '../../../redux/store';
+
+import { detectForm } from '../../../hook/before';
+import { doLoadSubRegion } from '../../../hook/ultil';
 
 
 class StoreModal{
 
-    constructor(app){
+    constructor(model){
+
       this.active = false;
-      this.app = app ;
 
       this.state = {
+
+        typeAction:'',
         onAction:'',
         status:''
       }
 
-      this.defaultValue = {
-        region_code:'79', // MAC DINH LÀ CODE : TP HO CHI MKN
-        subregion_code:'760', // MAC DINH LÀ QUẬN 1
-        working_begin:'08:00:00',
-        working_end:'17:30:00',
-      }
 
-      this.form = {
+      this.model = model ;
+
+    }
+
+    _stateDataTemp(){
+      return {
         code:'',
         name:'',
         phone:'',
@@ -36,96 +40,58 @@ class StoreModal{
         working_begin:'08:00:00',
         working_end:'17:30:00',
       }
-
-      this.listCity = [];
-      this.listDistrict = [];
-
     }
 
-    loadCityList(){
-        const _this = this;
-
-        const City = new Model('regions');
-        City.set('paginate',{
-          offset:0,
-          p:0,
-          max:'all',
-          sort_by:'name',
-          sort_type:'asc'
-        })
-
-        let list = [] ;//City.getData('regions');
-        if(list.length===0){
-
-          City.get((res)=>{
-
-            list = City.getData('regions');
-            _this.listCity = list;
-
-          })
-
-        }
-
-
-    }
-
+    
     loadDistrictList(parent_code,onSuccess){
 
-
         const _this = this;
-
-        const District = new Model('subregions');
-
-        District.set('paginate',{
-          offset:0,
-          p:0,
-          max:'all',
-          sort_by:'name',
-          sort_type:'asc',
-          parent_code:parent_code
+        doLoadSubRegion(parent_code,(res)=>{
+          this._whereStateChange({
+            onAction:'loadDistrictList'
+          })
         })
 
-        District.get((res)=>{
-
-
-          if(typeof res.count !== 'undefined'){
-              _this.listDistrict = District.getData('subregions')
-              _this.app.onStateChange({status:'success'})
-          }
-
-
-
-        })
     }
 
 
+    /* START : WHEN */
     onSubmit(){
 
-      const _this = this ;
-      const onAction = this.state.onAction;
 
-      this.app.model.axios(onAction,this.form,(res)=>{
-          if(typeof res.name  !== 'undefined'){
-            const status = res.name ;
-            if(status==='success'){
-              _this.app.onStateChange({status:status});
-              _this.toggle();
-            }
-          }
-        })
+      const typeAction = this.state.typeAction; /* PUT - POST */
+
+      /* HOOKED detectForm before save data*/
+      // -->
+      if(detectForm(['code','name','phone','address'],this.data)===''){
+
+          this.model.axios(typeAction,this.data,(res)=>{
+            // -->
+            this._whereStateChange({
+              onAction:'onSubmit',
+              status:res.name
+            });
+
+          })
+      }
 
     }
-
 
     onChangeDist(e){
       const code = e.target.value;
-      this.form['subregion_code'] = code ;
+
+      this.data['subregion_code'] = code ;
+
+
+      // --> HOW -> WHERE
+      this.processForm('subregion_code',e);
     }
 
     onChangeCity(e){
        const code = e.target.value;
-       this.form['region_code'] = code ;
 
+       this.data['region_code'] = code ;
+       // --> HOW -> WHERE
        this.loadDistrictList(code);
 
 
@@ -133,64 +99,68 @@ class StoreModal{
 
     onChange(name, e){
 
-      this.form[name] = e.target.value;
+
+      Object.assign(this.data,{ [name]:e.target.value});
+      //this.data[name] = e.target.value;
+
+      // --> initial HOW -> WHERE
+      this.processForm(name,e);
 
     }
 
-    getCity(id){
 
-      let ret = {}
-      this.listCity.map((item)=>{
-        if(id===item.id){
-          ret = item
-        }
-      })
+    /* START : HOW */
+    processForm(name,e){
+       //-->
+       this._whereStateChange({
+         onAction:'processForm'
 
-      return ret ;
-    }
-
-    setState(name,value){
-
-      this.state[name] = value ;
-    }
-    open(type, info){
-
-      this.form = info || this.form;
-      this.active = true ;
-
-      const _this = this ;
-      this.setState('onAction',type);
-
-
-      if(typeof info !== 'undefined'){
-        this.loadDistrictList(info.region_code,()=>{
-
-          /* SET STATE CHANGE */
-          _this.app.onStateChange({
-            onAction:type,
-            status:'modal opening'
-          });
-
-
-
-        });
-
-      }
-
+       })
     }
 
     toggle(){
 
-        this.active = !this.active;
+      this.active = !this.active;
+      this.popover.active =  false;
 
-        this.form = this.defaultValue;
+      // -->
+      this._whereStateChange({
+        onAction:'toggle_modal'
+      })
 
-        this.app.onStateChange({
-          onAction:'',
-          status:'close modal'
-        });
 
-        this.popover.active = false;
+    }
+
+    open(typeAction, info){
+
+
+      //const {temp} = info || FORM_TEMP ;
+      this.data = info || this._stateDataTemp() ;
+      this.active = true ;
+
+      this._whereStateChange({
+        typeAction:typeAction,
+        onAction:'open',
+        status:'opened'
+      });
+
+
+
+    }
+    /* START : WHERE */
+    _whereStateChange(newState={}){
+
+      Object.assign(this.state,newState);
+
+      if(newState.status ==='success'){
+        this.toggle()
+      }else{
+        //alert('FORM-'+this.model.model);
+        store.dispatch({
+          type:'STATE-'+this.model.model,
+          state:this.state
+        })
+      }
 
     }
 
@@ -200,26 +170,16 @@ class StoreModal{
         parent:this,
         btnYes(){
 
-          const _this = this ;
-          const id = this.parent.form.id;
 
-          this.parent.app.onStateChange({
-            onAction:'delete',
-            status:'on comfirm delete..'
-          });
+          const id = this.parent.data.id;
 
-          this.parent.app.model.delete(id,(res)=>{
+          this.parent.model.delete(id,(res)=>{
 
-
-            if(typeof res.name !== 'undefined'){
-              if(res.name==='success'){
-                _this.parent.app.onStateChange({status:res.name});
-                _this.parent.toggle();
-              }
-            }
-
-
-
+              this.parent._whereStateChange({
+                onAction:'btnYes',
+                typeAction:'delete',
+                status:res.name
+              });
 
           })
 
@@ -228,10 +188,9 @@ class StoreModal{
         toggle(){
 
            this.active = !this.active;
-
-           this.parent.app.onStateChange({
-             status:'toggle popover'
-           });
+           this.parent._whereStateChange({
+             onAction:'toggle_popover'
+           })
 
         }
     }
