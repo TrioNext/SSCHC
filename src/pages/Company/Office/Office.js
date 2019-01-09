@@ -23,6 +23,7 @@ import {OFFICES} from '../../../model/model-mode' ;
 import { OFFICES_NAME } from '../../../model/model-name';
 import { POST } from '../../../model/action-mode';
 
+
 const REGION_CODE = '79'; // HCM
 
 
@@ -152,7 +153,7 @@ class Office extends Component{
       doLoadSubRegion(data.region_code,(res)=>{
         this._ModalOffice.open('put',data);
         this.whereStateChange({
-          
+
           typeAction:'put',
           onAction:'open_modal'
         })
