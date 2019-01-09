@@ -8,33 +8,80 @@ action = {
 }
 */
 
-const MODE = 'user';
 
-export default function(state = [],action = {}){
+import { myToast } from '../../hook/after';
+
+
+import { USERS } from '../../model/model-mode';
+import { USERS_NAME } from '../../model/model-name';
+
+
+const MODE = USERS;
+const NAME = USERS_NAME;
+
+const iniState = {
+  mode:MODE,
+  name:NAME,
+  state:{},
+  list:[]
+}
+
+export default function(state = iniState ,action = {}){
   switch(action.type){
 
+     case 'STATE-'+MODE:
+       return {
+         ...state,
+         state:action.state
 
+       }
+     break;
+
+    /* PROACTIVE : DATA */
     case 'GET-'+MODE:
-      state = action.list ;
-      return state ;
+
+      return {
+        ...state,
+        list:action.list
+      }
 
     break ;
 
     case 'POST-'+MODE:
-      state = action.list ;
-      return state ;
+
+      myToast('post',state)
+
+
+
+      return {
+        ...state,
+        list:action.list
+      }
 
     break ;
 
     case 'PUT-'+MODE:
-      state = action.list ;
-      return state ;
+
+      myToast('put',state);
+
+
+      return {
+        ...state,
+        list:action.list
+      }
 
     break ;
 
     case 'DELETE-'+MODE:
-      state = action.list ;
-      return state ;
+
+
+      myToast('delete',state);
+
+
+      return {
+        ...state,
+        list:action.list
+      }
 
     break ;
 
@@ -49,6 +96,7 @@ export default function(state = [],action = {}){
 
 
     default:
+
       return state;
 
   }
