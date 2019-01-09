@@ -1,13 +1,15 @@
 
+/* OBJ : REACT */
 import React, {Component} from 'react';
 import { Row, Col } from 'reactstrap';
 
-
+/* OBJ : LIB  */
 import store from '../../../redux/store';
 import Model from '../../../model/model';
 
 // HOOK
 import { doLoadSubRegion, doLoadRegion } from '../../../hook/ultil';
+
 
 
 /* FORM MODAL POPUP */
@@ -35,7 +37,8 @@ class Office extends Component{
 
       this.state = {
         form:{},
-        tab: OFFICES.replace('s',''),
+        tab:  OFFICES.substring(0, OFFICES.length - 1),
+        typeAction:'',
         onAction:'',
         status:'',
 
@@ -53,11 +56,12 @@ class Office extends Component{
 
 
       /* initial WHO */
-      this._doSetup();
+      this._setup();
 
     }
 
-    _doSetup(){
+    /* initial: WHO */
+    _setup(){
 
       this.Model = new Model(OFFICES);
 
@@ -68,9 +72,6 @@ class Office extends Component{
         is_deleted:0
       });
 
-
-
-
       /* modal form controller  */
       this._ModalOffice = new offModalCtrl(this.Model);
 
@@ -78,6 +79,7 @@ class Office extends Component{
       this._listenStore();
 
     }
+
 
     /* START : WHEN */
     /*componentDidMount(){}*/
@@ -108,10 +110,10 @@ class Office extends Component{
     /*componentDidUpdate(prevProps, prevState){}*/
 
 
-    /* DESTROY - REMOVE SOMETHING*/
+    /* DESTROY - REMOVE SOMETHING
     componentWillUnmount(){
       alert('componentWillUnmount happen');
-    }
+    }*/
 
     _listenStore(){
       /* AUTO CONNECT REDUX STORE -> COMPONENT DATA -> REFESH THEM  */
@@ -130,14 +132,15 @@ class Office extends Component{
     /* END : WHEN */
 
     /* START : HOW */
+
     _doOpenModalPost(){
 
       doLoadSubRegion(REGION_CODE,(res)=>{
         this._ModalOffice.open('post');
         this.whereStateChange({
-          form:this.Model.form,
-          onAction:'post',
-          status:'open_modal'
+
+          typeAction:'post',
+          onAction:'open_modal'
         })
 
       });
@@ -149,9 +152,9 @@ class Office extends Component{
       doLoadSubRegion(data.region_code,(res)=>{
         this._ModalOffice.open('put',data);
         this.whereStateChange({
-          form:data,
-          onAction:'put',
-          status:'open_modal'
+          
+          typeAction:'put',
+          onAction:'open_modal'
         })
       });
 
@@ -223,11 +226,14 @@ class Office extends Component{
 
 
                  <OffModalComp
-                   data={ this.state.form }
+
+                   typeAction={ this.state.typeAction }
+
                    name={ modalTitle  }
                    regions={ this.data.regions }
                    subregions={ this.data.subregions }
-                   onAction={ this.state.onAction}
+
+
                    modal={ this._ModalOffice }
                   />
 
