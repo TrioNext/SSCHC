@@ -106,6 +106,8 @@ class Model {
 
   goto(p=0,onSuccess){
 
+
+
     this.localData.goto(p,(res)=>{
       this.listenDataChange();
       onSuccess(res);
@@ -197,7 +199,7 @@ class Model {
 
     Object.assign(this.state,newState);
 
-    
+
     store.dispatch(newState);
 
 
