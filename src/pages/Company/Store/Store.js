@@ -1,11 +1,14 @@
 
 import React, {Component} from 'react';
-
 import {  Row, Col } from 'reactstrap';
 
 
 import store from '../../../redux/store';
 import Model from '../../../model/model';
+
+// HOOK
+import { doLoadSubRegion, doLoadRegion } from '../../../hook/ultil';
+
 
 import storeModalCtrl from './storeModalCtrl';
 import StoreModalComp from './StoreModalComp';
@@ -34,6 +37,7 @@ class Store extends Component{
 
         tab: STORES.substring(0, STORES.length - 1) ,
 
+        typeAction:'',
         onAction:'',
         status:'',
         onTab:props.onTab,
@@ -48,10 +52,11 @@ class Store extends Component{
       }
 
       /* initial WHO */
-      this._doSetup();
+      this._Setup();
     }
 
-    _doSetup(){
+    /* initial : WHO */
+    _Setup(){
       this.Model = new Model(STORES);
       this.Model.set('paginate',{
         offset:0,
@@ -61,21 +66,10 @@ class Store extends Component{
       })
 
       /******/
-      this.Regions = new Model(REGIONS);
-      this.Regions.set('paginate',{
-        offset:0,
-        p:0,
-        max:'all',
-        sort_by:'name',
-        sort_type:'asc'
-      });
 
-      this.SubRegions = new Model(SUBREGIONS);
+      this.Modal = new storeModalCtrl(this.Model);
 
-      /******************/
-      this.Modal = new storeModalCtrl(this);
-
-      this.listenStore();
+      this._listenStore();
     }
 
 
@@ -88,31 +82,31 @@ class Store extends Component{
 
       if(newProps.onTab===this.state.tab){
 
-        this.initData();
+        this._doInitData();
 
         if(newProps.onAction===POST){
-            this.openModalPost();
+            this._doOpenModalPost();
         }
       }
 
     }
     /* TRIGGER AFFTER SOMETHING*/
-    componentDidUpdate(prevProps, prevState){}
+    /*componentDidUpdate(prevProps, prevState){}*/
     /* DESTROY - REMOVE SOMETHING*/
     componentWillUnmount(){
       alert('componentWillUnmount happen: store');
     }
 
-    listenStore(){
+    _listenStore(){
       /* AUTO CONNECT REDUX STORE -> COMPONENT DATA -> REFESH THEM  */
       store.subscribe(()=>{
 
-        this.data.offices = store.getState().office.list || []  ;
+        this.data.stores = store.getState().store.list || []  ;
         this.data.regions = store.getState().region.list || []  ;
         this.data.subregions = store.getState().subregion.list || []  ;
 
         this.whereStateChange({
-          onAction:'listenStore',
+          onAction:'_listenStore',
           status:'realtime'
         })
       })
@@ -120,10 +114,10 @@ class Store extends Component{
     /* END WHEN*/
 
     /*******HOW********/
-    initData(){
+    _doInitData(){
 
       this.Model.load();
-      this.Regions.load();
+      doLoadRegion();
 
       this.whereStateChange({
         isIniData:true
@@ -131,27 +125,30 @@ class Store extends Component{
 
     }
 
-    openModalPost(){
 
-      this.loadSubRegion(REGION_CODE,(res)=>{
+    _doOpenModalPost(){
+
+      doLoadSubRegion(REGION_CODE,(res)=>{
         this.Modal.open('post');
         this.whereStateChange({
-          form:this.Model.form,
-          onAction:'post',
-          status:'open_modal'
+
+          typeAction:'post',
+          onAction:'open_modal'
         })
+
       });
     }
-    openModalUpdate(data){
+
+    _doOpenModalUpdate(data){
       //alert('sss');
       //this.data.currentRegionCode = data.region_code;
 
-      this.loadSubRegion(data.region_code,(res)=>{
+      doLoadSubRegion(data.region_code,(res)=>{
         this.Modal.open('put',data);
         this.whereStateChange({
-          form:data,
-          onAction:'put',
-          status:'open_modal'
+
+          typeAction:'put',
+          onAction:'open_modal'
         })
       });
 
@@ -174,7 +171,7 @@ class Store extends Component{
                     <div>
                        <span><i className="fa fa-map-pin mr-5"></i> {data.name}</span>
                        <span className="pull-right">
-                         <a className='pointer' onClick={ ()=>{ this.Modal.open('put',data) } }> <i className="fa fa-gear"></i> </a>
+                         <a className='pointer' onClick={ ()=>{ this._doOpenModalUpdate(data) } }> <i className="fa fa-gear"></i> </a>
                        </span>
                     </div>
                     <i className="fa fa-phone mr-5"></i> { data.phone === null ? 'n/a' : data.phone } <br/>
@@ -204,7 +201,15 @@ class Store extends Component{
             <div hidden={  this.props.onTab === this.state.tab ? false : true } >
 
 
-                 <StoreModalComp name={ modalTitle} regions={ this.data.regions } subregions={ this.data.subregions } onAction={ this.props.onAction} modal={ this.Modal } />
+                 <StoreModalComp
+                   
+                   name={ modalTitle}
+                   regions={ this.data.regions }
+                   subregions={ this.data.subregions }
+                   typeAction={ this.state.typeAction}
+                   modal={ this.Modal }
+
+                   />
 
                  <Row>
 
