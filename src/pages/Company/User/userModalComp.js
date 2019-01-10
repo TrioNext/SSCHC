@@ -1,18 +1,17 @@
 import React, {Component} from 'react';
-
 import {  Row, Col, Label,  Form, FormGroup,FormText, Input } from 'reactstrap';
-
-import moment from 'moment';
 
 import BenModal from '../../../components/BenModal';
 
 
+import userConf from '../../../config/user.conf';
 
 
 function FrmR1(props){
 
   const modal = props.modal;
   const data = modal.data ;
+
 
   return (
     <Row form>
@@ -25,7 +24,7 @@ function FrmR1(props){
       <Col md={4}>
         <FormGroup>
           <Label> Giới tính <span className="text-danger">*</span></Label>
-          <Input onChange={(e)=>{ modal.onChange('gender',e)  }} type="select"  >
+          <Input onChange={(e)=>{ modal.onChange('gender',e)  }} defaultValue={ data.gender } type="select"  >
             <option value={1}> Nam </option>
             <option value={0}> Nữ </option>
           </Input>
@@ -65,52 +64,48 @@ function FrmR2(props){
   )
 }
 
-class FrmR3 extends Component{
 
-  render(){
-
-    const modal = this.props.modal;
-    const data = modal.data ;
-    let list = [];
-
-    this.props.jobtype.map((item,index)=>{
-      list.push(<option value={item} key={index} > { item } </option>)
-    })
+function FrmR3(props){
+  const modal = props.modal ;
+  const data = modal.data ;
 
 
-    let listOffice = [];
+  let listOffice = [];
+  listOffice.push(<option value={0} key={0}  > { ' Vui lòng chọn' } </option>)
+  props.offices.map((item,index)=>{
+    listOffice.push(<option value={item.id} key={item.id}  > { item.name } </option>)
+  });
 
-    listOffice.push(<option value={0} key={0}  > { ' Vui lòng chọn' } </option>)
-    this.props.offices.map((item,index)=>{
-      listOffice.push(<option value={item.id} key={item.id}  > { item.name } </option>)
-    })
+  let listJobs = [];
+  userConf.job_type.map((item,index)=>{
+    listJobs.push(<option value={index} key={index} > { item } </option>)
+  })
 
 
-    return (
-      <Row form>
+  return (
+    <Row form>
 
-        <Col md={6}>
-          <FormGroup>
-            <Label> Văn phòng làm việc </Label>
-            <Input type="select" id="office_id" onChange={(e)=>{ modal.onChange('office_id',e)  }} type="select">
-              { listOffice }
-            </Input>
+      <Col md={6}>
+        <FormGroup>
+          <Label> Văn phòng làm việc </Label>
+          <Input type="select" id="office_id" defaultValue={ data.office_id } onChange={(e)=>{ modal.onChange('office_id',e)  }} type="select">
+            { listOffice }
+          </Input>
 
-          </FormGroup>
-        </Col>
-        <Col md={6}>
-          <FormGroup>
-            <Label> Loại hình công việc <span className="text-danger">*</span></Label>
-            <Input type="select" id="job_type" onChange={(e)=>{ modal.onChange('job_type',e)  }}>
-                { list }
-            </Input>
+        </FormGroup>
+      </Col>
+      <Col md={6}>
+        <FormGroup>
+          <Label> Loại hình công việc <span className="text-danger">*</span></Label>
+          <Input type="select" id="job_type" defaultValue={ data.job_type } onChange={(e)=>{ modal.onChange('job_type',e)  }}>
+              { listJobs }
+          </Input>
 
-          </FormGroup>
-        </Col>
+        </FormGroup>
+      </Col>
 
-      </Row>
-    )
-  }
+    </Row>
+  )
 }
 
 
@@ -118,11 +113,13 @@ class FrmR3 extends Component{
 function FrmR4(props){
 
   const modal = props.modal;
-  const { form } = props.modal ;
+  const data = modal.data ;
 
-  let list = [];
-  props.joblevel.map((item,index)=>{
-    list.push(<option value={item} key={index} id={ index} > { item } </option>)
+  
+
+  let listJobLevels = [];
+  userConf.job_level.map((item,index)=>{
+    listJobLevels.push(<option value={index} key={index} id={ index} > { item } </option>)
   })
 
   let listDep = [];
@@ -138,7 +135,7 @@ function FrmR4(props){
       <Col md={6}>
         <FormGroup>
           <Label> Bộ phận </Label>
-          <Input id="department_id" onChange={(e)=>{ modal.onChange('department_id',e)  }} type="select">
+          <Input id="department_id" defaultValue={ data.department_id } onChange={(e)=>{ modal.onChange('department_id',e)  }} type="select">
             {listDep}
           </Input>
 
@@ -147,8 +144,8 @@ function FrmR4(props){
       <Col md={6}>
         <FormGroup>
           <Label> Cấp bậc <span className="text-danger">*</span></Label>
-          <Input id="job_level" type="select" onChange={(e)=>{ modal.onChange('job_level',e)  }} >
-            {list}
+          <Input id="job_level" type="select" defaultValue={ data.job_level } onChange={(e)=>{ modal.onChange('job_level',e)  }} >
+            {listJobLevels}
           </Input>
         </FormGroup>
       </Col>
@@ -160,21 +157,21 @@ function FrmR4(props){
 function FrmR5(props){
 
   const modal = props.modal;
-  const { form } = props.modal ;
+  const data = modal.data ;
   return (
     <Row form>
 
       <Col md={6}>
         <FormGroup>
           <Label> Mã Nội bộ </Label>
-          <Input type="text" id="username"  onChange={ (e)=>{ modal.onChange('username', e);  } } defaultValue={ modal.form.code }  placeholder="nhập mã" />
+          <Input type="text" id="username"  onChange={ (e)=>{ modal.onChange('username', e);  } } defaultValue={ data.username }  placeholder="nhập mã" />
 
         </FormGroup>
       </Col>
       <Col md={6}>
         <FormGroup>
           <Label> Chức vụ <span className="text-danger">*</span></Label>
-          <Input type="text" id="position" onChange={ (e)=>{ modal.onChange('position', e);  } } defaultValue={ modal.form.position }  placeholder="nhập chức vụ" />
+          <Input type="text" id="position" onChange={ (e)=>{ modal.onChange('position', e);  } } defaultValue={ data.position }  placeholder="nhập chức vụ" />
         </FormGroup>
       </Col>
 
@@ -190,79 +187,31 @@ class UserForm extends Component{
   constructor(props){
     super(props);
 
-    this.office = props.moOffice;
-
     this.state = {
-      onAction:props.onAction,
-      isLoadData:false,
+      typeAction:'',
+      onAction:'',
+
+      departments:[],
+      offices:[]
     }
 
-    this.data = {
-      office:{
-        list:[]
-      }
-    }
-
-
-    this.job_type = [
-      'Nhân viên chính thức',
-      'Bán thời gian',
-      'Thử việc',
-      'Làm thêm ngoài giờ',
-      'Nhân viên thời vụ',
-      'Làm dự án'
-    ];
-
-    this.job_level = [
-      'Mới tốt nghiệp/ Thực tập',
-      'Nhân viên',
-      'Trưởng nhóm/ Giám sát',
-      'Phó phòng',
-      'Trưởng phòng',
-      'Phó cửa hàng',
-      'Trưởng cửa hàng',
-      'Phó giám đốc',
-      'Giám đốc',
-      'Giám đốc điều hành',
-      'Phó chủ tịch',
-      'Chủ tịch'
-    ];
-
   }
 
-
-  onStateChange(newState){
-    this.data.office.list = this.office.getData();
-    this.setState(Object.assign(this.state,newState));
-
+  componentWillReceiveProps(newProps){
+    this.setState(newProps);
   }
-  componentDidMount(){
-
-      if(!this.state.isLoadData){
-        /*this.office.get((res)=>{
-          if(typeof res.count !== 'undefined'){
-             this.onStateChange({status:'success'});
-             this.state.isLoadData = true ;
-          }
-        })*/
-      }
-
-  }
-
-
 
   render(){
 
 
-
     return (
 
-      <BenModal name={ this.props.name } typeAction={ this.props.typeAction } modal={ this.props.modal }  >
+      <BenModal name={ this.props.name } typeAction={ this.state.typeAction } modal={ this.props.modal }  >
 
         <FrmR1 modal={ this.props.modal }  />
         <FrmR2 modal={ this.props.modal }  />
-        <FrmR3 modal={ this.props.modal } offices={ this.props.offices } jobtype={ this.job_type }  />
-        <FrmR4 modal={ this.props.modal } departments={ this.props.departments }  joblevel={ this.job_level }  />
+        <FrmR3 modal={ this.props.modal } offices={ this.state.offices }   />
+        <FrmR4 modal={ this.props.modal } departments={ this.state.departments } />
         <FrmR5 modal={ this.props.modal }  />
 
       </BenModal>
