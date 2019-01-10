@@ -8,12 +8,18 @@ npm install --save ag-grid-enterprise
 import React, {Component} from 'react';
 import {   Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
 
+
 import moment from 'moment';
 
 
 import store from '../../../redux/store';
 import Model from '../../../model/model';
 import userConf from '../../../config/user.conf';
+
+// HOOK
+import { doLoadOffice } from '../../../hook/ultil';
+
+
 
 
 import { USERS } from '../../../model/model-mode';
@@ -26,11 +32,7 @@ import userModalCtrl from './userModalCtrl';
 import UserModalComp from './userModalComp';
 
 
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
-
-import GridFooter from '../../../components/GridFooter';
+import BenGrid from '../../../components/BenGrid';
 import Department from '../Department/Department';
 
 
@@ -59,41 +61,17 @@ class User extends Component{
 
       }
 
-      this.table = {
-        columnDefs: [
-
-
-                {
-                  headerName: "SID",field: "id",width:130,checkboxSelection: true,
-                  filterParams: { newRowsAction: "keep" },
-                  checkboxSelection: function(params) {
-                    return params.columnApi.getRowGroupColumns().length === 0;
-                  },
-                  headerCheckboxSelection: function(params) {
-                    return params.columnApi.getRowGroupColumns().length === 0;
-                  }
-
-                },
-                {headerName: "Họ & Tên", field: "name"},
-                {headerName: "Văn phòng", field: "offices.name"},
-                {headerName: "Cấp bậc", field: "job_level"},
-                {headerName: "Loại hình công việc", field: "job_type"},
-                {headerName: "Số Phone ", field: "phone"},
-                {headerName: "E-mail ", field: "email"},
-                {headerName: "Ngày ", field: "date_created"},
-
-
-
-            ],
-            rowSelection: "multiple",
-
-            /*defaultColDef: {
-              editable: true,
-              enableRowGroup: true,
-              enablePivot: true,
-              enableValue: true
-            },*/
-            rowData: []
+      this.grid = {
+        colums:[
+          {headerName: "Họ & Tên", field: "name"},
+          {headerName: "Văn phòng", field: "offices.name"},
+          {headerName: "Cấp bậc", field: "str_job_level"},
+          {headerName: "Loại hình công việc", field: "str_job_type"},
+          {headerName: "Số Phone ", field: "str_phone"},
+          {headerName: "E-mail ", field: "email"},
+          {headerName: "Ngày ", field: "str_date_created"}
+        ],
+        rowData: []
       }
 
       this._setup();
@@ -104,7 +82,7 @@ class User extends Component{
       this.model.set('paginate',{
         offset:0,
         p:0,
-        max:2,
+        max:20,
         is_deleted:0
       });
 
@@ -118,20 +96,25 @@ class User extends Component{
         let list = this.data.users || []  ;
 
         list.filter((item)=>{
-          item['job_level'] = userConf.job_level[item['job_level']];
-          item['job_type'] = userConf.job_level[item['job_type']];
-          item['phone'] = item['phone'] === null ? 'n/a' : item['phone'];
-          item['date_created'] = moment(item['date_created']).format('YYYY-MM-DD');
+          item['str_job_level'] = userConf.job_level[item['job_level']];
+          item['str_job_type'] = userConf.job_type[item['job_type']];
+          item['str_phone'] = item['phone'] === null ? 'n/a' : item['phone'];
+          item['str_date_created'] = moment(item['date_created']).format('YYYY-MM-DD');
         });
 
 
-        this.table.rowData = list ;
+        //alert('resetGrid');
+        this.grid.rowData = list ;
 
     }
 
     _listenStore(){
       store.subscribe(()=>{
         this.data.users = store.getState().user.list || []  ;
+        this.data.departments = store.getState().department.list || [] ;
+        this.data.offices = store.getState().office.list || [] ;
+
+
         this.resetGrid();
 
         this._whereStateChange({
@@ -146,6 +129,7 @@ class User extends Component{
 
       //load user here
       this.model.get((res)=>{})
+      doLoadOffice();
       //this.model.load();
 
     }
@@ -157,7 +141,7 @@ class User extends Component{
 
         if(newProps.onAction===POST){
             //this.modalOffice.open('post');
-            //this._doOpenModalPost();
+            this._doOpenModalPost();
         }
 
       }
@@ -166,44 +150,27 @@ class User extends Component{
 
     /*componentDidUpdate(prevProps, prevState){}*/
 
-
-    onGridReady(params){
-
-       //alert('grid ready ');
-       this.gridApi = params.api;
-
-       //console.log(this.gridApi);
-
-      /*this.gridApi = params.api;
-      this.gridColumnApi = params.columnApi;
-
-      const httpRequest = new XMLHttpRequest();
-      const updateData = data => {
-        this.setState({ rowData: data });
-      };
-
-      httpRequest.open(
-        "GET",
-        "https://raw.githubusercontent.com/ag-grid/ag-grid/master/packages/ag-grid-docs/src/olympicWinners.json"
-      );
-      httpRequest.send();
-      httpRequest.onreadystatechange = () => {
-        if (httpRequest.readyState === 4 && httpRequest.status === 200) {
-          updateData(JSON.parse(httpRequest.responseText));
-        }
-      };*/
-    }
-
-    btnEdit(e){
-
-      const selectedNodes = this.gridApi.getSelectedNodes()
-      const selectedData = selectedNodes.map( node => node.data )
-
-      console.log(selectedData);
-
-
+    /* HOW */
+    _doOpenModalPost(){
+      this.modal.open('post');
+      this._whereStateChange({
+        typeAction:'post',
+        onAction:'open_modal'
+      })
 
     }
+
+    _doOpenModalUpdate(data){
+
+      this.modal.open('put',data);
+      this._whereStateChange({
+        typeAction:'put',
+        onAction:'open_modal'
+      })
+    }
+
+
+
 
     /* WHERE */
     _whereStateChange(newState){
@@ -225,7 +192,6 @@ class User extends Component{
                   offices={ this.data.offices }
                   departments={ this.data.departments }
                   name={ modalTitle }
-                  onStateChange={(newState)=>{ this.onStateChange(newState) }}
                   typeAction={ this.state.typeAction }
                   modal={ this.modal }
               />
@@ -236,46 +202,17 @@ class User extends Component{
 
                   <main>
 
-                    <div className="toolbar">
-                      <Row>
-                        <Col md={6}>
-                            <ButtonGroup>
+                    <BenGrid
+                       onBtnEdit={(data)=>{ this._doOpenModalUpdate(data)  }}
+                       onBtnDel={(data)=>{ alert('del')  }}
 
-                              <Button onClick={ this.btnEdit.bind(this) } className={ 'btn-ubuntu'} > <i className="fa fa-pencil"></i> </Button>
-                              <Button className={ 'btn-ubuntu'} > <i className="fa fa-trash"></i> </Button>
-                              <Button className={ 'btn-ubuntu'} > <i className="fa fa-download"></i> </Button>
+                       nextColums={ this.grid.colums }
+                       rowData={this.grid.rowData}
+                       model={ this.model }
+                    />
 
-
-                            </ButtonGroup>
-                        </Col>
-                        <Col>
-
-                        </Col>
-                      </Row>
-                    </div>
-                    <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: '72vh', padding:'1rem' }}>
-
-                          <AgGridReact
-
-                              enableSorting={true}
-                              rowSelection={this.table.rowSelection}
-                              enableColResize={true}
-                              defaultColDef={this.table.defaultColDef}
-                              onGridReady={this.onGridReady.bind(this)}
-                              columnDefs={this.table.columnDefs}
-                              rowData={this.table.rowData}>
-
-                          </AgGridReact>
-
-                          <GridFooter model={ this.model } />
-
-
-
-
-                     </div>
                   </main>
               </div>
-
             </div>
         )
     }
