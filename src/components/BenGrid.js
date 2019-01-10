@@ -24,13 +24,17 @@ class BenGrid extends Component{
     this.model = props.model;
 
 
-
     this.state = {
+      isChecked:false,
       columnDefs: [
               {
-                headerName: "SID",field: "id",width:130,checkboxSelection: true,
+                headerName: "SID",
+                field: "id",
+                width:130,
+                checkboxSelection: true,
                 filterParams: { newRowsAction: "keep" },
                 checkboxSelection: function(params) {
+
                   return params.columnApi.getRowGroupColumns().length === 0;
                 },
                 headerCheckboxSelection: function(params) {
@@ -40,7 +44,7 @@ class BenGrid extends Component{
               },
               ...props.nextColums
       ],
-      rowSelection: "",//"multiple",
+      rowSelection: "single",//"multiple",
 
           /*defaultColDef: {
             editable: true,
@@ -48,15 +52,18 @@ class BenGrid extends Component{
             enablePivot: true,
             enableValue: true
           },*/
-      rowData: []
+      rowData: [],
+      selectedData:[]
     }
+
 
   }
 
   componentWillReceiveProps(newProps){
     this.setState({
       rowData:newProps.rowData
-    })
+    });
+
   }
 
 
@@ -104,8 +111,20 @@ class BenGrid extends Component{
 
   }
 
+  onSelectionChanged(){
+    const selectedNodes = this.gridApi.getSelectedNodes()
+    const selectedData = selectedNodes.map( node => node.data );
+
+    this.setState({
+      selectedData:selectedData
+    })
+
+  }
   render(){
 
+    let disabledBtnEdit = this.state.selectedData.length === 0 ? true : false;
+    let disabledBtnDel = this.state.selectedData.length === 1 ? true : false;
+    
 
     return (
 
@@ -115,8 +134,8 @@ class BenGrid extends Component{
               <Col md={6}>
                   <ButtonGroup>
 
-                    <Button onClick={ this.onBtnEdit.bind(this) } className={ 'btn-ubuntu'} > <i className="fa fa-pencil"></i> </Button>
-                    <Button onClick={ this.onBtnDel.bind(this) }  className={ 'btn-ubuntu'} > <i className="fa fa-trash"></i> </Button>
+                    <Button disabled={ disabledBtnEdit } onClick={ this.onBtnEdit.bind(this) } className={ 'btn-ubuntu'} > <i className="fa fa-pencil"></i> </Button>
+                    <Button disabled={ disabledBtnDel } onClick={ this.onBtnDel.bind(this) }  className={ 'btn-ubuntu'} > <i className="fa fa-trash"></i> </Button>
                     <Button className={ 'btn-ubuntu'} > <i className="fa fa-download"></i> </Button>
                   </ButtonGroup>
               </Col>
@@ -129,6 +148,7 @@ class BenGrid extends Component{
           <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: '72vh', padding:'1rem' }}>
               <AgGridReact
 
+                  onSelectionChanged={this.onSelectionChanged.bind(this)}
                   enableSorting={true}
                   rowSelection={this.state.rowSelection}
                   enableColResize={true}
