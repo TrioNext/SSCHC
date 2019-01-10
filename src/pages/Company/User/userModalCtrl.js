@@ -1,21 +1,28 @@
 
 import userConf from '../../../config/user.conf';
+import store from '../../../redux/store';
+
+import { detectForm } from '../../../hook/before';
 
 
 class userModalCtrl {
 
-  constructor(app){
+  constructor(model){
 
     this.active = false ; /* FOR OPEN MODAL */
-    this.app = app ;
 
     this.state = {
+      typeAction:'',
       onAction:'',
       status:''
     }
 
+    this.model = model ;
 
-    this.form = {
+  }
+
+  _stateDataTemp(){
+    return {
       name:'',
       password:userConf.defaultPass,
       gender:1,
@@ -28,107 +35,102 @@ class userModalCtrl {
       username:'', /* ID NỘI BỘ*/
       position:'',
       is_limit_ip_chamcong:0
-
-
     }
-
   }
 
-  emptyForm(){
-    Object.keys(this.form).map((item)=>{
-      if(typeof this.form[item] ==='string'){
-        this.form[item] = '';
-      }
-    });
-
-    this.form.password = userConf.defaultPass; /* reset defaultPass*/
-  }
-
-  /* kiem tra cac gia trị trong fields : empty or 0 */
-  HookBefore(fields=[]){
-    let ret = '' ;
-
-    if(fields.length>0){
-
-      Object.keys(this.form).map((item)=>{
-        fields.map((item2)=>{
-          if(this.form[item2] === '' ||  this.form[item2] === 0){
-            ret = 'vui lòng kiểm tra thông tin ' ;
-            document.getElementById(item2).focus();
-
-
-          }
-
-        });
-      });
-    }
-
-    let el = document.getElementById('form-err');
-    el.innerHTML = ret;
-    return ret ;
-  }
   onSubmit(){
-    const _this = this ;
-    const onAction = this.state.onAction;
 
-    if(this.HookBefore(['position','username','job_level','department_id','job_type','office_id','phone','email','name'])===''){
-      this.app.model.axios(onAction,this.form,(res)=>{
-          if(typeof res.name  !== 'undefined'){
-            const status = res.name ;
-            if(status==='success'){
-              _this.app.onStateChange({status:status});
-              _this.toggle();
-            }
-          }
-      })
+    const typeAction = this.state.typeAction; /* PUT - POST */
+
+    /* HOOKED detectForm before save data*/
+    // -->
+    const fields = [
+      'name','email','phone','office_id',
+      'department_id','username','position'
+    ];
+
+    if(detectForm(fields,this.data)===''){
+
+        this.model.axios(typeAction,this.data,(res)=>{
+          // -->
+          this._whereStateChange({
+            onAction:'onSubmit',
+            status:res.name
+          });
+
+        })
     }
 
   }
 
   onChange(name, e){
+    Object.assign(this.data,{ [name]:e.target.value});
 
-    this.form[name] = e.target.value;
+    //this.data[name] = e.target.value;
+    // --> initial HOW -> WHERE
+    this.processForm(name,e);
 
   }
 
-  setState(name,value){
 
-    this.state[name] = value ;
-  }
+  open(typeAction, info){
 
-  open(type, info){
 
-    this.form = info || this.form;
+
+    //const {temp} = info || FORM_TEMP ;
+    this.data = info || this._stateDataTemp() ;
     this.active = true ;
 
 
-    this.setState('onAction',type);
-
-    /* SET STATE CHANGE
-    this.app.onStateChange({
-      onAction:type,
-      status:'modal opening'
-    });*/
-
-
+    this._whereStateChange({
+      typeAction:typeAction,
+      onAction:'open',
+      status:'opened'
+    });
 
 
 
   }
 
+  /* START : HOW */
+  processForm(name,e){
+     //-->
+     this._whereStateChange({
+       onAction:'processForm'
+
+     });
+
+     console.log(this.data);
+  }
+
+
   toggle(){
 
-      this.active = !this.active;
+    this.active = !this.active;
+    this.popover.active =  false;
 
-      this.emptyForm();
+    // -->
+    this._whereStateChange({
+      onAction:'toggle_modal'
+    })
 
 
-      this.app.onStateChange({
-        onAction:'',
-        status:'close modal'
-      });
+  }
 
-      this.popover.active = false;
+  /* START : WHERE */
+  _whereStateChange(newState={}){
+
+    Object.assign(this.state,newState);
+
+    if(newState.status ==='success'){
+      this.toggle()
+    }else{
+      //alert('FORM-'+this.model.model);
+      store.dispatch({
+        type:'STATE-'+this.model.model,
+        state:this.state
+      })
+    }
 
   }
 
@@ -138,17 +140,16 @@ class userModalCtrl {
       parent:this,
       btnYes(){
 
-        const _this = this ;
-        const id = this.parent.form.id;
 
-        this.parent.app.onStateChange({
-          onAction:'delete',
-          status:'on comfirm delete..'
-        });
+        const id = this.parent.data.id;
 
-        this.parent.app.model.delete(id,(res)=>{
+        this.parent.model.delete(id,(res)=>{
 
-          _this.parent.app.hook.success(_this.parent.app.state.onAction,res);
+            this.parent._whereStateChange({
+              onAction:'btnYes',
+              typeAction:'delete',
+              status:res.name
+            });
 
         })
 
@@ -157,10 +158,9 @@ class userModalCtrl {
       toggle(){
 
          this.active = !this.active;
-
-         this.parent.app.onStateChange({
-           status:'toggle popover'
-         });
+         this.parent._whereStateChange({
+           onAction:'toggle_popover'
+         })
 
       }
   }
