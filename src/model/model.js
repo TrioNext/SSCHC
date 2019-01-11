@@ -73,6 +73,24 @@ class Model {
 
   }
 
+  /* [id1,id2,id3] */
+  deleteMulti(list=[]){
+
+
+
+    if(list.length>0){
+
+      const id = list[0].id;
+      this.delete(id,(res)=>{
+        if(res.name==='success'){
+          let newlist = list.filter((item) => { return parseInt(item.id) !== parseInt(id) })
+          this.deleteMulti(newlist);
+        }
+      })
+    }
+
+  }
+
   delete(id,onSuccess){
 
       this.localData.delete(id,(res)=>{
