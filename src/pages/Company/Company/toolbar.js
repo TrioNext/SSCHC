@@ -45,9 +45,11 @@ class CompanyToolBar extends Component{
   }
 
   onStateChange(newState){
+
+
     Object.assign(this.state,newState);
     this.props.onStateChange(this.state);
-    
+
   }
 
   /* ON CLICK CHANGE TAB*/
@@ -96,7 +98,7 @@ class CompanyToolBar extends Component{
                     <Button style={{ marginRight:10, borderRadius:0}} className="btn-ubuntu" onClick={()=>{ this.onStateChange({onAction:'post'}) }} > <i className="fa fa-plus"></i> Tạo { listBtn[this.state.onTab].name } </Button>
 
 
-                    <Input  placeholder="Tìm kiếm" onChange={()=> this.onStateChange({onAction:'search'}) }  style={{borderRadius:0}}  />
+                    <Input  placeholder="Tìm kiếm" onChange={(e)=> this.onStateChange({onAction:'search',value:e.target.value}) }  style={{borderRadius:0}}  />
                     <Button style={{marginRight:10}}  className="btn-ubuntu"> <i className="fa fa-search"></i> </Button>
 
 
