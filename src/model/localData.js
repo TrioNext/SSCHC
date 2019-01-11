@@ -267,6 +267,7 @@ class LocalData {
       const idata = res.data ;
 
       this._this.resetConfigDB("total",idata.count);
+
       this._this.set(idata.rows);
 
 
@@ -443,7 +444,7 @@ class LocalData {
       msg = msg.message.indexOf('must be unique') >-1 ? 'Mã này đã được dùng' : msg.message ;
     }
 
-    let el = document.getElementById('form-err');
+    let el = document.querySelector("#form-err");
 
     if(el !== null){
       el.innerHTML = msg;
@@ -479,6 +480,11 @@ class LocalData {
 
     this.remove();
     localStorage.setItem(this.model,JSON.stringify(list));
+
+    // reset total data
+    this.resetConfigDB("total",list.length);
+
+
     this.get(); // reset update current data
 
   }
