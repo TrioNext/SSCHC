@@ -24,7 +24,7 @@ import { doLoadOffice } from '../../../hook/ultil';
 
 import { USERS } from '../../../model/model-mode';
 import { USERS_NAME } from '../../../model/model-name'
-import { POST } from '../../../model/action-mode';
+import { POST, SEARCH } from '../../../model/action-mode';
 
 
 
@@ -32,7 +32,10 @@ import userModalCtrl from './userModalCtrl';
 import UserModalComp from './userModalComp';
 
 
-import BenGrid from '../../../components/BenGrid';
+import { BenGrid } from '../../../components/BenGrid2';
+
+
+
 import Department from '../Department/Department';
 
 
@@ -83,7 +86,8 @@ class User extends Component{
         offset:0,
         p:0,
         max:20,
-        is_deleted:0
+        is_deleted:0,
+        key:''
       });
 
       this.modal = new userModalCtrl(this.model);
@@ -139,9 +143,13 @@ class User extends Component{
       /* nhận lện có liên quan đến tab : office */
       if(newProps.onTab===this.state.tab){
 
-        if(newProps.onAction===POST){
-            //this.modalOffice.open('post');
+        switch(newProps.onAction){
+          case POST:
             this._doOpenModalPost();
+          break ;
+          case SEARCH:
+            this._doSearch(newProps.value);
+          break ;
         }
 
       }
@@ -151,6 +159,21 @@ class User extends Component{
     /*componentDidUpdate(prevProps, prevState){}*/
 
     /* HOW */
+    _doSearch(value){
+
+      const { paginate } =  this.model.localData.db;
+      paginate.key = value ;
+
+      console.log(this.model.localData.db);
+
+      this.model.get((res)=>{})
+
+      this._whereStateChange({
+        onAction:'_doSearch',
+        value:value
+      })
+    }
+
     _doOpenModalPost(){
       this.modal.open('post');
       this._whereStateChange({
@@ -204,7 +227,7 @@ class User extends Component{
 
                     <BenGrid
                        onBtnEdit={(data)=>{ this._doOpenModalUpdate(data)  }}
-                       onBtnDel={(data)=>{ alert('del')  }}
+
 
                        nextColums={ this.grid.colums }
                        rowData={this.grid.rowData}
