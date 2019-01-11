@@ -21,8 +21,9 @@ export default function(fields=[],data={}){
       });
     });
   }
+  
+  let el = document.querySelector("#form-err");
 
-  let el = document.getElementById('form-err');
   el.innerHTML = ret;
   return ret ;
 }
