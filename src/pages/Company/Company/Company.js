@@ -21,6 +21,7 @@ class Company extends Component {
       onAction:'',
       status:'',
 
+
     }
 
   }
@@ -28,6 +29,7 @@ class Company extends Component {
   /* main react for all components */
   onStateChange(newState){
     this.setState(Object.assign(this.state,newState));
+
   }
 
   render(){
@@ -45,7 +47,7 @@ class Company extends Component {
 
                 <CompanyToolBar  onStateChange={ (newState)=>{ this.onStateChange(newState) } } onTab={ onTab } />
 
-                <CompanyBody   onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={ onAction } />
+                <CompanyBody  { ...this.state }  />
 
             </main>
 
