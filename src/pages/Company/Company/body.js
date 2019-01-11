@@ -51,6 +51,8 @@ class CompanyBody extends Component{
 
   render(){
 
+    this.state = this.props;
+
     const onTab = this.props.onTab ;
     const onAction = this.props.onAction;
 
@@ -58,9 +60,9 @@ class CompanyBody extends Component{
     return(
       <div className="detail" >
 
-        <Office onStateChange={ (newState)=>{ this.onStateChange(newState) } } onTab={onTab} onAction={ onAction } />
-        <Store onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={onAction} />
-        <User onStateChange={ (newState)=>{ this.onStateChange(newState) } }  onTab={onTab} onAction={onAction} />
+        <Office { ...this.state } />
+        <Store  { ...this.state } />
+        <User   { ...this.state } />
 
       </div>
     )
