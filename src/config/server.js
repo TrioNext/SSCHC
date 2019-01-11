@@ -10,7 +10,8 @@ const server = {
     p:0,
     offset:0,
     max:2,
-    is_deleted:0
+    is_deleted:0,
+    key:''
   },
 
   base(){
