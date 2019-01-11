@@ -94,7 +94,7 @@ class Store extends Component{
     /*componentDidUpdate(prevProps, prevState){}*/
     /* DESTROY - REMOVE SOMETHING*/
     componentWillUnmount(){
-      alert('componentWillUnmount happen: store');
+      //alert('componentWillUnmount happen: store');
     }
 
     _listenStore(){
@@ -202,7 +202,7 @@ class Store extends Component{
 
 
                  <StoreModalComp
-                   
+
                    name={ modalTitle}
                    regions={ this.data.regions }
                    subregions={ this.data.subregions }
