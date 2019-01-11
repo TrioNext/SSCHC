@@ -23,7 +23,7 @@ import DefaultAside from './DefaultAside';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
 
-
+/* Toast plugin */
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -42,10 +42,13 @@ class DefaultLayout extends Component {
         </AppHeader>
 
         <div className="app-body">
+
           <AppSidebar fixed display="lg">
             <AppSidebarHeader />
             <AppSidebarForm />
+
             <AppSidebarNav navConfig={navigation} {...this.props} />
+
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
