@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 /*import { HashRouter, BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'; */
 import { HashRouter, Route } from 'react-router-dom';
 import './App.scss';
+
+import './scss/filemanager.scss';
+import './scss/ubuntu-style.scss';
+
+
+
 // Containers
 import { DefaultLayout } from './containers';
 // Pages
