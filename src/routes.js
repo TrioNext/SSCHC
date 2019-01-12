@@ -11,7 +11,20 @@ function Loading() {
 const Company = Loadable({
   loader:()=> import('./pages/Company/Company'),
   loading:Loading
-})
+});
+
+const Inventory = Loadable({
+  loader:()=> import('./pages/Inventory'),
+  loading:Loading
+});
+
+const Receipt = Loadable({
+  loader:()=> import('./pages/Inventory/Receipt'),
+  loading:Loading
+});
+
+
+
 
 const Breadcrumbs = Loadable({
   loader: () => import('./views/Base/Breadcrumbs'),
@@ -124,7 +137,7 @@ const Charts = Loadable({
 });
 
 const Dashboard = Loadable({
-  loader: () => import('./views/Dashboard'),
+  loader: () => import('./pages/Dashboard'),
   loading: Loading,
 });
 
@@ -193,6 +206,10 @@ const User = Loadable({
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/company', exact:true , name:'Công ty', component:Company},
+  { path: '/inventory', exact:true , name:'Nhà kho', component:Inventory},
+  { path: '/inventory/receipt', exact:true , name:'Nhà kho', component:Receipt},
+
+
   { path: '/', name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
