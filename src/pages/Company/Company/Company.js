@@ -1,7 +1,4 @@
 import React, { Component} from 'react';
-import '../../../scss/filemanager.scss';
-import '../../../scss/ubuntu-style.scss';
-
 
 import CompanyToolBar from './toolbar';
 import CompanyBody from './body';
