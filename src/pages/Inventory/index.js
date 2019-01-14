@@ -8,7 +8,7 @@ class Dashboard extends Component{
       <div className="animated fadeIn">
         <div className="ubuntu-app " style={{border:0, padding:10}}>
             <main>
-                Inventory here 2
+                Danh Sách Nha Kho
             </main>
         </div>
       </div>
