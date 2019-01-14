@@ -8,13 +8,19 @@ function Loading() {
 }
 
 
+const Dashboard = Loadable({
+  loader:()=> import('./pages/Dashboard'),
+  loading:Loading
+})
+
 const Company = Loadable({
   loader:()=> import('./pages/Company/Company'),
   loading:Loading
 });
 
-const Inventory = Loadable({
-  loader:()=> import('./pages/Inventory'),
+/* NHÀ KHO*/
+const Warehouse = Loadable({
+  loader:()=> import('./pages/Inventory/Warehouse'),
   loading:Loading
 });
 
@@ -23,234 +29,126 @@ const Receipt = Loadable({
   loading:Loading
 });
 
-
-
-
-const Breadcrumbs = Loadable({
-  loader: () => import('./views/Base/Breadcrumbs'),
-  loading: Loading,
+const Productnew = Loadable({
+  loader:()=> import('./pages/Inventory/Productnew'),
+  loading:Loading
 });
 
-const Cards = Loadable({
-  loader: () => import('./views/Base/Cards'),
-  loading: Loading,
+const Po = Loadable({
+  loader:()=> import('./pages/Inventory/Po'),
+  loading:Loading
 });
 
-const Carousels = Loadable({
-  loader: () => import('./views/Base/Carousels'),
-  loading: Loading,
+const InventorySetting = Loadable({
+  loader:()=> import('./pages/Inventory/Setting'),
+  loading:Loading
 });
 
-const Collapses = Loadable({
-  loader: () => import('./views/Base/Collapses'),
-  loading: Loading,
+/* END NHÀ KHO*/
+
+/* SỔ TIỀN*/
+const CashflowView = Loadable({
+  loader:()=> import('./pages/Cashflow/View'),
+  loading:Loading
 });
 
-const Dropdowns = Loadable({
-  loader: () => import('./views/Base/Dropdowns'),
-  loading: Loading,
+const CashflowSummary = Loadable({
+  loader:()=> import('./pages/Cashflow/Summary'),
+  loading:Loading
 });
 
-const Forms = Loadable({
-  loader: () => import('./views/Base/Forms'),
-  loading: Loading,
+const CashflowSetting = Loadable({
+  loader:()=> import('./pages/Cashflow/Setting'),
+  loading:Loading
+})
+/* END SỔ TIỀN*/
+
+/* CUSTOMER */
+const Customer = Loadable({
+  loader:()=> import('./pages/Customer/_S'),
+  loading:Loading
 });
 
-const Jumbotrons = Loadable({
-  loader: () => import('./views/Base/Jumbotrons'),
-  loading: Loading,
+const CustomerPoint = Loadable({
+  loader:()=> import('./pages/Customer/Point'),
+  loading:Loading
 });
 
-const ListGroups = Loadable({
-  loader: () => import('./views/Base/ListGroups'),
-  loading: Loading,
+const CustomerSetting = Loadable({
+  loader:()=> import('./pages/Customer/Setting'),
+  loading:Loading
 });
 
-const Navbars = Loadable({
-  loader: () => import('./views/Base/Navbars'),
-  loading: Loading,
+const CustomerCrmemail = Loadable({
+  loader:()=> import('./pages/Customer/Crmemail'),
+  loading:Loading
 });
 
-const Navs = Loadable({
-  loader: () => import('./views/Base/Navs'),
-  loading: Loading,
+const CustomerCrmsms = Loadable({
+  loader:()=> import('./pages/Customer/Crmsms'),
+  loading:Loading
+});
+/* END CUSTOMER */
+
+/* ORDER*/
+const OrderView = Loadable({
+  loader:()=> import('./pages/Order/_S'),
+  loading:Loading
 });
 
-const Paginations = Loadable({
-  loader: () => import('./views/Base/Paginations'),
-  loading: Loading,
+const OrderPromotion = Loadable({
+  loader:()=> import('./pages/Order/Promotion'),
+  loading:Loading
 });
 
-const Popovers = Loadable({
-  loader: () => import('./views/Base/Popovers'),
-  loading: Loading,
+const OrderShippingMethod = Loadable({
+  loader:()=> import('./pages/Order/Shippingmethod'),
+  loading:Loading
 });
 
-const ProgressBar = Loadable({
-  loader: () => import('./views/Base/ProgressBar'),
-  loading: Loading,
+const OrderSummary = Loadable({
+  loader:()=> import('./pages/Order/Summary'),
+  loading:Loading
 });
 
-const Switches = Loadable({
-  loader: () => import('./views/Base/Switches'),
-  loading: Loading,
+const OrderSetting = Loadable({
+  loader:()=> import('./pages/Order/Setting'),
+  loading:Loading
 });
 
-const Tables = Loadable({
-  loader: () => import('./views/Base/Tables'),
-  loading: Loading,
-});
 
-const Tabs = Loadable({
-  loader: () => import('./views/Base/Tabs'),
-  loading: Loading,
-});
-
-const Tooltips = Loadable({
-  loader: () => import('./views/Base/Tooltips'),
-  loading: Loading,
-});
-
-const BrandButtons = Loadable({
-  loader: () => import('./views/Buttons/BrandButtons'),
-  loading: Loading,
-});
-
-const ButtonDropdowns = Loadable({
-  loader: () => import('./views/Buttons/ButtonDropdowns'),
-  loading: Loading,
-});
-
-const ButtonGroups = Loadable({
-  loader: () => import('./views/Buttons/ButtonGroups'),
-  loading: Loading,
-});
-
-const Buttons = Loadable({
-  loader: () => import('./views/Buttons/Buttons'),
-  loading: Loading,
-});
-
-const Charts = Loadable({
-  loader: () => import('./views/Charts'),
-  loading: Loading,
-});
-
-const Dashboard = Loadable({
-  loader: () => import('./pages/Dashboard'),
-  loading: Loading,
-});
-
-const CoreUIIcons = Loadable({
-  loader: () => import('./views/Icons/CoreUIIcons'),
-  loading: Loading,
-});
-
-const Flags = Loadable({
-  loader: () => import('./views/Icons/Flags'),
-  loading: Loading,
-});
-
-const FontAwesome = Loadable({
-  loader: () => import('./views/Icons/FontAwesome'),
-  loading: Loading,
-});
-
-const SimpleLineIcons = Loadable({
-  loader: () => import('./views/Icons/SimpleLineIcons'),
-  loading: Loading,
-});
-
-const Alerts = Loadable({
-  loader: () => import('./views/Notifications/Alerts'),
-  loading: Loading,
-});
-
-const Badges = Loadable({
-  loader: () => import('./views/Notifications/Badges'),
-  loading: Loading,
-});
-
-const Modals = Loadable({
-  loader: () => import('./views/Notifications/Modals'),
-  loading: Loading,
-});
-
-const Colors = Loadable({
-  loader: () => import('./views/Theme/Colors'),
-  loading: Loading,
-});
-
-const Typography = Loadable({
-  loader: () => import('./views/Theme/Typography'),
-  loading: Loading,
-});
-
-const Widgets = Loadable({
-  loader: () => import('./views/Widgets/Widgets'),
-  loading: Loading,
-});
-
-const Users = Loadable({
-  loader: () => import('./views/Users/Users'),
-  loading: Loading,
-});
-
-const User = Loadable({
-  loader: () => import('./views/Users/User'),
-  loading: Loading,
-});
+/* END ORDER*/
 
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
+  { path: '/Dashboard', name:'Dashboard', component:Dashboard },
   { path: '/company', exact:true , name:'Công ty', component:Company},
-  { path: '/inventory', exact:true , name:'Nhà kho', component:Inventory},
-  { path: '/inventory/receipt', exact:true , name:'Nhà kho', component:Receipt},
+  { path: '/inventory/warehouse', exact:true , name:'DS Kho', component:Warehouse},
+  { path: '/inventory/receipt', exact:true , name:'Nhập - Xuất Kho', component:Receipt},
+  { path: '/inventory/productnew', exact:true , name:'Xem Tồn Kho', component:Productnew},
+  { path: '/inventory/po', exact:true , name:'Mua Hàng PO', component:Po},
+  { path: '/inventory/setting', exact:true , name:'Thiết Lập Kho', component:InventorySetting},
+
+  { path: '/cashflow/view', exact:true , name:'Phiều thu - Phiếu chi', component:CashflowView},
+  { path: '/cashflow/summary', exact:true , name:'Tổng Quan Thu - Chi ', component:CashflowSummary},
+  { path: '/cashflow/setting', exact:true , name:'Thiết Lập Sổ Tiền', component:CashflowSetting},
+
+  { path: '/customer/_S', exact:true , name:'Danh sách khách hàng', component:Customer},
+  { path: '/customer/point', exact:true , name:'Điểm tích luỹ', component:CustomerPoint},
+  { path: '/customer/setting', exact:true , name:'Thiết lập khách hàng', component:CustomerSetting},
+  { path: '/customer/crmemail', exact:true , name:'Lịch sử gủi e-mail', component:CustomerCrmemail},
+  { path: '/customer/crmsms', exact:true , name:'Lịch sử gủi SMS', component:CustomerCrmsms},
+
+  { path: '/order/_s', exact:true , name:'DS Đơn hàng', component:OrderView},
+  { path: '/order/promotion', exact:true , name:'Chương trình khuyến mãi', component:OrderPromotion},
+  { path: '/order/shippingmethod', exact:true , name:'Nhà Vận Chuyển', component:OrderShippingMethod},
+  { path: '/order/summary', exact:true , name:'Báo cáo', component:OrderSummary},
+  { path: '/order/setting', exact:true , name:'Thiết lập bán hàng', component:OrderSetting},
 
 
-  { path: '/', name: 'Home', component: DefaultLayout },
-  { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/theme', exact: true, name: 'Theme', component: Colors },
-  { path: '/theme/colors', name: 'Colors', component: Colors },
-  { path: '/theme/typography', name: 'Typography', component: Typography },
-  { path: '/base', exact: true, name: 'Base', component: Cards },
-  { path: '/base/cards', name: 'Cards', component: Cards },
-  { path: '/base/forms', name: 'Forms', component: Forms },
-  { path: '/base/switches', name: 'Switches', component: Switches },
-  { path: '/base/tables', name: 'Tables', component: Tables },
-  { path: '/base/tabs', name: 'Tabs', component: Tabs },
-  { path: '/base/breadcrumbs', name: 'Breadcrumbs', component: Breadcrumbs },
-  { path: '/base/carousels', name: 'Carousel', component: Carousels },
-  { path: '/base/collapses', name: 'Collapse', component: Collapses },
-  { path: '/base/dropdowns', name: 'Dropdowns', component: Dropdowns },
-  { path: '/base/jumbotrons', name: 'Jumbotrons', component: Jumbotrons },
-  { path: '/base/list-groups', name: 'List Groups', component: ListGroups },
-  { path: '/base/navbars', name: 'Navbars', component: Navbars },
-  { path: '/base/navs', name: 'Navs', component: Navs },
-  { path: '/base/paginations', name: 'Paginations', component: Paginations },
-  { path: '/base/popovers', name: 'Popovers', component: Popovers },
-  { path: '/base/progress-bar', name: 'Progress Bar', component: ProgressBar },
-  { path: '/base/tooltips', name: 'Tooltips', component: Tooltips },
-  { path: '/buttons', exact: true, name: 'Buttons', component: Buttons },
-  { path: '/buttons/buttons', name: 'Buttons', component: Buttons },
-  { path: '/buttons/button-dropdowns', name: 'Button Dropdowns', component: ButtonDropdowns },
-  { path: '/buttons/button-groups', name: 'Button Groups', component: ButtonGroups },
-  { path: '/buttons/brand-buttons', name: 'Brand Buttons', component: BrandButtons },
-  { path: '/icons', exact: true, name: 'Icons', component: CoreUIIcons },
-  { path: '/icons/coreui-icons', name: 'CoreUI Icons', component: CoreUIIcons },
-  { path: '/icons/flags', name: 'Flags', component: Flags },
-  { path: '/icons/font-awesome', name: 'Font Awesome', component: FontAwesome },
-  { path: '/icons/simple-line-icons', name: 'Simple Line Icons', component: SimpleLineIcons },
-  { path: '/notifications', exact: true, name: 'Notifications', component: Alerts },
-  { path: '/notifications/alerts', name: 'Alerts', component: Alerts },
-  { path: '/notifications/badges', name: 'Badges', component: Badges },
-  { path: '/notifications/modals', name: 'Modals', component: Modals },
-  { path: '/widgets', name: 'Widgets', component: Widgets },
-  { path: '/charts', name: 'Charts', component: Charts },
-  { path: '/users', exact: true,  name: 'Users', component: Users },
-  { path: '/users/:id', exact: true, name: 'User Details', component: User },
+
 ];
 
 export default routes;
