@@ -1,5 +1,15 @@
 export default {
   items: [
+
+    {
+      title: true,
+      name: 'CUIR Co.,ltd ', // TÊN ĐƠN VỊ SỬ DỤNG
+      wrapper: {            // optional wrapper object
+        element: '',        // required valid HTML5 element tag
+        attributes: {}        // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
+      },
+      class: ''             // optional class names space delimited list for title item ex: "text-center"
+    },
     {
       name: 'Tổng quan',
       url: '/dashboard',
@@ -8,15 +18,6 @@ export default {
         variant: 'info',
         text: 'NEW',
       },
-    },
-    {
-      title: true,
-      name: 'CUIR Co.,ltd', // TÊN ĐƠN VỊ SỬ DỤNG
-      wrapper: {            // optional wrapper object
-        element: '',        // required valid HTML5 element tag
-        attributes: {}        // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
-      },
-      class: ''             // optional class names space delimited list for title item ex: "text-center"
     },
     {
       name: 'Công Ty',
@@ -30,23 +31,29 @@ export default {
       icon: 'icon-drawer',
       children:[
         {
+          name: 'DS Nhà Kho',
+          url: '/inventory/warehouse',
+          icon: '',
+        },
+        {
           name: 'Nhập - Xuất Kho',
           url: '/inventory/receipt',
           icon: '',
         },
         {
-          name: 'Điều chuyển kho',
-          url: '/inventory/producttranf',
+          name: 'Xem Tồn Kho',
+          url: '/inventory/productnew',
           icon: '',
         },
         {
-          name: 'Mua Hàng',
+          name: 'Mua Hàng (PO)',
           url: '/inventory/po',
           icon: '',
         },
+
         {
-          name: 'Cài đặt kho',
-          url: '/setting/inventory',
+          name: 'Cài Đặt Kho',
+          url: '/inventory/setting',
           icon: '',
         },
       ]
@@ -63,12 +70,12 @@ export default {
         },
         {
           name:'Tổng quan Thu - Chi',
-          url:'/cashflow/status',
+          url:'/cashflow/summary',
           icon:''
         },
         {
           name:'Cài đặt Sổ Tiền',
-          url:'/setting/cashflow',
+          url:'/cashflow/setting',
           icon:''
         },
       ]
@@ -79,12 +86,28 @@ export default {
       icon: 'icon-people',
       children:[
         {
-          name:'Danh sách khách hàng',
-          url:'/customer/view',
+          name:'DS Khách Hàng',
+          url:'/customer/_s',
           icon:''
         },
         {
-          name:'Cài đặt khách hàng',
+          name:'Điểm tích luỹ',
+          url:'/customer/point',
+          icon:''
+        },
+        {
+          name:'Lịch sử gủi e-mail',
+          url:'/customer/crmemail',
+          icon:''
+        },
+        {
+          name:'Lich sử gủi SMS',
+          url:'/customer/crmsms',
+          icon:''
+        },
+
+        {
+          name:'Thiết Lập',
           url:'/customer/setting',
           icon:''
         }
@@ -97,36 +120,63 @@ export default {
       icon: 'icon-screen-desktop',
       children:[
         {
-          name:'Danh sách đơn hàng',
-          url:'/order/view',
+          name:'DS đơn hàng',
+          url:'/order/_s',
           icon:''
         },
         {
-          name:'Báo cáo',
-          url:'/order/status',
+          name:'QL Khuyến Mãi',
+          url:'/order/promotion',
           icon:''
         },
         {
-          name:'Cài đặt bán hàng',
-          url:'/setting/order',
+          name:'Nhà Vận Chuyển',
+          url:'/order/shippingmethod',
           icon:''
-        }
+        },
+        {
+          name:'Báo Cáo',
+          url:'/order/summary',
+          icon:''
+        },
+        {
+          name:'Thiết Lập',
+          url:'/order/setting',
+          icon:''
+        },
 
       ]
     },
     {
-      name: 'Chiến Dịch',
-      url: '/campaign',
+      name: 'Marketting',
+      url: '/crm',
       icon: 'icon-magnet',
       children:[
         {
-          name:'Danh sách chiến dịch',
-          url:'/campaign/view',
+          name:'DS chiến dịch',
+          url:'/crm/campaign',
           icon:''
         },
         {
-          name:'Cài đặt chiến dịch',
-          url:'/seting/campaign',
+          name:'E-mail Marketting',
+          url:'/crm/email',
+          icon:''
+        },
+        {
+          name:'SMS Marketting',
+          url:'/crm/sms',
+          icon:''
+        },
+
+        {
+          name:'Automation',
+          url:'/crm/automation',
+          icon:''
+        },
+
+        {
+          name:'Thiết lập',
+          url:'/crm/setting',
           icon:''
         },
       ]
@@ -142,8 +192,8 @@ export default {
     },
 
     {
-      name: 'Cpanel',
-      url: '/cpanel',
+      name: 'Web Portal',
+      url: '/portal',
       icon: 'icon-cursor',
     },
 
