@@ -20,6 +20,7 @@ class BenModal extends Component{
   constructor(props){
 
     super(props)
+    
 
     this.toggle = this.toggle.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -48,7 +49,9 @@ class BenModal extends Component{
 
 
     return(
-      <Modal  size="lg" isOpen={ this.props.modal.active } fade={false}   toggle={ this.toggle } >
+      <Modal  size="lg" style={{
+          'minWidth': this.props.width
+        }}  isOpen={ this.props.modal.active } fade={false}   toggle={ this.toggle } >
         <ModalHeader toggle={ this.toggle }> <i className="fa fa-plus"></i> { this.props.name }  </ModalHeader>
 
         <ModalBody style={{
