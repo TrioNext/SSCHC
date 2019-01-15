@@ -71,7 +71,7 @@ class Department extends Component{
     /* AUTO DATA CONNECT : WHEN STORE DATA CHANGE */
     this._listenStore();
 
-    
+
 
   }
   /* END WHO  */
@@ -84,8 +84,14 @@ class Department extends Component{
         onAction:'componentDidMount'
       })
   }
+
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
   _listenStore(){
-    store.subscribe(()=>{
+
+
+    this.unsubscribe =  store.subscribe(()=>{
       this.data.departments = store.getState().department.list || []  ;
 
       this._whereStateChange({
