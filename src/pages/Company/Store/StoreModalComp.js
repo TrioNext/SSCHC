@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 
 import {  Row, Col, Label,  Form, FormGroup,FormText, Input } from 'reactstrap';
 
-import moment from 'moment';
 
 import BenModal from '../../../components/BenModal';
 import SelectCity from '../../../components/SelectCity';
