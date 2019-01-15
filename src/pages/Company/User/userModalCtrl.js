@@ -73,6 +73,9 @@ class userModalCtrl {
   }
 
 
+
+
+  /* START : HOW */
   open(typeAction, info){
 
 
@@ -92,7 +95,6 @@ class userModalCtrl {
 
   }
 
-  /* START : HOW */
   processForm(name,e){
      //-->
      this._whereStateChange({
