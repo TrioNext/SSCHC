@@ -5,9 +5,11 @@ import reducerSubregion from './reducer-subregion';
 import reducerDepartment from './reducer-department';
 import reducerOffice from './reducer-office';
 import reducerStore from './reducer-store';
-
-
 import reducerUser from './reducer-user';
+
+import reducerInventory from './reducer-inventory';
+import reducerInventoryTrack from './reducer-inventory-track';
+
 
 
 
@@ -19,7 +21,9 @@ const allReducers = combineReducers({
   office:reducerOffice,
   region:reducerRegion,
   subregion:reducerSubregion,
-  store:reducerStore
+  store:reducerStore,
+  inventory:reducerInventory,
+  inventory_track:reducerInventoryTrack
 
 });
 
