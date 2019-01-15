@@ -94,12 +94,12 @@ class Store extends Component{
     /*componentDidUpdate(prevProps, prevState){}*/
     /* DESTROY - REMOVE SOMETHING*/
     componentWillUnmount(){
-      //alert('componentWillUnmount happen: store');
+      this.unsubscribe();
     }
 
     _listenStore(){
       /* AUTO CONNECT REDUX STORE -> COMPONENT DATA -> REFESH THEM  */
-      store.subscribe(()=>{
+      this.unsubscribe = store.subscribe(()=>{
 
         this.data.stores = store.getState().store.list || []  ;
         this.data.regions = store.getState().region.list || []  ;
