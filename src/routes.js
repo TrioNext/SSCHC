@@ -143,9 +143,23 @@ const CrmSetting = Loadable({
   loading:Loading
 });
 
-
-
 /* END CRM*/
+
+/* WEB PROTAL*/
+const Portal = Loadable({
+  loader:()=> import('./pages/Portal'),
+  loading:Loading
+})
+/* END WEB PORTAL*/
+/* PROFILE*/
+const Profile = Loadable({
+  loader:()=> import('./pages/Profile'),
+  loading:Loading
+})
+/* END PROFILE*/
+
+
+
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -179,6 +193,13 @@ const routes = [
   { path : '/crm/sms', exact:true, name:'E-mail marketing', component:Crmsms},
   { path : '/crm/automation', exact:true, name:'E-mail marketing', component:CrmAuutomation},
   { path : '/crm/setting', exact:true, name:'E-mail marketing', component:CrmSetting},
+
+  { path : '/profile', exact:true, name:'Thông tin cá nhân', component:Profile},
+
+  { path : '/portal', exact:true, name:'Web Portal', component:Portal},
+
+
+
 
 
 
