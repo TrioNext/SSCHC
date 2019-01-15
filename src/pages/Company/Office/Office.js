@@ -85,6 +85,10 @@ class Office extends Component{
     /* START : WHEN */
     /*componentDidMount(){}*/
 
+    componentWillUnmount(){
+      this.unsubscribe();
+    }
+
     /* NHẬN lệnh : từ NEW PROPS TỪ BODY OBJECT*/
     componentWillReceiveProps(newProps){
 
@@ -118,7 +122,7 @@ class Office extends Component{
 
     _listenStore(){
       /* AUTO CONNECT REDUX STORE -> COMPONENT DATA -> REFESH THEM  */
-      store.subscribe(()=>{
+       this.unsubscribe =  store.subscribe(()=>{
 
         this.data.offices = store.getState().office.list || []  ;
         this.data.regions = store.getState().region.list || []  ;
