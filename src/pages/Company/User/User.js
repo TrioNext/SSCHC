@@ -6,7 +6,6 @@ npm install --save ag-grid-enterprise
 */
 
 import React, {Component} from 'react';
-import {   Row, Col, ButtonGroup, Button, Input } from 'reactstrap';
 
 
 import moment from 'moment';
@@ -113,7 +112,8 @@ class User extends Component{
     }
 
     _listenStore(){
-      store.subscribe(()=>{
+
+      this.unsubscribe =  store.subscribe(()=>{
         this.data.users = store.getState().user.list || []  ;
         this.data.departments = store.getState().department.list || [] ;
         this.data.offices = store.getState().office.list || [] ;
@@ -136,6 +136,10 @@ class User extends Component{
       doLoadOffice();
       //this.model.load();
 
+    }
+
+    componentWillUnmount(){
+      this.unsubscribe();
     }
 
     componentWillReceiveProps(newProps){
@@ -203,7 +207,6 @@ class User extends Component{
     render(){
 
         /* list : users */
-        const list = this.state.data ;
         const modalTitle = this.props.onAction === POST ? 'Tạo '+ USERS_NAME  : 'Cập nhật '+ USERS_NAME;
 
 
