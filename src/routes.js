@@ -115,10 +115,37 @@ const OrderSetting = Loadable({
   loader:()=> import('./pages/Order/Setting'),
   loading:Loading
 });
-
-
 /* END ORDER*/
 
+/* CRM */
+const Crmcampaign = Loadable({
+  loader:()=> import('./pages/Crm/Campaign'),
+  loading:Loading
+});
+
+const Crmemail = Loadable({
+  loader:()=> import('./pages/Crm/Email'),
+  loading:Loading
+});
+
+const Crmsms = Loadable({
+  loader:()=> import('./pages/Crm/Sms'),
+  loading:Loading
+});
+
+const CrmAuutomation = Loadable({
+  loader:()=> import('./pages/Crm/Automation'),
+  loading:Loading
+});
+
+const CrmSetting = Loadable({
+  loader:()=> import('./pages/Crm/Setting'),
+  loading:Loading
+});
+
+
+
+/* END CRM*/
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -146,6 +173,14 @@ const routes = [
   { path: '/order/shippingmethod', exact:true , name:'Nhà Vận Chuyển', component:OrderShippingMethod},
   { path: '/order/summary', exact:true , name:'Báo cáo', component:OrderSummary},
   { path: '/order/setting', exact:true , name:'Thiết lập bán hàng', component:OrderSetting},
+
+  { path : '/crm/campaign', exact:true, name:'Chiến dịch', component:Crmcampaign},
+  { path : '/crm/email', exact:true, name:'E-mail marketing', component:Crmemail},
+  { path : '/crm/sms', exact:true, name:'E-mail marketing', component:Crmsms},
+  { path : '/crm/automation', exact:true, name:'E-mail marketing', component:CrmAuutomation},
+  { path : '/crm/setting', exact:true, name:'E-mail marketing', component:CrmSetting},
+
+
 
 
 
