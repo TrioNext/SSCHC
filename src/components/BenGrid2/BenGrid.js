@@ -27,12 +27,14 @@ class BenGrid extends Component{
 
 
     this.state = {
+      key:'',
+      isRightTool:props.isRightTool || false,
       isChecked:false,
       columnDefs: [
               {
                 headerName: "SID",
                 field: "id",
-                width:130,
+                width:140,
                 checkboxSelection: true,
                 filterParams: { newRowsAction: "keep" },
                 checkboxSelection: function(params) {
@@ -60,6 +62,9 @@ class BenGrid extends Component{
 
     this.model = props.model;
 
+    this.onBtnNew = this.onBtnNew.bind(this);
+    this.onFindKeyUp = this.onFindKeyUp.bind(this);
+    this.onBtnFind = this.onBtnFind.bind(this);
 
   }
 
@@ -99,10 +104,28 @@ class BenGrid extends Component{
     };*/
   }
 
+  onFindKeyUp(e){
+
+     e.key === 'Enter' ? alert(this.state.key) :  this._whereStateChange({key:e.target.value}) ;
+
+
+  }
+
+  onBtnFind(){
+    alert('find key')
+  }
+
+  onBtnNew(){
+    this.props.onBtnNew();
+  }
   onBtnEdit(){
 
     this.props.onBtnEdit(this.state.selectedData[0]);
 
+  }
+
+  onDownload(){
+    alert('download clicked');
   }
 
   async onBtnDel(){
@@ -152,7 +175,7 @@ class BenGrid extends Component{
 
   /* WHERE*/
   _whereStateChange(newState){
-
+    //this.setState(Object.assign(this.state,newState));
   }
   render(){
 
@@ -160,6 +183,7 @@ class BenGrid extends Component{
     disabledBtnEdit = this.state.selectedData.length > 1 ? true : disabledBtnEdit;
     let disabledBtnDel = this.state.selectedData.length > 0 ? false : true;
 
+    const clnRightTool =  this.state.isRightTool ? '' : 'hidden';
 
     return (
 
@@ -171,10 +195,20 @@ class BenGrid extends Component{
 
                     <Button disabled={ disabledBtnEdit } onClick={ this.onBtnEdit.bind(this) } className={ 'btn-ubuntu'} > <i className="fa fa-pencil"></i> </Button>
                     <Button disabled={ disabledBtnDel } onClick={ this.onBtnDel.bind(this) }  className={ 'btn-ubuntu'} > <i className="fa fa-trash"></i> </Button>
-                    <Button className={ 'btn-ubuntu'} > <i className="fa fa-download"></i> </Button>
+                    <Button className={ 'btn-ubuntu'} onClick={ this.onDownload.bind(this) }  > <i className="fa fa-download"></i> </Button>
                   </ButtonGroup>
               </Col>
-              <Col>
+              <Col md={6} className={'text-right '+ clnRightTool}>
+                <ButtonGroup>
+
+
+                    { this.props.customButton }
+                    
+                    <Input  placeholder="Tìm kiếm" onKeyUp={ this.onFindKeyUp }  style={{borderRadius:0}}  />
+                    <Button style={{marginRight:10}} onClick={ this.onBtnFind }  className="btn-ubuntu"> <i className="fa fa-search"></i> </Button>
+
+
+                </ButtonGroup>
 
               </Col>
             </Row>
