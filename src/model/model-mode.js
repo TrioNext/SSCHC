@@ -8,3 +8,5 @@ export const SUBREGIONS = 'subregions';
 
 export const INVENTORIES = 'inventories';
 export const INVENTORY_TRACKS = 'inventorie_tracks';
+
+export const PURCHASE  = 'purchases';
