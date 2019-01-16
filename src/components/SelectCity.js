@@ -14,17 +14,16 @@ props :
 
 function SelectCity(props){
 
-  let list = [] ;
+
   const modal = props.modal;
-
-
-  props.regions.map((item)=>{
-    list.push(<option id={item.id} value={item.code} key={item.id} > { item.name } </option>)
-  })
-
   return(
     <Input onChange={ (e)=>{  modal.onChangeCity(e)  } }  type="select" defaultValue={ props.selected }>
-      {list}
+      {
+        props.regions.map((item)=>{
+          return (<option id={item.id} value={item.code} key={item.id} > { item.name } </option>)
+        })
+      }
+
     </Input>
   )
 }
