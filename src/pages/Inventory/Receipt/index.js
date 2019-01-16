@@ -7,6 +7,7 @@ import { Button, ButtonGroup } from 'reactstrap';
 import Store from '../../../redux/store';
 import Model from '../../../model/model';
 
+
 /* HOOKED*/
 /*............*/
 
@@ -18,8 +19,8 @@ import { POST, SEARCH } from '../../../model/action-mode';
 
 
 /* MODAL FORM & CTRL */
-import FormIn from './FormIn';
-import formInCtrl from './formInCtrl';
+import RecForm from './Form';
+import formCtrl from './formCtrl';
 
 
 /*INCLUDE OTHER COMPONENT*/
@@ -37,7 +38,9 @@ class Receipt extends Component{
 
       typeAction:'',
       onAction:'',
-      status:''
+      status:'',
+
+      recType:'in' // LOẠI PHIẾU
     }
 
     this.data = {
@@ -75,7 +78,7 @@ class Receipt extends Component{
       key:''
     });
 
-    this.formInCtrl = new formInCtrl(this.model);
+    this.formCtrl = new formCtrl(this.model);
     //this.modal = new formController(this.model);
 
     this._listenStore();
@@ -116,11 +119,12 @@ class Receipt extends Component{
 
   }
 
-  _doOpenFormIn(){
+  _doOpenForm(type){
 
-    this.formInCtrl.open('post');
+    this.formCtrl.open('post');
 
     this._whereStateChange({
+      recType:type,
       typeAction:'post',
       onAction:'open_modal'
     })
@@ -132,13 +136,13 @@ class Receipt extends Component{
   /* onbtn Create phiếu xuất*/
   onBtnNewReceOut(){
     //this._doOpenModalPost();
-    alert('phieu xuất')
+    this._doOpenForm('out')
   }
 
   /* onbtn Create phiếu xuất*/
   onBtnNewReceIn(){
     //this._doOpenModalPost();
-    this._doOpenFormIn()
+    this._doOpenForm('in')
   }
 
 
@@ -171,17 +175,23 @@ class Receipt extends Component{
 
 
   render(){
+
+    const formTitle = this.state.recType === 'in' ? 'Phiếu nhập' : 'Phiếu xuất' ;
+    const strTypeAction = this.state.typeAction === POST ? 'Tạo ' : 'Chỉnh sửa ';
+
+
     return (
       <div className="animated fadeIn">
         <div className="ubuntu-app " style={{border:0, padding:10}}>
             <main>
 
 
-              <FormIn
+              <RecForm
+                recType={ this.state.recType }
                 width='90%'
-                name={ 'Phiếu nhập' }
+                name={ strTypeAction+ formTitle }
                 typeAction={ this.state.typeAction }
-                modal={this.formInCtrl}
+                modal={this.formCtrl}
 
               />
               <BenGrid
