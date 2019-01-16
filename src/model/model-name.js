@@ -5,3 +5,5 @@ export const OFFICES_NAME = 'Văn phòng';
 
 export const INVENTORIES_NAME = 'Nhà kho';
 export const INVENTORY_TRACK_NAME = 'Xuất - Nhập Kho';
+
+export const PURCHASE_NAME = 'Đơn Mua Hàng';
