@@ -10,6 +10,7 @@ import reducerUser from './reducer-user';
 import reducerInventory from './reducer-inventory';
 import reducerInventoryTrack from './reducer-inventory-track';
 
+import reducerPurchase from './reducer-purchase';
 
 
 
@@ -23,7 +24,8 @@ const allReducers = combineReducers({
   subregion:reducerSubregion,
   store:reducerStore,
   inventory:reducerInventory,
-  inventory_track:reducerInventoryTrack
+  inventory_track:reducerInventoryTrack,
+  purchase:reducerPurchase
 
 });
 
