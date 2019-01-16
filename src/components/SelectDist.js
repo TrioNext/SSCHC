@@ -15,17 +15,14 @@ function SelectDist(props){
 
 
   const modal = props.modal ;
-
-  let list = [];
-
-
-  props.subregions.map((item)=>{
-    list.push(<option id={item.id} key={item.id} value={ item.code } > { item.name_with_type } </option>)
-  })
-
+  
   return(
     <Input onChange={ (e)=>{  modal.onChangeDist(e)  } }  type="select" defaultValue={ props.selected }>
-      {list}
+      {
+        props.subregions.map((item)=>{
+          return (<option id={item.id} key={item.id} value={ item.code } > { item.name_with_type } </option>);
+        })
+      }
     </Input>
   )
 }
