@@ -55,9 +55,9 @@ class DefaultLayout extends Component {
 
           <main className="main">
 
-            {/*<AppBreadcrumb appRoutes={routes}/> */}
+            <AppBreadcrumb appRoutes={routes}/>
 
-            <Container fluid style={{ padding:0, marginTop:0}}>
+            <Container fluid style={{ padding:0, marginTop:-24}}>
 
               <Switch>
                 {routes.map((route, idx) => {
