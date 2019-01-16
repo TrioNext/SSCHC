@@ -2,8 +2,18 @@
 /* BUTTON */
 .btn-ubuntu{ background: #7696a6;  border: 1px solid rgba(0,0,0,0.1) ;  color: #fff}
 .btn-ubuntu:hover, .btn-ubuntu-active{ background: #40525b; color: #fff; border: 1px solid rgba(0,0,0,0.1)}
+
+
 .btn-ubuntu-ok{ background: #eeb452;  border: 1px solid rgba(0,0,0,0.1); color: #fff; }
 .btn-ubuntu-ok:hover{ background-color: #b7852f; border: 1px solid rgba(0,0,0,0.1); color: #fff}
+
+.btn-ubuntu-select{ background: #5A5A5A;  border: 1px solid rgba(0,0,0,0.1) ;  color: #fff}
+.btn-ubuntu-select:hover, .btn-ubuntu-select-active{ background: #5A5A5A; color: #fff; border: 3px solid rgba(0,0,0,0.6)}
+
+
+
+
+
 
 /* btn-datagrid*/
 .btn-datagrid{ background: transparent;  border: 0px solid rgba(0,0,0,0.1) ;  color: #56a18e}
@@ -19,7 +29,7 @@
     flex-direction: row;
     background: #fff;
     border: 1px solid #c8ced3;
-    height: 84vh + 5.2 ; overflow-y:hidden;
+    height: 80vh + 5.2 ; overflow-y:hidden;
     border-bottom: 0px;
     overflow-x: hidden;
 }
