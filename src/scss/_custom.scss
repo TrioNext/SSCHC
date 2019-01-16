@@ -2,13 +2,10 @@
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500&subset=vietnamese');
 
+/*GENERGAL */
 body{
-
-  font: 15px "Roboto", sans-serif !important;
-
-
+  font: 14px "Roboto", sans-serif !important;
 }
-
 .btn-trio{
   background:#CF9D48 ;
   border:1px solid #CF9D48;
@@ -19,10 +16,25 @@ body{
   border:1px solid #666;
   color: #fff
 }
-
 .mr-5{ margin-right: 5px !important;}
-
 .nav-title,.badge,.font-weight-bold, strong,b,.switch-label{ font-weight: 500 !important}
+
+label{ font-weight: 500 !important; font-size: 14px;}
+.font-weight-bold{ font-weight: 500}
+
+.ButtonGroup-select{}
+.ButtonGroup-select Button{ background-color: #7696A6 !important; color: #fff; border: 0px;}
+.ButtonGroup-select Button.selected,.ButtonGroup-select Button:hover{ background-color: #40525B !important; color: #fff; border: 0px;}
+
+.form-general{ padding: 60px}
+.form-general .row{ padding: 20px ; padding-left: 0px; border-bottom: 1px solid #ddd; }
+.form-general .row p{ font-weight: 500}
+
+
+/* TABLE*/
+.product-board{}
+.product-board tr th{ font-size: 15px !important; font-weight: 500}
+.product-board tr td{ font-size: 12px !important; vertical-align: middle;}
 
 /*
 MODAL
@@ -545,6 +557,9 @@ a:hover, a:active {
 
   .font-13 {
     font-size: 13px !important; }
+
+  .font-14 {
+      font-size: 14px !important; }
 
   .font-15 {
     font-size: 15px !important; }
