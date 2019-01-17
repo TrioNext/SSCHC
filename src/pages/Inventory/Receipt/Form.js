@@ -221,7 +221,7 @@ class FormIn extends Component {
        <BenModal width={ this.props.width } name={ this.props.name } typeAction={ this.props.typeAction } modal={ this.props.modal }  >
           <Row>
             <Col md={8}>
-                <FrmLeft grid={ this.grid } modal={ this.props.modal } />
+                <FrmLeft  modal={ this.props.modal } />
             </Col>
 
             <Col md={4}>
