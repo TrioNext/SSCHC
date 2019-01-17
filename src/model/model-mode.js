@@ -10,3 +10,6 @@ export const INVENTORIES = 'inventories';
 export const INVENTORY_TRACKS = 'inventorie_tracks';
 
 export const PURCHASE  = 'purchases';
+
+export const COINS = 'coins';
+export const COIN_TRACKS = 'coin_tracks';
