@@ -12,6 +12,11 @@ import reducerInventoryTrack from './reducer-inventory-track';
 
 import reducerPurchase from './reducer-purchase';
 
+import reducerCointTrack from './reducer-coin-track';
+import reducerCoint from './reducer-coin';
+
+
+
 
 
 
@@ -25,7 +30,10 @@ const allReducers = combineReducers({
   store:reducerStore,
   inventory:reducerInventory,
   inventory_track:reducerInventoryTrack,
-  purchase:reducerPurchase
+  purchase:reducerPurchase,
+  coin_track: reducerCointTrack,
+  coin:reducerCoint
+
 
 });
 
