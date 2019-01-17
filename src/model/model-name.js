@@ -7,3 +7,6 @@ export const INVENTORIES_NAME = 'Nhà kho';
 export const INVENTORY_TRACK_NAME = 'Xuất - Nhập Kho';
 
 export const PURCHASE_NAME = 'Đơn Mua Hàng';
+
+export const COIN_TRACKS_NAME = 'Thu - Chi';
+export const COIN_NAME = 'Tài khoản';
