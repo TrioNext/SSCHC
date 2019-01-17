@@ -65,6 +65,9 @@ class Receipt extends Component{
 
     this._setup();
 
+    this.onBtnNewReceIn = this.onBtnNewReceIn.bind(this);
+    this.onBtnNewReceOut = this.onBtnNewReceOut.bind(this);
+
   }
 
   _setup(){
@@ -83,8 +86,7 @@ class Receipt extends Component{
 
     this._listenStore();
 
-    this.onBtnNewReceIn = this.onBtnNewReceIn.bind(this);
-    this.onBtnNewReceOut = this.onBtnNewReceOut.bind(this);
+
 
   }
 
