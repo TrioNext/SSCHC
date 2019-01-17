@@ -13,14 +13,6 @@
 
 
 
-
-
-/* btn-datagrid*/
-.btn-datagrid{ background: transparent;  border: 0px solid rgba(0,0,0,0.1) ;  color: #56a18e}
-.btn-datagrid:hover{ background: #56a18e; color: #fff; border: 1px solid rgba(0,0,0,0.1)}
-
-
-
 /* E-MAIL APP  : LEFT SIZE : RIGHT SIZE  */
 .ubuntu-app {
     display: -ms-flexbox;
@@ -28,8 +20,8 @@
     -ms-flex-direction: row;
     flex-direction: row;
     background: #fff;
-    border: 1px solid #c8ced3;
-    height: 80vh + 5.2 ; overflow-y:hidden;
+    border: 1px solid rgba(0,0,0,0.2);
+    height: 79vh + 5.8 ; overflow-y:hidden;
     border-bottom: 0px;
     overflow-x: hidden;
 }
@@ -37,11 +29,11 @@
 /* LEFT SIDE APP*/
 .ubuntu-app nav {
     -ms-flex: 0 0 300px;
-    flex: 0 0 360px;
+    flex: 0 0 260px;
     padding: 1rem;
     border-right: 1px solid #c8ced3;
     height: 89vh + 0.5 ; overflow-y:auto;
-
+    background: #DEDEDE; //F0F0F0
 }
 
 .ubuntu-app nav .btn-block {
