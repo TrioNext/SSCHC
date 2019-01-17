@@ -27,6 +27,7 @@ class BenGrid extends Component{
 
 
     this.state = {
+      height: props.height || '68vh',
       key:'',
       isRightTool:props.isRightTool || false,
       isChecked:false,
@@ -203,7 +204,7 @@ class BenGrid extends Component{
 
 
                     { this.props.customButton }
-                    
+
                     <Input  placeholder="Tìm kiếm" onKeyUp={ this.onFindKeyUp }  style={{borderRadius:0}}  />
                     <Button style={{marginRight:10}} onClick={ this.onBtnFind }  className="btn-ubuntu"> <i className="fa fa-search"></i> </Button>
 
@@ -214,7 +215,7 @@ class BenGrid extends Component{
             </Row>
           </div>
 
-          <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: '72vh', padding:'1rem' }}>
+          <div className="ag-theme-material" id="myGrid" style={{boxSizing: "border-box", height: this.state.height, padding:'1rem' }}>
               <AgGridReact
 
                   onSelectionChanged={this.onSelectionChanged.bind(this)}
