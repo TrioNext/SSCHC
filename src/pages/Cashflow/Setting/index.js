@@ -22,12 +22,12 @@ class CashflowSetting extends Component{
       onAction:'',
       status :'',
 
-      onTab:'coin',
+      onTab:'cointrack_setting',
       leftData:[
-        {icon:'', code:'coin',name:'Loại tài khoản',active:true},
+        {icon:'', code:'coin',name:'Loại tài khoản'},
         {icon:'', code:'cointrack_in',name:'Loại phiếu thu'},
         {icon:'', code:'cointrack_out',name:'Loại phiếu chi'},
-        {icon:'', code:'cointrack_setting',name:'Cấu hình Thu - Chi'}
+        {icon:'', code:'cointrack_setting',name:'Cấu hình Thu - Chi',active:true}
       ]
     }
 
