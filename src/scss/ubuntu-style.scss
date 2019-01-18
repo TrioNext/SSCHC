@@ -26,6 +26,10 @@
     overflow-x: hidden;
 }
 
+.ubuntu-app .need-scroll{
+  height: 79vh + 5.8 ; overflow-y:auto;
+}
+
 /* LEFT SIDE APP*/
 .ubuntu-app nav {
     -ms-flex: 0 0 300px;
