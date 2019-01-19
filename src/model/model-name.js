@@ -10,3 +10,5 @@ export const PURCHASE_NAME = 'Đơn Mua Hàng';
 
 export const COIN_TRACKS_NAME = 'Thu - Chi';
 export const COIN_NAME = 'Tài khoản';
+
+export const CUSTOMER_NAME = 'Khách hàng';
