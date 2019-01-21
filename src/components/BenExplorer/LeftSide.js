@@ -16,7 +16,7 @@ function LeftSide(props){
               return(
                 <li key={index} onClick={ ()=>{ props.onClick(item) } }  className={'nav-item '+active}>
                   <span  className="nav-link" >
-                    <a ><i className="fa fa-dollar  mr-5"></i> { item.name }  </a>
+                    <a ><i className="fa fa-chevron-circle-right  mr-5"></i> { item.name }  </a>
                   </span>
                 </li>
               )
