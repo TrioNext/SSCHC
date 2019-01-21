@@ -43,7 +43,7 @@ class Customer extends Component{
     }
 
     this.data = {
-      coin_tracks:[]
+      customers:[]
     }
 
     this.grid = {
