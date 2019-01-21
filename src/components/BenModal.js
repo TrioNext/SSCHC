@@ -20,7 +20,7 @@ class BenModal extends Component{
   constructor(props){
 
     super(props)
-    
+
 
     this.toggle = this.toggle.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -65,8 +65,8 @@ class BenModal extends Component{
         <div className="my-modal-footer">
            <div className="float-right">
                <div role="group" className="btn-group">
-                     <Button className="btn-ubuntu" onClick={ this.toggle }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
-                     <Button  className="btn-ubuntu-ok" onClick={  this.onSubmit }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
+                     <Button className="btn-ubuntu bg-dark" onClick={ this.toggle }> <i className="fa fa fa-reply"></i> Từ Chối  </Button>
+                     <Button  className="btn-ubuntu-ok bg-green" onClick={  this.onSubmit }> <i className="fa fa-chevron-circle-right"></i> Đồng Ý </Button>
                </div>
 
            </div>
@@ -84,7 +84,7 @@ class BenModal extends Component{
              <Popover placement="bottom" isOpen={this.props.modal.popover.active } target="btnDel"  toggle={ this.popoverToggle }>
                <PopoverHeader>Bạn có chắc chắn không?</PopoverHeader>
                <PopoverBody className="text-center pa-15">
-                 <button  onClick={ this.btnYes } className="btn btn-sm btn-success mr-20">Có</button>
+                 <button  onClick={ this.btnYes } className="btn bg-green btn-sm btn-success mr-20">Có</button>
 
                  <button onClick={ this.popoverToggle } className="btn btn-sm btn-secondary">Không</button>
                </PopoverBody>
