@@ -16,6 +16,7 @@ import reducerCointTrack from './reducer-coin-track';
 import reducerCoint from './reducer-coin';
 
 import reducerCustomer from './reducer-customer';
+import reducerOrder from './reducer-order';
 
 
 
@@ -35,7 +36,8 @@ const allReducers = combineReducers({
   purchase:reducerPurchase,
   coin_track: reducerCointTrack,
   coin:reducerCoint,
-  customer:reducerCustomer
+  customer:reducerCustomer,
+  order:reducerOrder
 
 
 });
