@@ -15,3 +15,4 @@ export const COINS = 'coins';
 export const COIN_TRACKS = 'coin_tracks';
 
 export const CUSTOMERS = 'customers';
+export const ORDERS = 'orders';
