@@ -54,7 +54,7 @@ class OrderView extends Component{
         {headerName: "Ngày kết thúc", field: "creator_id"},
         {headerName: "Đã thanh toán", field: "status"},
         {headerName: "Phụ trách", field: "note"},
-
+        
 
       ],
       rowData: []
