@@ -197,13 +197,7 @@ const routes = [
   { path : '/profile', exact:true, name:'Thông tin cá nhân', component:Profile},
 
   { path : '/portal', exact:true, name:'Web Portal', component:Portal},
-
-
-
-
-
-
-
+  
 
 ];
 
