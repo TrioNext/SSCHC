@@ -24,11 +24,12 @@ class CompanyToolBar extends Component{
         icon:'fa-tags',
         name:'Văn phòng'
       },
-      store:{
+      /*store:{
         code:'store',
         icon:'fa-tags',
         name:'Cửa hàng'
-      }
+      }*/
+
 
     }
 

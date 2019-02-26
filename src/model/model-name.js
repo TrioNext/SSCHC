@@ -13,3 +13,5 @@ export const COIN_NAME = 'Tài khoản';
 
 export const CUSTOMER_NAME = 'Khách hàng';
 export const ORDER_NAME = 'Đơn hàng';
+
+export const PRODUCT_NAME = 'Sản phẩm';

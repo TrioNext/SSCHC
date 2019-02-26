@@ -3,7 +3,7 @@ export default {
 
     {
       title: true,
-      name: 'CUIR Co.,ltd ', // TÊN ĐƠN VỊ SỬ DỤNG
+      name: 'VI KHANG Co.,ltd ', // TÊN ĐƠN VỊ SỬ DỤNG
       wrapper: {            // optional wrapper object
         element: '',        // required valid HTML5 element tag
         attributes: {}        // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
@@ -20,10 +20,43 @@ export default {
       },
     },
     {
-      name: 'Công Ty',
+      name: 'Nhân sự',
       url: '/company',
       icon: 'icon-compass'
 
+    },
+    {
+      name: 'Bán Hàng',
+      url: '/order',
+      icon: 'icon-screen-desktop',
+      children:[
+        {
+          name:'DS đơn hàng',
+          url:'/order/_s',
+          icon:''
+        },
+        {
+          name:'QL Khuyến Mãi',
+          url:'/order/promotion',
+          icon:''
+        },
+        {
+          name:'Nhà Vận Chuyển',
+          url:'/order/shippingmethod',
+          icon:''
+        },
+        {
+          name:'Báo Cáo',
+          url:'/order/summary',
+          icon:''
+        },
+        {
+          name:'Thiết Lập',
+          url:'/order/setting',
+          icon:''
+        },
+
+      ]
     },
     {
       name: 'Nhà Kho',
@@ -114,39 +147,7 @@ export default {
 
       ]
     },
-    {
-      name: 'Bán Hàng',
-      url: '/order',
-      icon: 'icon-screen-desktop',
-      children:[
-        {
-          name:'DS đơn hàng',
-          url:'/order/_s',
-          icon:''
-        },
-        {
-          name:'QL Khuyến Mãi',
-          url:'/order/promotion',
-          icon:''
-        },
-        {
-          name:'Nhà Vận Chuyển',
-          url:'/order/shippingmethod',
-          icon:''
-        },
-        {
-          name:'Báo Cáo',
-          url:'/order/summary',
-          icon:''
-        },
-        {
-          name:'Thiết Lập',
-          url:'/order/setting',
-          icon:''
-        },
 
-      ]
-    },
     {
       name: 'Marketting',
       url: '/crm',
@@ -182,15 +183,7 @@ export default {
       ]
     },
 
-    {
-      title: true,
-      name: 'Webstore',
-      wrapper: {
-        element: '',
-        attributes: {},
-      },
-    },
-
+    
     {
       name: 'Web Portal',
       url: '/portal',
@@ -200,19 +193,16 @@ export default {
     {
       divider: true,
     },
+
     {
-      title: true,
-      name: 'Cài đặt - Cấu hình',
-    },
-    {
-      name: 'Thiết lập ứng dụng',
+      name: 'Thiết lập & Cấu hình',
       url: '/setting/general',
-      icon: 'icon-puzzle'
+      icon: 'icon-wrench'
     },
     {
-      name: 'Thiết lập thiết bị',
+      name: 'Trợ giúp',
       url: '/setting/devices',
-      icon: 'icon-wrench'
+      icon: 'icon-puzzle'
     }
 
   ],

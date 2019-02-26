@@ -33,7 +33,7 @@ class DefaultHeader extends Component {
         {/* LEFT  */}
         <Nav navbar>
           <NavItem className="px-3">
-              Tháng 11
+              Tháng 02
           </NavItem>
         </Nav>
 
@@ -42,7 +42,7 @@ class DefaultHeader extends Component {
         <Nav className="ml-auto" navbar>
 
           <NavItem className="d-md-down-none">
-            <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
+            <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger"></Badge></NavLink>
           </NavItem>
 
 

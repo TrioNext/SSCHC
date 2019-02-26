@@ -12,7 +12,7 @@ import CusPointRulePage from './CusPointRulePage/';
 
 
 
-class Point extends Component{
+class Customer extends Component{
 
   constructor(){
     super();
@@ -70,4 +70,4 @@ class Point extends Component{
   }
 }
 
-export default Point;
+export default Customer;

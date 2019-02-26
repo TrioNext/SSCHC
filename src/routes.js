@@ -188,6 +188,8 @@ const routes = [
   { path: '/order/summary', exact:true , name:'Báo cáo', component:OrderSummary},
   { path: '/order/setting', exact:true , name:'Thiết lập bán hàng', component:OrderSetting},
 
+
+
   { path : '/crm/campaign', exact:true, name:'Chiến dịch', component:Crmcampaign},
   { path : '/crm/email', exact:true, name:'E-mail marketing', component:Crmemail},
   { path : '/crm/sms', exact:true, name:'E-mail marketing', component:Crmsms},
@@ -197,7 +199,7 @@ const routes = [
   { path : '/profile', exact:true, name:'Thông tin cá nhân', component:Profile},
 
   { path : '/portal', exact:true, name:'Web Portal', component:Portal},
-  
+
 
 ];
 

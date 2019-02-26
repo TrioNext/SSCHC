@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const server = {
-  host:"http://localhost",
+  host:"http://localhost",//"http://115.78.5.75",
   port:3333,
 
   url:'',
